@@ -1,0 +1,9 @@
+<svg width="140" height="140" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect y="140" width="140" height="140" transform="rotate(-90 0 140)" fill="#FF0000"/>
+<rect x="62.2222" y="23.3333" width="15.5556" height="15.5556" transform="rotate(-90 62.2222 23.3333)" fill="white"/>
+<rect x="7.77783" y="101.111" width="46.6667" height="7.77778" transform="rotate(-90 7.77783 101.111)" fill="white"/>
+<rect x="46.6666" y="77.7778" width="15.5556" height="17.8889" transform="rotate(-90 46.6666 77.7778)" fill="white"/>
+<rect x="93.3334" y="77.7778" width="15.5556" height="17.8889" transform="rotate(-90 93.3334 77.7778)" fill="white"/>
+<rect x="124.444" y="101.111" width="46.6667" height="7.77778" transform="rotate(-90 124.444 101.111)" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M23.3334 31.1111L23.3334 124.444L116.667 124.444L116.667 31.1111L23.3334 31.1111ZM62.2223 54.4444H31.1112V85.5555H62.2223V54.4444ZM77.7778 54.4444H108.889V85.5555H77.7778V54.4444ZM38.8889 93.3333H31.1112V116.667H38.8889V93.3333ZM62.2223 93.3333H54.4445H46.6667V116.667H54.4445V101.111H62.2223V116.667H70V93.3333H62.2223ZM101.111 101.111H108.889V108.889H101.111V116.667H93.3334V93.3333H101.111V101.111ZM85.5556 93.3333H77.7778V116.667H85.5556V93.3333Z" fill="white"/>
+</svg>

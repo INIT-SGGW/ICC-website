@@ -8,8 +8,8 @@
     "dist"
   ],
   "exports": {
-    "./styles.css": "./dist/index.css",
-    "./card": "./src/card.tsx"
+    "./layout": "./src/components/layout.tsx",
+    "./styles.css": "./dist/index.css"
   },
   "license": "MIT",
   "scripts": {
