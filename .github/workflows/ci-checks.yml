@@ -1,0 +1,39 @@
+name: Pre-merge CI checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      # Step 3: Install dependencies using pnpm
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      # Step 4: Run lint script
+      - name: Run lint
+        run: pnpm lint
+
+      # Step 5: Run build script
+      - name: Build the project
+        run: pnpm build
+
+      # Step 6: Check for vulnerabilities
+      - name: Run security checks
+        run: pnpm audit
