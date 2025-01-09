@@ -1,58 +1,57 @@
-# Turborepo Tailwind CSS starter
+# Init Coding Challenge Front-end
 
-This is an official starter Turborepo.
+This is a front-end repository for the Init Coding Challenge.
 
-## Using this example
+## Structure
 
-Run the following command:
+Project was built using Turborepo, a monorepo tool that allows us to have multiple packages in the same repository. There are two apps:
 
-```sh
-npx create-turbo@latest -e with-tailwind
+- `web` - main app, where the user will interact with the application
+- `admin` - admin app, where the admins will manage the application
+
+And one shared package:
+
+- `ui` - shared components between the two apps
+
+## Setup
+
+You can use following commands to setup the project (you need to have [pnpm](https://pnpm.io/installation#using-npm) installed):
+
+Clone the repository:
+
+```bash
+git clone https://github.com/INIT-SGGW/ICC-frontend.git <project-name>
+cd <project-name>
 ```
 
-## What's inside?
+Then you can install the dependencies:
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Building packages/ui
-
-This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.js`. This was chosen for several reasons:
-
-- Make sharing one `tailwind.config.js` to apps and packages as easy as possible.
-- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
-- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
-- Maintain clear package export boundaries.
-
-Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.js` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
-
-For example, in [tailwind.config.js](packages/tailwind-config/tailwind.config.js):
-
-```js
-  content: [
-    // app content
-    `src/**/*.{js,ts,jsx,tsx}`,
-    // include packages if not transpiling
-    "../../packages/ui/*.{js,ts,jsx,tsx}",
-  ],
+```bash
+pnpm install
 ```
 
-If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
+## Running the project
 
-### Utilities
+You can run the project using the following command (it will start both apps):
 
-This Turborepo has some additional tools already setup for you:
+```bash
+pnpm dev
+```
 
-- [Tailwind CSS](https://tailwindcss.com/) for styles
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+By default, it will start the website on `http://localhost:3000` and the admin panel on `http://localhost:3001`.
+
+To run only one app, you can use the following command:
+
+```bash
+pnpm dev:<app-name>
+```
+
+Where `<app-name>` is either `web` or `admin`.
+
+Other useful commands:
+
+- `pnpm build` - builds all packages
+- `pnpm lint` - runs eslint on all packages
+- `pnpm type-check` - runs typescript type-check on all packages
+- `pnpm clean` - removes cached builds and other temporary files
+- `pnpm format` - formats all files using prettier
