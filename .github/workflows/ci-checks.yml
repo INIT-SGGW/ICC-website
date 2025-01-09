@@ -18,7 +18,9 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          npm install -g pnpm
+          pnpm install
 
       - name: Run Lint
         run: pnpm lint
@@ -37,7 +39,9 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          npm install -g pnpm
+          pnpm install
 
       - name: Build Application
         run: pnpm build
@@ -56,7 +60,9 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          npm install -g pnpm
+          pnpm install
 
       - name: Audit Dependencies
         run: pnpm audit
