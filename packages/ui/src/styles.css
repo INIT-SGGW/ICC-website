@@ -4,44 +4,15 @@
 
 @layer utilities {
   body {
-    background-image: linear-gradient(
-        45deg,
-        theme("colors.primary.100") 25%,
-        transparent 25%,
-        transparent 75%,
-        theme("colors.primary.100") 75%,
-        theme("colors.primary.100")
-      ),
-      linear-gradient(
-        45deg,
-        theme("colors.primary.100") 25%,
-        transparent 25%,
-        transparent 75%,
-        theme("colors.primary.100") 75%,
-        theme("colors.primary.100")
-      ),
-      linear-gradient(
-        45deg,
-        theme("colors.primary.200") 25%,
-        transparent 25%,
-        transparent 75%,
-        theme("colors.primary.200") 75%,
-        theme("colors.primary.200")
-      ),
-      linear-gradient(
-        45deg,
-        theme("colors.primary.200") 25%,
-        transparent 25%,
-        transparent 75%,
-        theme("colors.primary.200") 75%,
-        theme("colors.primary.200")
-      );
-    background-size: 120px 120px;
-    background-position:
-      0 0,
-      60px 60px,
-      60px 0,
-      0 60px;
+    background: repeating-conic-gradient(
+      from 0deg,
+      theme("colors.primary.200") 0% 25%,
+      theme("colors.primary.100") 25% 50%,
+      theme("colors.primary.200") 50% 75%,
+      theme("colors.primary.100") 75% 100%
+    );
+    background-size: 120px 120px; /* size of the squares */
+    height: 100vh;
 
     position: relative;
   }
