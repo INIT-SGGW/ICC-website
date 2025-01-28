@@ -8,8 +8,8 @@ import SGGWLogo from "../assets/sggw-logo.svg";
 
 function TopBar({ adminPanel, navItems }: { adminPanel: boolean, navItems: { href: string, label: string; img?: string }[] }): JSX.Element {
   return (
-    <header className="ui-flex ui-flex-col w-full ui-bg-transparent">
-      <div className="ui-flex ui-items-center ui-justify-between ui-w-full ui-px-4 ui-py-6 ui-sticky ui-top-0 ui-z-20 ui-bg-black ui-text-cred">
+    <header className="ui-flex ui-flex-col w-full ui-bg-transparent ui-z-20 ">
+      <div className="ui-flex ui-items-center ui-justify-between ui-w-full ui-px-4 ui-py-6 ui-bg-black ui-text-cred">
         <a className="ui-flex ui-items-center ui-gap-4" href="/" title="Init Coding Challenge">
           <img alt="Init Coding Challenge" className="ui-w-24 ui-h-24" src={ICCLogo.src} />
           {
