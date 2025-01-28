@@ -75,7 +75,7 @@ function Footer(): JSX.Element {
   );
 }
 
-export default function RootLayout({
+export function RootLayout({
   font,
   navItems,
   adminPanel = false,
