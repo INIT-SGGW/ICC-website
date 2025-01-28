@@ -11,7 +11,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <Layout font={FiraMono} navItems={[{ href: "/", label: "Strona główna", img: "./home.svg" }, { href: "/flaga", label: "Flaga", img: "./flaga.svg" }, { href: "/login", label: "Zaloguj się", img: "./login.svg" }]}>
+    <Layout font={FiraMono} navItems={[
+      { href: "/", label: "Strona główna", img: "/home.svg" },
+      { href: "/2025/", label: "Zadania", img: "/flaga.svg" },
+      { href: "/login", label: "Zaloguj się", img: "/login.svg" }
+    ]}
+    >
       <>
         {children}
       </>
