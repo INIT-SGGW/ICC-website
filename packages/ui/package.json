@@ -8,7 +8,7 @@
     "dist"
   ],
   "exports": {
-    "./layout": "./src/components/layout.tsx",
+    ".": "./index.tsx",
     "./styles.css": "./dist/index.css"
   },
   "license": "MIT",

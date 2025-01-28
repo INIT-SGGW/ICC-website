@@ -1,5 +1,5 @@
 import "./globals.css";
-import Layout from "@repo/ui/layout";
+import { Layout } from "@repo/ui";
 // eslint-disable-next-line -- Library has a different naming convention
 import { Jersey_10 } from "next/font/google";
 

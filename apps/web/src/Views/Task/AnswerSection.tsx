@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Input } from "@/components/ui/Input"
+import { Input } from "@repo/ui"
 import Image from "next/image"
 import Link from "next/link"
 
