@@ -1,35 +1,65 @@
 "use client";
 
-import { Button, CustomLink } from "@repo/ui"
+import { CustomLink } from "@repo/ui"
 import { redirect } from "next/navigation"
+import Image from "next/image"
+import { useState } from "react";
 
 type StatProps = {
     title: string;
     value: number;
+    handleChange?: (increased: boolean) => void;
 }
 
-const Stat = ({ title, value }: StatProps) => {
+const Stat = ({ title, value, handleChange }: StatProps) => {
     return (
         <div className="flex flex-col items-center w-full">
             <p className="text-white text-xl">{title}</p>
-            <p className="text-red-500 font-bold text-4xl">{value}</p>
+            {
+                handleChange ? (
+                    <div className="flex items-center gap-4">
+                        <Image src="/arrow.svg" alt="arrow" className="cursor-pointer" width={12} height={12} onClick={() => handleChange(false)} />
+                        <p className="text-red-500 font-bold text-4xl">{value}</p>
+                        <Image src="/arrow.svg" alt="arrow" className="cursor-pointer rotate-180" width={12} height={12} onClick={() => handleChange(true)} />
+                    </div>
+                ) : (
+                    <p className="text-red-500 font-bold text-4xl">{value}</p>
+                )
+            }
         </div>
     )
 }
 
-export const StatsCard = () => {
-    const handleLogout = () => {
-        console.log("Wylogowano")
-        // redirect("/")
-    }
+type StatData = {
+    ranking: number;
+    score: number;
+    taskScores: number[];
+}
 
+const data: StatData = {
+    ranking: 21,
+    score: 1235,
+    taskScores: [432, 123, 678, 0]
+};
+
+export const StatsCard = () => {
+    const statData: StatData = data;
+    const [currentTask, setCurrentTask] = useState<number>(0);
+
+    const handleChangeTask = (increased: boolean) => {
+        if (increased) {
+            setCurrentTask((prev) => Math.min(prev + 1, statData.taskScores.length - 1));
+        } else {
+            setCurrentTask((prev) => Math.max(prev - 1, 0));
+        }
+    }
 
     return (
         <div className="bg-black p-4 flex flex-col gap-8">
             <div className="flex flex-col items-center gap-2 w-full">
-                <Stat title="Miejsce w rankingu" value={21} />
-                <Stat title="Wynik ogólny" value={1235} />
-                <Stat title="Zadanie 1" value={432} />
+                <Stat title="Miejsce w rankingu" value={statData.ranking} />
+                <Stat title="Wynik ogólny" value={statData.score} />
+                <Stat title={`Zadanie ${currentTask + 1}`} value={statData.taskScores[currentTask]} handleChange={handleChangeTask} />
             </div>
             <CustomLink href="/stats" className="mt-4">Statystyki</CustomLink>
         </div>
