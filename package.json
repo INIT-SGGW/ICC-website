@@ -3,8 +3,8 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "dev:web": "pnpm run dev --filter @repo/web",
-    "dev:admin": "pnpm run dev --filter @repo/admin",
+    "dev:web": "pnpm run dev --filter web",
+    "dev:admin": "pnpm run dev --filter admin",
     "lint": "turbo lint",
     "type-check": "turbo type-check",
     "clean": "turbo clean",
