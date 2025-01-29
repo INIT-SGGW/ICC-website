@@ -20,7 +20,7 @@ export const TaskSquare = ({ index, unlocked }: TaskSquareProps) => {
     return (
         <button
             key={index}
-            onClick={() => router.push(`/2025/${index + 1}/A`)}
+            onClick={() => router.push(`2025/${index + 1}/A`)}
             className={`flex flex-col items-center justify-center gap-4 bg-black px-2 py-2 ${!unlocked ? "cursor-not-allowed" : "cursor-pointer"}`}
             disabled={!unlocked}
         >

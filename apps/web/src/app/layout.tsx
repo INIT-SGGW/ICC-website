@@ -13,7 +13,7 @@ export default function RootLayout({
   return (
     <Layout font={FiraMono} navItems={[
       { href: "/", label: "Strona główna", img: "/home.svg" },
-      { href: "/2025/", label: "Zadania", img: "/flaga.svg" },
+      { href: "/task/2025", label: "Zadania", img: "/flaga.svg" },
       { href: "/login", label: "Zaloguj się", img: "/login.svg" }
     ]}
     >
