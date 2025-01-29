@@ -90,7 +90,7 @@ export function RootLayout({
     <html className={font.className} lang="pl" >
       <body className="flex flex-col min-h-screen">
         <TopBar adminPanel={adminPanel} navItems={navItems} />
-        <div className="flex-1 main-content">
+        <div className="flex-1 main-content py-8 md:py-16">
           {children}
         </div>
         <Footer />
