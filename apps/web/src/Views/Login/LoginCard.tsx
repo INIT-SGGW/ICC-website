@@ -18,9 +18,9 @@ export const LoginCard = () => {
         <div className="bg-black p-4 flex flex-col items-start justify-start gap-2 w-full max-w-[350px]">
             <Input type="text" placeholder="Login" value={email} onChange={(e) => setEmail(e.target.value)} className="mb-2" />
             <Input type="password" placeholder="Hasło" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button className="text-white text-sm">
+            <Link className="text-white text-sm" href="/password/reset">
                 Nie pamiętam hasła
-            </button>
+            </Link>
 
             {error && <p className="text-red-500 text-sm">{error}</p>}
 
