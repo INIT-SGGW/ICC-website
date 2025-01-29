@@ -33,7 +33,7 @@ function TopBar({ adminPanel, navItems }: { adminPanel: boolean, navItems: { hre
           ))}
         </nav>
       </div>
-      <div className="h-20 w-full bg-gradient-to-b from-black"></div>
+      <div className="w-full h-24 bg-[url('../src/assets/minecraft-bg.svg')] bg-repeat-x bg-[length:auto_100%]"></div>
     </header>
   );
 }
@@ -43,7 +43,7 @@ function Footer(): JSX.Element {
 
   return (
     <footer className="flex flex-col">
-      <div className="h-20 w-full bg-gradient-to-t from-black"></div>
+      <div className="w-full h-24 bg-[url('../src/assets/minecraft-bg-r.svg')] bg-repeat-x bg-[length:auto_100%]"></div>
       <div className="flex flex-col gap-16 items-center justify-center w-full bg-black text-white px-8 py-12">
         <div className="flex flex-col gap-4 items-center">
           <p className="text-xl">Znajdź nas na</p>
