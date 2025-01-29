@@ -16,7 +16,7 @@ export const RegisterCard = () => {
     }
 
     return (
-        <div className="bg-black p-4 flex flex-col items-start justify-start gap-4">
+        <div className="bg-black p-4 flex flex-col items-start justify-start gap-4 w-full max-w-[350px]">
             <Input type="text" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
             <Input type="text" placeholder="Login" value={login} onChange={(e) => setLogin(e.target.value)} />
             <Input type="password" placeholder="Hasło" value={password} onChange={(e) => setPassword(e.target.value)} />
