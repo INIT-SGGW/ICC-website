@@ -1,4 +1,4 @@
-import { Fira_Mono, Jersey_20 } from "next/font/google";
+import { Fira_Mono, Jersey_10 } from "next/font/google";
 
 export const firaMonoFont = Fira_Mono({ weight: ["400", "500", "700"], subsets: ["latin"] });
-export const jerseyFont = Jersey_20({ weight: ["400"], subsets: ["latin"] });
+export const jerseyFont = Jersey_10({ weight: ["400"], subsets: ["latin"] });
