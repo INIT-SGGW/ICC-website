@@ -1,0 +1,6 @@
+# For UI package
+*
+!dist/
+!package.json
+!*.ts
+!*.tsx

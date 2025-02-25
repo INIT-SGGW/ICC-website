@@ -1,0 +1,25 @@
+# .dockerignore (root directory)
+**/node_modules
+**/.next
+**/dist
+**/tsconfig.tsbuildinfo
+**/*.log
+**/.env*
+**/.git
+**/.gitignore
+**/.idea
+**/.vscode
+**/coverage
+**/__tests__
+**/.turbo
+**/cache
+**/tmp
+**/*.md
+**/yarn.lock
+**/package-lock.json
+**/Dockerfile
+**/docker-compose*.yml
+**/scripts
+**/*.tmp
+**/*.swp
+**/.DS_Store
