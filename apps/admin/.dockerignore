@@ -1,0 +1,9 @@
+# Exclude everything except admin app essentials
+*
+!src/
+!public/
+!package.json
+!next.config.js
+!postcss.config.js
+!tailwind.config.ts
+!tsconfig.json
