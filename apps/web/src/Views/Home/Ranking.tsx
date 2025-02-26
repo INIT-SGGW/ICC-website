@@ -8,17 +8,17 @@ const jerseyFont = Jersey_20({ weight: ["400"], subsets: ["latin"] });
 
 export const ROMAN_NUMBERS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
-const useRankingData = (day: number): { nickname: string, indexNumber: number, points: number }[] => {
-  return Array.from({ length: 25 }, (_, index) => ({
-    nickname: `User ${index + 1 + day * 25}`,
-    indexNumber: 210834 + index + day * 25,
-    points: index * 100,
-  }));
-}
+// const useRankingData = (day: number): { nickname: string, indexNumber: number, points: number }[] => {
+//   return Array.from({ length: 25 }, (_, index) => ({
+//     nickname: `User ${index + 1 + day * 25}`,
+//     indexNumber: 210834 + index + day * 25,
+//     points: index * 100,
+//   }));
+// }
 
 export const Ranking = () => {
   const [selectedDay, setSelectedDay] = useState(0);
-  const rankingData = useRankingData(selectedDay);
+  const rankingData = Array(0);
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
@@ -37,13 +37,17 @@ export const Ranking = () => {
       </div>
 
       <div className={`bg-black text-white w-full flex flex-col items-start justify-start gap-0 p-8 ${jerseyFont.className} text-xl`}>
-        {rankingData.sort((a, b) => b.points - a.points).map((user, index) => (
-          <div key={user.indexNumber * 3} className="flex flex-row items-center justify-start gap-1 w-full">
-            <p className={`text-red-500 text-end mr-2 w-5`}>{index + 1}.</p>
-            <p>{user.nickname} ({user.indexNumber})</p>
-            <p className={`text-red-500 block ml-auto text-end`}>{user.points}</p>
-          </div>
-        ))}
+        {rankingData.length === 0 ? (
+          <p className="w-full text-center">Brak danych</p>
+        ) : (
+          rankingData.sort((a, b) => b.points - a.points).map((user, index) => (
+            <div key={user.indexNumber * 3} className="flex flex-row items-center justify-start gap-1 w-full">
+              <p className={`text-red-500 text-end mr-2 w-5`}>{index + 1}.</p>
+              <p>{user.nickname} ({user.indexNumber})</p>
+              <p className={`text-red-500 block ml-auto text-end`}>{user.points}</p>
+            </div>
+          )))
+        }
       </div>
     </div>
   )

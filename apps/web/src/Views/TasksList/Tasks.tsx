@@ -7,7 +7,7 @@ type Props = {
 const useTaskData = (year: number): { index: number, unlocked: boolean }[] => {
     return Array.from({ length: 12 }, (_, index) => ({
         index: index,
-        unlocked: index < 3
+        unlocked: false
     }));
 }
 

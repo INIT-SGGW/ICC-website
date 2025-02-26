@@ -1,4 +1,5 @@
 import { firaMonoFont, jerseyFont } from "@/assets/fonts";
+import { Clock } from "@/Views/Home/Clock";
 import { Ranking } from "@/Views/Home/Ranking";
 import { SectionTitle } from "@/Views/Home/SectionTitle";
 import type { Metadata } from "next";
@@ -28,6 +29,7 @@ const AboutChallenge = () => {
 export default function Page(): JSX.Element {
   return (
     <div className={`${firaMonoFont.className} w-full h-full flex flex-col items-start justify-center gap-16 p-8 mx-auto max-w-[800px]`}>
+      <Clock />
       <AboutChallenge />
       <Ranking />
     </div>
