@@ -2,6 +2,7 @@ import { firaMonoFont, jerseyFont } from "@/assets/fonts";
 import { Clock } from "@/Views/Home/Clock";
 import { Ranking } from "@/Views/Home/Ranking";
 import { SectionTitle } from "@/Views/Home/SectionTitle";
+import { CustomLink } from "@repo/ui";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -21,6 +22,9 @@ const AboutChallenge = () => {
         <p className={`text-red-500 text-3xl ${jerseyFont.className}`}>
           Co tydzień nowe zadanie!
         </p>
+        <CustomLink href="/about" className={`${jerseyFont.className}`}>
+          Dowiedz się więcej
+        </CustomLink>
       </div>
     </div>
   )
