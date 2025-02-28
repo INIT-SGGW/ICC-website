@@ -11,6 +11,7 @@ export default function RootLayout({
   return (
     <Layout font={jerseyFont} navItems={[
       { href: "/", label: "Strona główna", img: "/home.svg" },
+      { href: "/about", label: "O wyzwaniu", img: "/about.svg" },
       { href: "/task/2025", label: "Zadania", img: "/flaga.svg" },
       { href: "/login", label: "Zaloguj się", img: "/login.svg" }
     ]}
