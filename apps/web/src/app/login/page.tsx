@@ -4,8 +4,9 @@ import { CustomLink } from "@repo/ui";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Init Coding Challenge",
-    description: "Init Coding Challenge to wyjątkowa okazja do rozwoju umiejętności programistycznych poprzez rozwiązywanie zadań, które będą regularnie udostępniane w trakcie trwania semestru. Dodatkowo, ranking oparty na czasie rozwiązania zadań pozwoli na śledzenie postępów i rywalizację z innymi uczestnikami."
+    robots: "noindex, nofollow",
+    title: "Logowanie | ICC",
+    description: "Zaloguj się, aby mieć dostęp do swojego konta i rozwiązywać zadania.",
 };
 
 export default function Page(): JSX.Element {

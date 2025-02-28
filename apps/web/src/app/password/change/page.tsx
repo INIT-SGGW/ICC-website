@@ -3,8 +3,9 @@ import { PasswordChangeCard } from "@/Views/Password/PasswordChangeCard";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Init Coding Challenge",
-    description: "Init Coding Challenge to wyjątkowa okazja do rozwoju umiejętności programistycznych poprzez rozwiązywanie zadań, które będą regularnie udostępniane w trakcie trwania semestru. Dodatkowo, ranking oparty na czasie rozwiązania zadań pozwoli na śledzenie postępów i rywalizację z innymi uczestnikami."
+    robots: "noindex, nofollow",
+    title: "Zmiana hasła | ICC",
+    description: "Zmień swoje hasło na nowe, aby zwiększyć bezpieczeństwo swojego konta.",
 };
 
 export default function Page(): JSX.Element {

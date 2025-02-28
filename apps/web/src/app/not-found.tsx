@@ -1,4 +1,11 @@
 import { CustomLink } from "@repo/ui";
+import { Metadata } from "next/types";
+
+export const metadata: Metadata = {
+    robots: "noindex, nofollow",
+    title: "Błąd 404 | ICC",
+    description: "Podana strona nie istnieje",
+};
 
 export default function Custom404(): JSX.Element {
     return (

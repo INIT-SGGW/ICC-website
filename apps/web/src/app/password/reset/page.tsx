@@ -3,8 +3,8 @@ import { PasswordResetCard } from "@/Views/Password/PasswordResetCard";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Init Coding Challenge",
-    description: "Init Coding Challenge to wyjątkowa okazja do rozwoju umiejętności programistycznych poprzez rozwiązywanie zadań, które będą regularnie udostępniane w trakcie trwania semestru. Dodatkowo, ranking oparty na czasie rozwiązania zadań pozwoli na śledzenie postępów i rywalizację z innymi uczestnikami."
+    title: "Resetowanie hasła | ICC",
+    description: "Zresetuj swoje hasło, aby odzyskać dostęp do swojego konta.",
 };
 
 export default function Page(): JSX.Element {

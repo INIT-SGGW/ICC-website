@@ -1,7 +1,12 @@
-import { jerseyFont, firaMonoFont } from "@/assets/fonts";
+import { firaMonoFont } from "@/assets/fonts";
 import { SectionTitle } from "@/Views/Home/SectionTitle";
 import Link from "next/link";
+import { Metadata } from "next/types";
 
+export const metadata: Metadata = {
+    title: "O wyzwaniu | ICC",
+    description: "Init Coding Challenge to wyjątkowa okazja do rozwoju umiejętności programistycznych poprzez rozwiązywanie zadań, które będą regularnie udostępniane w trakcie trwania semestru. Dodatkowo, ranking oparty na czasie rozwiązania zadań pozwoli na śledzenie postępów i rywalizację z innymi uczestnikami."
+};
 
 export default function Page(): JSX.Element {
     return (
