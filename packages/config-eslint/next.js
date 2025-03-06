@@ -20,11 +20,12 @@ module.exports = {
       "@vercel/style-guide/eslint/react",
       "@vercel/style-guide/eslint/next",
     ].map(require.resolve),
-    "turbo",
+    // "turbo",
   ],
   parserOptions: {
     project,
   },
+
   globals: {
     React: true,
     JSX: true,
@@ -42,6 +43,11 @@ module.exports = {
   ignorePatterns: ["node_modules/", "dist/"],
   // add rules configurations here
   rules: {
+    "react/jsx-sort-props": "off",
     "import/no-default-export": "off",
+    "import/order": "off",
+    "unicorn/filename-case": "off",
+    "camelcase": "off",
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"]
   },
 };

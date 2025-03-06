@@ -17,3 +17,8 @@
     position: relative;
   }
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(100%);
+  cursor: pointer;
+}
