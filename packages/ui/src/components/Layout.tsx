@@ -5,6 +5,7 @@ import InstagramLogo from "../assets/instagram-icon.svg";
 import LinkedinLogo from "../assets/linkedin-icon.svg";
 import InitLogo from "../assets/init-logo.svg";
 import SGGWLogo from "../assets/sggw-logo.svg";
+import MevspaceLogo from "../assets/mevspace.svg";
 
 function TopBar({ adminPanel, navItems }: { adminPanel: boolean, navItems: { href: string, label: string; img?: string }[] }): JSX.Element {
   return (
@@ -38,13 +39,13 @@ function TopBar({ adminPanel, navItems }: { adminPanel: boolean, navItems: { hre
   );
 }
 
-function Footer(): JSX.Element {
+function Footer({ adminPanel }: { adminPanel: boolean }): JSX.Element {
   const date = new Date();
 
   return (
     <footer className="flex flex-col">
       <div className="w-full h-24 bg-[url('../src/assets/minecraft-bg-r.svg')] bg-repeat-x bg-[length:auto_100%]"></div>
-      <div className="flex flex-col gap-16 items-center justify-center w-full bg-black text-white px-8 py-12">
+      <div className="flex flex-col gap-16 items-center justify-center w-full bg-black text-white px-8 py-12 pb-4">
         <div className="flex flex-col gap-4 items-center">
           <p className="text-xl">Znajdź nas na</p>
           <div className="flex gap-8">
@@ -59,7 +60,7 @@ function Footer(): JSX.Element {
             </a>
           </div>
         </div>
-        <div className="flex flex-col gap-4 items-center">
+        <div className="flex flex-col gap-6 items-center">
           <div className="flex gap-8">
             <a href="https://init.wzim.sggw.pl/" rel="noopener noreferrer" target="_blank" >
               <img alt="KN init" className="w-11 h-11" src={InitLogo.src} />
@@ -68,7 +69,21 @@ function Footer(): JSX.Element {
               <img alt="SGGW" className="w-11 h-11" src={SGGWLogo.src} />
             </a>
           </div>
-          <p className="text-xl">© {date.getFullYear()} init Coding Challenge</p>
+          <a href="https://mevspace.com/" rel="noopener noreferrer" target="_blank" >
+            <img alt="Mevspace" className="w-36" src={MevspaceLogo.src} />
+          </a>
+          <div className="text-center mt-4">
+            <p className="text-xl">© {date.getFullYear()} init Coding Challenge</p>
+            {
+              !adminPanel && (
+                <div>
+                  <a href="./Polityka prywatności.pdf" className="text-md">Polityka prywatności</a>
+                  <span className="mx-4">•</span>
+                  <a href="./Regulamin.pdf" className="text-md">Regulamin</a>
+                </div>
+              )
+            }
+          </div>
         </div>
       </div>
     </footer>
@@ -90,10 +105,10 @@ export function RootLayout({
     <html className={font.className} lang="pl" >
       <body className="flex flex-col min-h-screen">
         <TopBar adminPanel={adminPanel} navItems={navItems} />
-        <div className="flex-1 main-content py-8 md:py-16">
+        <div className="flex-1 main-content p-8 py-16">
           {children}
         </div>
-        <Footer />
+        <Footer adminPanel={adminPanel} />
       </body>
     </html >
   );
