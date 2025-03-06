@@ -1,7 +1,6 @@
 import { jerseyFont } from "@/assets/fonts";
 import { RegisterCard } from "@/Views/Login/RegisterCard";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
     robots: "noindex, nofollow",
@@ -10,10 +9,8 @@ export const metadata: Metadata = {
 };
 
 export default function Page(): JSX.Element {
-    notFound();
-
     return (
-        <div className={`${jerseyFont.className} w-full h-full flex flex-col sm:flex-row items-center sm:items-start justify-center gap-16 p-8 mx-auto max-w-[800px]`}>
+        <div className={`${jerseyFont.className} w-full h-full flex flex-col sm:flex-row items-center sm:items-start justify-center gap-16 mx-auto max-w-[800px]`}>
             <RegisterCard />
         </div>
     );

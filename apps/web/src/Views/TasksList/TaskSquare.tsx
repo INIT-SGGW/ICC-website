@@ -1,8 +1,8 @@
 "use client"
 
-import Link from "next/link"
 import Image from "next/image"
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import React from "react";
 
 
 const lock = "/lock.svg"
@@ -14,19 +14,16 @@ export type TaskSquareProps = {
     unlocked: boolean
 }
 
-export const TaskSquare = ({ index, unlocked }: TaskSquareProps) => {
-    const router = useRouter()
-
+export function TaskSquare({ index, unlocked }: TaskSquareProps): React.JSX.Element {
     return (
-        <button
+        <Link
             key={index}
-            onClick={() => router.push(`2025/${index + 1}/A`)}
+            href={unlocked ? `2025/${index + 1}/A` : ""}
             className={`flex flex-col items-center justify-center gap-4 bg-black px-2 py-2 ${!unlocked ? "cursor-not-allowed" : "cursor-pointer"}`}
-            disabled={!unlocked}
         >
             <p className={`text-[#FF0000] text-6xl ${!unlocked ? "p-4" : ""}`}>
                 {unlocked ? ROMAN_NUMBERS[index] : <Image src={lock} alt="lock" width={40} height={50} />}
             </p>
-        </button>
+        </Link>
     )
 }

@@ -10,7 +10,7 @@ type Props = {
 
 const ROMAN_NUMBERS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
-export const Header = ({ year, task }: Props) => {
+export function Header({ year, task }: Props): React.JSX.Element {
     const path = usePathname();
     const lastPart = path.split("/").pop();
     const isPartA = lastPart === "A";
@@ -19,7 +19,7 @@ export const Header = ({ year, task }: Props) => {
 
     return (
         <div className="self-start flex flex-row items-center justify-center gap-4">
-            <p className="text-white text-4xl bg-[#FF0000] px-4">Zadanie {ROMAN_NUMBERS[+task - 1]}</p>
+            <p className="text-white text-4xl bg-[#FF0000] px-4">Zadanie {ROMAN_NUMBERS[Number(task) - 1]}</p>
 
             <Link
                 href={`/task/${year}/${task}/A`}

@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { jerseyFont } from "@/assets/fonts"
 
-export const SectionTitle = ({ title, icon }: { title: string, icon: string }) => {
+export function SectionTitle({ title, icon }: { title: string, icon: string }): React.JSX.Element {
   return (
     <div className="flex flex-row items-end justify-start gap-2 relative">
       <Image src={icon} alt={title} width={35} height={35} />

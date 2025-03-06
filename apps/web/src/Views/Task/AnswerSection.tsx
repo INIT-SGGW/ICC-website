@@ -11,7 +11,7 @@ type Props = {
     part: string
 }
 
-const usePreviousAnswers = (year: number, task: number, part: string): {
+const usePreviousAnswers = (_year: number, _task: number, _part: string): {
     date: Date,
     answer: string,
     correct: boolean
@@ -35,7 +35,7 @@ const usePreviousAnswers = (year: number, task: number, part: string): {
     ]
 }
 
-const formatUTCDate = (date: Date) => {
+const formatUTCDate = (date: Date): string => {
     return date.toLocaleString('en-US', {
         timeZone: 'UTC',
         year: 'numeric',
@@ -48,17 +48,18 @@ const formatUTCDate = (date: Date) => {
     })
 }
 
-export const AnswerSection = ({ year, task, part }: Props) => {
+export function AnswerSection({ year, task, part }: Props): React.JSX.Element {
     const previousAnswers = usePreviousAnswers(year, task, part);
     const guessedAnswer = previousAnswers.find(answer => answer.correct);
     const loggedIn = true;
     const [answer, setAnswer] = useState<string>("");
 
-    const handleSubmit = () => {
+    const handleSubmit = (): void => {
+        // eslint-disable-next-line no-console -- This is a temporary console.log
         console.log(answer);
-        alert("Odpowiedź została wysłana");
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- This is a temporary condition
     if (!loggedIn) {
         return (
             <div className="flex flex-col items-center justify-center gap-6 mt-16">
@@ -83,19 +84,19 @@ export const AnswerSection = ({ year, task, part }: Props) => {
                     <p className="text-white text-4xl">{guessedAnswer.answer}</p>
                 </div>
 
-                : <Input placeholder="Odpowiedź" value={answer} onChange={(e) => setAnswer(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSubmit()} />}
+                : <Input placeholder="Odpowiedź" value={answer} onChange={(e) => { setAnswer(e.target.value); }} onKeyDown={(e) => { e.key === "Enter" && handleSubmit() }} />}
 
             <div className="flex flex-col items-center justify-center gap-4 bg-black p-4 w-full">
                 <p className="text-white text-2xl">Poprzednie odpowiedzi</p>
                 <div className="flex flex-col items-center justify-center gap-4 w-full">
-                    {previousAnswers.map((answer) => (
-                        <div key={`${answer.date.toISOString()}-${answer.answer}`} className="flex flex-row items-center justify-start gap-4 w-full">
+                    {previousAnswers.map((prev) => (
+                        <div key={`${prev.date.toISOString()}-${prev.answer}`} className="flex flex-row items-center justify-start gap-4 w-full">
                             {/* Use consistent date formatting */}
                             <p className="text-gray-500 text-sm">
-                                {formatUTCDate(answer.date)}
+                                {formatUTCDate(prev.date)}
                             </p>
-                            <p className={`text-sm ${answer.correct ? "text-white" : "text-[#FF0000]"}`}>
-                                {answer.answer}
+                            <p className={`text-sm ${prev.correct ? "text-white" : "text-[#FF0000]"}`}>
+                                {prev.answer}
                             </p>
                         </div>
                     ))}

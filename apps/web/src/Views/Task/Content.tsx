@@ -2,10 +2,8 @@
 
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import fs from "node:fs";
 
-
-const useMarkdown = (year: number, task: number, part: string) => {
+const useMarkdown = (year: number, task: number, part: string): string => {
     if (part === "A") {
         return `
 # Chaos na parkingu naziemnym SGGW
@@ -56,8 +54,8 @@ Policz, **ile samochodów nie jest w stanie wyjechać z parkingu**.
 
 W powyższym przykładzie **4 samochody** są zablokowane i nie mogą wyjechać.
 `
-    } else {
-        return `
+    }
+    return `
 ## Zadanie – część druga
 
 Wiesz już, ile samochodów nie jest w stanie wyjechać z parkingu. Mimo takiej dość przygnębiającej sytuacji, postanawiasz podjąć ryzyko i zaparkować swoje auto, licząc na to, że nikt nie zablokuje Ci wyjazdu.
@@ -96,7 +94,7 @@ Sposób poruszania się po parkingu nie zmienił się.
 
 **Ile możliwości zaparkowania auta masz na podstawie swojej mapy parkingu?**
 `;
-    }
+
 }
 
 
@@ -106,7 +104,7 @@ type Props = {
     part: string
 }
 
-export const Content = ({ year, task, part }: Props) => {
+export function Content({ year, task, part }: Props): React.JSX.Element {
 
     const markdown = useMarkdown(year, task, part);
 
@@ -116,8 +114,9 @@ export const Content = ({ year, task, part }: Props) => {
             <div className="prose prose-invert max-w-none">
                 <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
-                    children={markdown}
-                />
+                >
+                    {markdown}
+                </ReactMarkdown>
             </div>
         </div>
     )

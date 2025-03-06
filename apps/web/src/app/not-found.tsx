@@ -1,5 +1,5 @@
 import { CustomLink } from "@repo/ui";
-import { Metadata } from "next/types";
+import type { Metadata } from "next/types";
 
 export const metadata: Metadata = {
     robots: "noindex, nofollow",
@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 
 export default function Custom404(): JSX.Element {
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center p-8 mx-auto max-w-[600px] text-center min-h-[300px]">
-            <h1 className="text-red-500 text-6xl">Błąd 404</h1>
+        <div className="w-full h-full flex flex-col items-center justify-center py-8 mx-auto max-w-[600px] text-center">
+            <h1 className="text-cred text-6xl">Błąd 404</h1>
             <p className="text-gray-200 text-3xl">Podana strona nie istnieje</p>
-            <CustomLink href="/" className="mt-8">Strona główna</CustomLink>
+            <CustomLink href="/" className="mt-8 !bg-cred">Strona główna</CustomLink>
         </div>
     );
 }

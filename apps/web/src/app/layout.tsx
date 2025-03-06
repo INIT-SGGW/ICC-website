@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Layout } from "@repo/ui";
-// eslint-disable-next-line -- Library has a different naming convention
+ 
 import { jerseyFont } from "@/assets/fonts";
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
       { href: "/about", label: "O wyzwaniu", img: "/about.svg" },
       { href: "/task/2025", label: "Zadania", img: "/flaga.svg" },
       { href: "/ranking", label: "Ranking", img: "/ranking.svg" },
-      { href: "/login", label: "Zaloguj się", img: "/login.svg" }
+      { href: "/login", label: "Login", img: "/login.svg" }
     ]}
     >
       <>

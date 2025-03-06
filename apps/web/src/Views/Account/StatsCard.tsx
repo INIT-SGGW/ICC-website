@@ -1,9 +1,9 @@
 "use client";
 
+import type { AccountStatsData } from "@repo/types";
 import { CustomLink } from "@repo/ui"
-import { redirect } from "next/navigation"
 import Image from "next/image"
-import { useState } from "react";
+import React, { useState } from "react";
 
 type StatProps = {
     title: string;
@@ -11,16 +11,16 @@ type StatProps = {
     handleChange?: (increased: boolean) => void;
 }
 
-const Stat = ({ title, value, handleChange }: StatProps) => {
+function Stat({ title, value, handleChange }: StatProps): React.JSX.Element {
     return (
         <div className="flex flex-col items-center w-full">
             <p className="text-white text-xl">{title}</p>
             {
                 handleChange ? (
                     <div className="flex items-center gap-4">
-                        <Image src="/arrow.svg" alt="arrow" className="cursor-pointer" width={12} height={12} onClick={() => handleChange(false)} />
+                        <Image src="/arrow.svg" alt="arrow" className="cursor-pointer" width={12} height={12} onClick={() => { handleChange(false); }} />
                         <p className="text-red-500 font-bold text-4xl">{value}</p>
-                        <Image src="/arrow.svg" alt="arrow" className="cursor-pointer rotate-180" width={12} height={12} onClick={() => handleChange(true)} />
+                        <Image src="/arrow.svg" alt="arrow" className="cursor-pointer rotate-180" width={12} height={12} onClick={() => { handleChange(true); }} />
                     </div>
                 ) : (
                     <p className="text-red-500 font-bold text-4xl">{value}</p>
@@ -30,23 +30,19 @@ const Stat = ({ title, value, handleChange }: StatProps) => {
     )
 }
 
-type StatData = {
-    ranking: number;
-    score: number;
-    taskScores: number[];
-}
 
-const data: StatData = {
+
+const data: AccountStatsData = {
     ranking: 21,
     score: 1235,
     taskScores: [432, 123, 678, 0]
 };
 
-export const StatsCard = () => {
-    const statData: StatData = data;
+export function StatsCard(): React.JSX.Element {
+    const statData: AccountStatsData = data;
     const [currentTask, setCurrentTask] = useState<number>(0);
 
-    const handleChangeTask = (increased: boolean) => {
+    const handleChangeTask = (increased: boolean): void => {
         if (increased) {
             setCurrentTask((prev) => Math.min(prev + 1, statData.taskScores.length - 1));
         } else {

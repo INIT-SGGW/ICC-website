@@ -32,7 +32,7 @@ export function UpdateUserForm({ id }: Props) {
         });
 
         // Check if form is valid
-        if (form.checkValidity() === false) {
+        if (form.checkValidity()) {
             const firstInvalidElement = form.querySelector(":invalid") as HTMLInputElement;
             firstInvalidElement.classList.remove("border-gray-500");
             firstInvalidElement.classList.add("border-red-500");

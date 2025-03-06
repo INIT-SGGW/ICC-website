@@ -4,14 +4,14 @@ type Props = {
     year: number
 }
 
-const useTaskData = (year: number): { index: number, unlocked: boolean }[] => {
+const useTaskData = (_year: number): { index: number, unlocked: boolean }[] => {
     return Array.from({ length: 12 }, (_, index) => ({
-        index: index,
+        index,
         unlocked: false
     }));
 }
 
-export const Tasks = ({ year }: Props) => {
+export function Tasks({ year }: Props): React.JSX.Element {
     const taskData = useTaskData(year);
 
     return (

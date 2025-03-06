@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Init Coding Challenge to wyjątkowa okazja do rozwoju umiejętności programistycznych poprzez rozwiązywanie zadań, które będą regularnie udostępniane w trakcie trwania semestru. Dodatkowo, ranking oparty na czasie rozwiązania zadań pozwoli na śledzenie postępów i rywalizację z innymi uczestnikami."
 };
 
-const AboutChallenge = () => {
+function AboutChallenge(): React.JSX.Element {
   return (
     <div className="flex flex-col items-start justify-start gap-4">
       <SectionTitle title="o wyzwaniu" icon="/question_mark.svg" />
@@ -22,7 +22,7 @@ const AboutChallenge = () => {
         <p className={`text-red-500 text-3xl ${jerseyFont.className}`}>
           Co tydzień nowe zadanie!
         </p>
-        <CustomLink href="/about" className={`${jerseyFont.className}`}>
+        <CustomLink href="/about" className={jerseyFont.className}>
           Dowiedz się więcej
         </CustomLink>
       </div>
@@ -30,10 +30,11 @@ const AboutChallenge = () => {
   )
 }
 
-export default function Page(): JSX.Element {
+export default function Page(): React.JSX.Element {
   return (
-    <div className={`${firaMonoFont.className} w-full h-full flex flex-col items-start justify-center gap-16 p-8 mx-auto max-w-[800px]`}>
+    <div className={`${firaMonoFont.className} w-full h-full flex flex-col items-start justify-center gap-16 mx-auto max-w-[800px]`}>
       <Clock />
+      <CustomLink href="/register" className={`${jerseyFont.className} text-white text-2xl`} >Zarejestruj się</CustomLink>
       <AboutChallenge />
       <Ranking />
     </div>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function Page(): JSX.Element {
     return (
-        <div className={`${jerseyFont.className} w-full h-full flex items-center justify-center p-8 mx-auto max-w-[800px]`}>
+        <div className={`${jerseyFont.className} w-full h-full flex items-center justify-center py-8 mx-auto max-w-[800px]`}>
             <div className="flex flex-col items-start justify-center gap-4 w-full max-w-[350px]">
                 <h1 className="text-3xl text-center text-gray-200">Zmiana hasła</h1>
                 <PasswordChangeCard />

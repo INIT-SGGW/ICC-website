@@ -10,7 +10,7 @@ type Props = {
     year: number
 }
 
-export const TasksListHeader = ({ year }: Props) => {
+export function TasksListHeader({ year }: Props): React.JSX.Element {
     const nextTaskRelease = useNextTaskRelease(year);
 
     const [now, setNow] = useState<Date | undefined>(undefined);
@@ -23,8 +23,8 @@ export const TasksListHeader = ({ year }: Props) => {
         const interval = setInterval(() => {
             setNow(new Date());
         }, 1000);
-        return () => clearInterval(interval);
-    }, []);
+        return () => { clearInterval(interval); };
+    }, [now]);
 
     const timeUntilNextTaskRelease = useMemo(() => {
         if (!now) return "";
@@ -42,7 +42,7 @@ export const TasksListHeader = ({ year }: Props) => {
         if (diffSeconds >= 0) result += `${diffSeconds} sekund`;
 
         return result;
-    }, [nextTaskRelease]);
+    }, [nextTaskRelease, now]);
 
 
     return (

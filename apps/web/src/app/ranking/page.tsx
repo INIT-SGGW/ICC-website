@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Page(): JSX.Element {
   return (
-    <div className={`${firaMonoFont.className} w-full h-full flex flex-col items-start justify-center gap-16 p-8 mx-auto max-w-[800px]`}>
+    <div className={`${firaMonoFont.className} w-full h-full flex flex-col items-start justify-center gap-16 mx-auto max-w-[800px]`}>
       <Ranking />
     </div>
   );
