@@ -1,7 +1,7 @@
 export type RankingData = {
-    nickname: string,
-    indexNumber: number,
-    points: number,
+    nickname: string
+    indexNumber: number
+    points: number
 }
 
 export type AccountStatsData = {
@@ -11,20 +11,42 @@ export type AccountStatsData = {
 }
 
 export type LoginResponseBody = {
-    status: number,
+    status: number
     userId: string
 }
 
 export type UserResponse = {
-    userId: string,
-    emails: string[],
-    firstName: string,
-    lastName: string,
-    birthDate: Date,
-    aggrement: boolean,
+    userId: string
+    emails: string[]
+    firstName: string
+    lastName: string
+    birthDate: Date
+    aggrement: boolean
 }
 
 export type RegisterUserResponse = {
     status: string;
     error?: string;
+}
+
+export type FindTaskResponse = {
+    task?: string
+}
+
+export type FindOpenTasksResponse = {
+    tasks: {
+        taskId: number,
+        isOpen: boolean
+    }[]
+}
+
+export type AnswerTaskResponse = {
+    isCorrect: boolean
+    previousAnswers: {
+        date: Date,
+        answer: string,
+    }[]
+    correctAnswer?: string
+    cooldown?: number
+    points?: number
 }

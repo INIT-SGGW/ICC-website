@@ -1,9 +1,15 @@
-export type LoginForm = {
+
+export type LoginRequest = {
     email: string
     password: string
 }
 
-export type RegisterForm = {
+export type VerifyEmailRequest = {
+    email: string
+    verificationToken: string
+}
+
+export type RegisterRequest = {
     firstName: string
     lastName: string
     email: string
