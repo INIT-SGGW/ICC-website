@@ -6,6 +6,7 @@ import { Button, Input, Select } from "@repo/ui"
 import { useState } from "react"
 import { Degree, Faculty, type RegisterFormDTO } from "@repo/types"
 import { HttpMethods } from "@/types/enums"
+import { useRouter } from "next/navigation"
 
 const validateData = (data: RegisterFormDTO, repeatPassword: string): string | null => {
     if (data.firstName.length < 2) return "Imię musi mieć co najmniej 2 znaki"
@@ -19,6 +20,7 @@ const validateData = (data: RegisterFormDTO, repeatPassword: string): string | n
 }
 
 export function RegisterCard(): React.JSX.Element {
+    const router = useRouter();
     const { trigger, isMutating } = useRegister()
 
     const [formData, setFormData] = useState<RegisterFormDTO>({
@@ -47,7 +49,7 @@ export function RegisterCard(): React.JSX.Element {
         formData.studentIndex = String(studentIndex)
         try {
             await trigger({ body: formData, method: HttpMethods.POST })
-            window.location.href = "/register/pending";
+            router.push("/register/pending");
         } catch (e: unknown) {
             if (e instanceof CustomError) {
                 setError(e.getMessage()); return;

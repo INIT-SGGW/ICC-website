@@ -7,6 +7,7 @@ import { useLogin } from "@/services/api"
 import CustomError from "@/utils/CustomError"
 import type { LoginFormDTO } from "@repo/types"
 import { HttpMethods } from "@/types/enums"
+import { useRouter } from "next/navigation"
 
 const validateData = (data: LoginFormDTO): string | undefined => {
     if ((/^[a-z]\d{6}@sggw.edu.pl$/.exec(data.email)) === null) return "Email musi być z domeny sggw.edu.pl"
@@ -14,6 +15,7 @@ const validateData = (data: LoginFormDTO): string | undefined => {
 }
 
 export function LoginCard(): React.JSX.Element {
+    const router = useRouter();
     const [loading, setLoading] = useState(true)
     const { trigger, isMutating } = useLogin();
 
@@ -24,13 +26,14 @@ export function LoginCard(): React.JSX.Element {
     const [error, setError] = useState<string | undefined>(undefined)
 
     useEffect(() => {
+        if (typeof window === "undefined") return;
         const userId = localStorage.getItem("userId")
         if (userId) {
-            window.location.href = "/account"
+            router.push("/account")
+        } else {
+            setLoading(false)
         }
-        setLoading(false)
-    }, [])
-
+    }, [router])
 
     const handleLogin = async (): Promise<void> => {
         setError(undefined)
@@ -41,7 +44,7 @@ export function LoginCard(): React.JSX.Element {
             const response = await trigger({ body: formData, method: HttpMethods.POST, credentials: true })
             const userId = response.userId.split("\"")[1]
             localStorage.setItem("userId", userId)
-            window.location.href = `/account`;
+            router.push("/account")
         } catch (e: unknown) {
             if (e instanceof CustomError) {
                 setError(e.getMessage()); return;
