@@ -77,9 +77,9 @@ function Footer({ adminPanel }: { adminPanel: boolean }): JSX.Element {
             {
               !adminPanel && (
                 <div>
-                  <a href="./Polityka prywatności.pdf" className="text-md">Polityka prywatności</a>
+                  <a href="/Polityka prywatności.pdf" className="text-md">Polityka prywatności</a>
                   <span className="mx-4">•</span>
-                  <a href="./Regulamin.pdf" className="text-md">Regulamin</a>
+                  <a href="/Regulamin.pdf" className="text-md">Regulamin</a>
                 </div>
               )
             }
