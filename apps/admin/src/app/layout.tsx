@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <Layout adminPanel font={jerseyFont} navItems={[{ href: "/tasks", label: "Zadania" }, { href: "/users", label: "Użytkownicy" }]} >
+    <Layout adminPanel font={jerseyFont} navItems={[{ href: "/tasks", label: "Zadania" }, { href: "/users", label: "Użytkownicy" }, { href: "/markdown-test", label: "Markdown Test" }]} >
       <>
         {children}
       </>

@@ -21,6 +21,11 @@
   "peerDependencies": {
     "react": "^18.2.0"
   },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "react-markdown": "9.0.3",
+    "remark-gfm": "^4.0.0"
+  },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/tailwind-config": "workspace:*",

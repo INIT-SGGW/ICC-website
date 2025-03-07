@@ -1,7 +1,7 @@
 "use client"
 
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
+import React from "react"
+import { MarkdownRenderer } from "@repo/ui"
 
 const useMarkdown = (year: number, task: number, part: string): string => {
     if (part === "A") {
@@ -107,19 +107,12 @@ type Props = {
 }
 
 export function Content({ year, task, part }: Props): React.JSX.Element {
-
     const markdown = useMarkdown(year, task, part);
 
     return (
         <div className="bg-black p-4 w-full">
             <p className="text-[#FF0000] text-lg">10.03.2024</p>
-            <div className="prose prose-invert max-w-none">
-                <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                >
-                    {markdown}
-                </ReactMarkdown>
-            </div>
+            <MarkdownRenderer markdown={markdown} />
         </div>
     )
 }
