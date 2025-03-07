@@ -47,7 +47,7 @@ export function AccountCard(): React.JSX.Element {
                         localStorage.removeItem("userId");
                         router.push("/login");
                     } else {
-                        setErrorMessage(e.getMessage());
+                        setErrorMessage(e.message);
                     }
                 } else if (e instanceof Error) {
                     setErrorMessage(e.message);
@@ -70,9 +70,7 @@ export function AccountCard(): React.JSX.Element {
             localStorage.removeItem("userId");
             router.push("/");
         } catch (e: unknown) {
-            if (e instanceof CustomError) {
-                setErrorMessage(e.getMessage());
-            } else if (e instanceof Error) {
+            if (e instanceof CustomError || e instanceof Error) {
                 setErrorMessage(e.message);
             }
             setErrorMessage("Wystąpił błąd podczas wylogowywania");

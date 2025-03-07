@@ -1,6 +1,6 @@
 export type ServerError = {
     title: string,
-    status: number,
+    status: string,
     detail: string,
     errors?: {
         message: string,

@@ -18,8 +18,17 @@ export const fetcher = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R>
     })
 
     if (!response.ok) {
-        const error = new CustomError('Wystąpił błąd podczas pobierania danych.')
-        error.info = await response.json() as ServerError
+        const res = await response.json() as ServerError;
+
+        let message: string = "Wystąpił błąd podczas komunikacji z serwerem.";
+        if (
+            res.errors &&
+            res.errors.length > 0
+        ) message = res.errors[0].message
+        else if (res.detail) message = res.detail
+        else if (res.status) message = res.status
+
+        const error = new CustomError(message)
         error.status = response.status
         throw error
     }
