@@ -1,6 +1,7 @@
 import { AnswerSection } from "@/Views/Task/AnswerSection";
 import { Content } from "@/Views/Task/Content";
 import { Header } from "@/Views/Task/Header";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next/types";
 import { use } from "react"; // eslint-disable-line import/named -- use is a named export
 
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default function Page({ params }: Props): React.JSX.Element {
+    notFound();
     const { year, task, part } = use(params);
 
     return (

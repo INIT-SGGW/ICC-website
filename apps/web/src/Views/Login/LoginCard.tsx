@@ -5,10 +5,10 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useLogin } from "@/services/api"
 import CustomError from "@/utils/CustomError"
-import type { LoginForm } from "@repo/types"
+import type { LoginFormDTO } from "@repo/types"
 import { HttpMethods } from "@/types/enums"
 
-const validateData = (data: LoginForm): string | undefined => {
+const validateData = (data: LoginFormDTO): string | undefined => {
     if ((/^[a-z]\d{6}@sggw.edu.pl$/.exec(data.email)) === null) return "Email musi być z domeny sggw.edu.pl"
     return undefined
 }
@@ -17,7 +17,7 @@ export function LoginCard(): React.JSX.Element {
     const [loading, setLoading] = useState(true)
     const { trigger, isMutating } = useLogin();
 
-    const [formData, setFormData] = useState<LoginForm>({
+    const [formData, setFormData] = useState<LoginFormDTO>({
         email: "",
         password: ""
     })
@@ -58,8 +58,8 @@ export function LoginCard(): React.JSX.Element {
 
     return (
         <div className="bg-black p-4 flex flex-col items-start justify-start gap-2 w-full max-w-[350px]">
-            <Input type="text" placeholder="Login" autoComplete="email" value={formData.email} onChange={(e) => { setFormData((prev: LoginForm) => ({ ...prev, email: e.target.value })); }} className="mb-2" />
-            <Input type="password" placeholder="Hasło" autoComplete="current-password" value={formData.password} onChange={(e) => { setFormData((prev: LoginForm) => ({ ...prev, password: e.target.value })); }} />
+            <Input type="text" placeholder="Login" autoComplete="email" value={formData.email} onChange={(e) => { setFormData((prev: LoginFormDTO) => ({ ...prev, email: e.target.value })); }} className="mb-2" />
+            <Input type="password" placeholder="Hasło" autoComplete="current-password" value={formData.password} onChange={(e) => { setFormData((prev: LoginFormDTO) => ({ ...prev, password: e.target.value })); }} />
             {/* <Link className="text-white text-sm" href="/password/reset">
                 Nie pamiętam hasła
             </Link> */}

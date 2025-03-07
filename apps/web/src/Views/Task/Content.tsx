@@ -8,6 +8,8 @@ const useMarkdown = (year: number, task: number, part: string): string => {
         return `
 # Chaos na parkingu naziemnym SGGW
 
+[Przykład z życia wzięty](https://www.youtube.com/)
+
 Przyjechałeś na uczelnię swoim autem i postanowiłeś zaparkować na parkingu naziemnym. Niestety, darmowy parking okazał się istnym koszmarem. Ludzie parkują swoje samochody w najdziwniejszych miejscach, zastawiając innym drogę.
 
 Z ciekawości zastanawiasz się, ile samochodów nie jest w stanie wyjechać z parkingu. Postanawiasz zrobić szybką analizę, zanim zaczniesz szukać miejsca dla swojego auta.

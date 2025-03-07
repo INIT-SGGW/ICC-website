@@ -1,26 +1,26 @@
 import { fetcher } from "./fetcher";
 import type { Key } from "swr";
 import useSWRMutation, { type SWRMutationResponse } from "swr/mutation";
-import type { LoginResponseBody, RegisterUserResponse, UserResponse } from "@repo/types";
+import { LoginRequest, LoginResponseBody, RegisterRequest as RegisterUserRequest, RegisterUserResponse, UserResponse, VerifyEmailRequest } from "@repo/types";
 import type { FetcherArgs } from "@/types/types";
 import { HttpMethods } from "@/types/enums";
 
-export function useUser(url: string): SWRMutationResponse<UserResponse, unknown, Key, FetcherArgs | undefined> {
-    return useSWRMutation(url, () => fetcher<UserResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
+export function useUser(url: string): SWRMutationResponse<UserResponse, unknown, Key, FetcherArgs<null> | undefined> {
+    return useSWRMutation(url, () => fetcher(url, { arg: { method: HttpMethods.GET, credentials: true } }));
 }
 
-export function useRegister(): SWRMutationResponse<RegisterUserResponse, unknown, Key, FetcherArgs | undefined> {
-    return useSWRMutation(`/register/user`, fetcher<RegisterUserResponse>);
+export function useRegister(): SWRMutationResponse<RegisterUserResponse, unknown, Key, FetcherArgs<RegisterUserRequest> | undefined> {
+    return useSWRMutation(`/register/user`, fetcher<RegisterUserRequest, RegisterUserResponse>);
 }
 
-export function useLogin(): SWRMutationResponse<LoginResponseBody, unknown, Key, FetcherArgs | undefined> {
-    return useSWRMutation(`/register/login`, fetcher<LoginResponseBody>);
+export function useLogin(): SWRMutationResponse<LoginResponseBody, unknown, Key, FetcherArgs<LoginRequest> | undefined> {
+    return useSWRMutation(`/register/login`, fetcher<LoginRequest, LoginResponseBody>);
 }
 
-export function useVerifyEmail(): SWRMutationResponse<unknown, unknown, Key, FetcherArgs | undefined> {
-    return useSWRMutation("/register/verifiy", fetcher);
+export function useVerifyEmail(): SWRMutationResponse<unknown, unknown, Key, FetcherArgs<VerifyEmailRequest> | undefined> {
+    return useSWRMutation("/register/verifiy", fetcher<VerifyEmailRequest, unknown>);
 }
 
-export function useLogout(): SWRMutationResponse<unknown, unknown, Key, FetcherArgs | undefined> {
-    return useSWRMutation("/register/logout", fetcher);
+export function useLogout(): SWRMutationResponse<unknown, unknown, Key, FetcherArgs<null> | undefined> {
+    return useSWRMutation("/register/logout", fetcher<null, unknown>);
 }

@@ -4,10 +4,10 @@ import { useRegister } from "@/services/api"
 import CustomError from "@/utils/CustomError"
 import { Button, Input, Select } from "@repo/ui"
 import { useState } from "react"
-import { Degree, Faculty, type RegisterForm } from "@repo/types"
+import { Degree, Faculty, RegisterFormDTO } from "@repo/types"
 import { HttpMethods } from "@/types/enums"
 
-const validateData = (data: RegisterForm, repeatPassword: string): string | null => {
+const validateData = (data: RegisterFormDTO, repeatPassword: string): string | null => {
     if (data.firstName.length < 2) return "Imię musi mieć co najmniej 2 znaki"
     if ((/^[a-z]\d{6}@sggw.edu.pl$/.exec(data.email)) === null) return "Email musi być z domeny sggw.edu.pl"
     if (data.password.length < 8) return "Hasło musi mieć co najmniej 8 znaków"
@@ -21,7 +21,7 @@ const validateData = (data: RegisterForm, repeatPassword: string): string | null
 export function RegisterCard(): React.JSX.Element {
     const { trigger, isMutating } = useRegister()
 
-    const [formData, setFormData] = useState<RegisterForm>({
+    const [formData, setFormData] = useState<RegisterFormDTO>({
         firstName: "",
         lastName: "",
         email: "",
@@ -61,28 +61,28 @@ export function RegisterCard(): React.JSX.Element {
     const handleSetAcademicYear = (e: React.ChangeEvent<HTMLInputElement>): void => {
         // all this acrobatics so that input field can be a string and placeholder can be shown
         const value = e.target.value
-        if (value === "") { setFormData((prev: RegisterForm) => ({ ...prev, academicYear: 0 })); return; }
+        if (value === "") { setFormData((prev: RegisterFormDTO) => ({ ...prev, academicYear: 0 })); return; }
         const intValue = Number(value)
         if (isNaN(intValue)) { setError("Rok studiów musi być liczbą"); return; }
-        setFormData((prev: RegisterForm) => ({ ...prev, academicYear: intValue }))
+        setFormData((prev: RegisterFormDTO) => ({ ...prev, academicYear: intValue }))
     }
 
     return (
         <div className="bg-black p-4 flex flex-col items-start justify-start gap-4 w-full max-w-[350px]">
-            <Input type="text" autoComplete="given-name" placeholder="Imię*" value={formData.firstName} onChange={(e) => { setFormData((prev: RegisterForm) => ({ ...prev, firstName: e.target.value })); }} />
-            <Input type="text" autoComplete="family-name" placeholder="Nazwisko" value={formData.lastName} onChange={(e) => { setFormData((prev: RegisterForm) => ({ ...prev, lastName: e.target.value })); }} />
-            <Input type="email" autoComplete="email" placeholder="E-mail*" value={formData.email} onChange={(e) => { setFormData((prev: RegisterForm) => ({ ...prev, email: e.target.value })); }} />
+            <Input type="text" autoComplete="given-name" placeholder="Imię*" value={formData.firstName} onChange={(e) => { setFormData((prev: RegisterFormDTO) => ({ ...prev, firstName: e.target.value })); }} />
+            <Input type="text" autoComplete="family-name" placeholder="Nazwisko" value={formData.lastName} onChange={(e) => { setFormData((prev: RegisterFormDTO) => ({ ...prev, lastName: e.target.value })); }} />
+            <Input type="email" autoComplete="email" placeholder="E-mail*" value={formData.email} onChange={(e) => { setFormData((prev: RegisterFormDTO) => ({ ...prev, email: e.target.value })); }} />
             <Input type="string" placeholder="Rok studiów*" value={formData.academicYear === 0 ? "" : formData.academicYear} onChange={handleSetAcademicYear} />
-            <Select name="degree" value={formData.degree} onChange={(e) => { setFormData((prev: RegisterForm) => ({ ...prev, degree: e.target.value })); }} >
+            <Select name="degree" value={formData.degree} onChange={(e) => { setFormData((prev: RegisterFormDTO) => ({ ...prev, degree: e.target.value })); }} >
                 {Object.values(Degree).map((degree) => <option key={degree} value={degree}>{degree}</option>)}
             </Select>
-            <Select name="faculty" value={formData.faculity} onChange={(e) => { setFormData((prev: RegisterForm) => ({ ...prev, faculity: e.target.value })); }} >
+            <Select name="faculty" value={formData.faculity} onChange={(e) => { setFormData((prev: RegisterFormDTO) => ({ ...prev, faculity: e.target.value })); }} >
                 {Object.values(Faculty).map((faculty) => <option key={faculty} value={faculty}>{faculty}</option>)}
             </Select>
-            <Input type="password" autoComplete="new-password" placeholder="Hasło*" value={formData.password} onChange={(e) => { setFormData((prev: RegisterForm) => ({ ...prev, password: e.target.value })); }} />
+            <Input type="password" autoComplete="new-password" placeholder="Hasło*" value={formData.password} onChange={(e) => { setFormData((prev: RegisterFormDTO) => ({ ...prev, password: e.target.value })); }} />
             <Input type="password" autoComplete="new-password" placeholder="Powtórz hasło*" value={repeatPassword} onChange={(e) => { setRepeatPassword(e.target.value); }} />
             <div className="flex items-start justify-start gap-2 w-full">
-                <Input className="!w-min" type="checkbox" id="terms" checked={formData.aggrement} onChange={() => { setFormData((prev: RegisterForm) => ({ ...prev, aggrement: !formData.aggrement })) }} />
+                <Input className="!w-min" type="checkbox" id="terms" checked={formData.aggrement} onChange={() => { setFormData((prev: RegisterFormDTO) => ({ ...prev, aggrement: !formData.aggrement })) }} />
                 <label className="text-white w-full leading-4" htmlFor="terms">Akceptuję regulamin i politykę przetwarzania danych</label>
             </div>
             <Button onClick={() => { void handleRegister() }} disabled={isMutating}>{isMutating ? "..." : "Zarejestruj się"}</Button>

@@ -1,6 +1,7 @@
 import { jerseyFont } from "@/assets/fonts";
 import { PasswordChangeCard } from "@/Views/Password/PasswordChangeCard";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
     robots: "noindex, nofollow",
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default function Page(): JSX.Element {
+    notFound();
+
     return (
         <div className={`${jerseyFont.className} w-full h-full flex items-center justify-center py-8 mx-auto max-w-[800px]`}>
             <div className="flex flex-col items-start justify-center gap-4 w-full max-w-[350px]">

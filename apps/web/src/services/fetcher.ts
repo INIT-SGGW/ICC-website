@@ -2,7 +2,7 @@ import CustomError from "@/utils/CustomError";
 import type { FetcherArgs } from "@/types/types";
 import type { ServerError } from "@repo/types";
 
-export const fetcher = async <T>(url: string, { arg }: { arg?: FetcherArgs }): Promise<T> => {
+export const fetcher = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R> }): Promise<T> => {
     const api_key = process.env.NEXT_PUBLIC_ICC_API_KEY || "0b1cd31926e67d44a01727abcdcdd044f939d1373b16f8daec2e91007faf14f92b3";
     const api_url = process.env.NEXT_PUBLIC_ICC_API_URL || "https://initcodingchallenge.pl/api/v1";
 

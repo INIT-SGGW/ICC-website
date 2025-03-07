@@ -1,7 +1,7 @@
 import type { HttpMethods } from "./enums";
 
-export type FetcherArgs = {
-    body?: Record<string, string | number | boolean | Date>,
+export type FetcherArgs<T> = {
+    body?: T,
     method?: HttpMethods,
     credentials?: boolean
 };
