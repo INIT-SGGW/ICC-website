@@ -24,7 +24,7 @@ export type UserResponse = {
     aggrement: boolean
 }
 
-export type RegisterUserResponse = {
+export type RegisterResponse = {
     status: string;
     error?: string;
 }

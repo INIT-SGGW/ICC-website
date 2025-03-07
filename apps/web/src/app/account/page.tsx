@@ -1,6 +1,5 @@
 import { jerseyFont } from "@/assets/fonts";
 import { AccountCard } from "@/Views/Account/AccountCard";
-import { StatsCard } from "@/Views/Account/StatsCard";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

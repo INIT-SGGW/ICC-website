@@ -4,7 +4,7 @@ import { useRegister } from "@/services/api"
 import CustomError from "@/utils/CustomError"
 import { Button, Input, Select } from "@repo/ui"
 import { useState } from "react"
-import { Degree, Faculty, RegisterFormDTO } from "@repo/types"
+import { Degree, Faculty, type RegisterFormDTO } from "@repo/types"
 import { HttpMethods } from "@/types/enums"
 
 const validateData = (data: RegisterFormDTO, repeatPassword: string): string | null => {
