@@ -4,6 +4,7 @@ import React, { ReactNode } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import type { Components } from "react-markdown"
+import './MarkdownRenderer.css'
 
 
 // Reusable function to process text for Easter Egg syntax
@@ -24,12 +25,8 @@ const processEasterEggs = (text: string): ReactNode[] => {
     parts.push(
       <span 
         key={match.index}
-        className="text-yellow-300 rounded cursor-help" 
+        className="markdown-easter-egg" 
         title={match[2]}
-        style={{ 
-          display: "inline-block", 
-          transformOrigin: "center" 
-        }}
       >
         {match[1]}
       </span>
@@ -95,47 +92,9 @@ const components: Components = {
   strong: createComponent('strong'),
   em: createComponent('em'),
   blockquote: createComponent('blockquote'),
-  
-  // Custom styling for inline code
-  code: ({ node, className, children, ...props }: { node?: any; className?: string; children?: React.ReactNode; [key: string]: any }) => {
-    // Check if this code is inside a pre tag (code block) or standalone (inline code)
-    const match = /language-(\w+)/.exec(className || '');
-    const isCodeBlock = !!match;
-    
-
-    if (isCodeBlock) {
-      // This is inside a pre tag, just pass it through
-      const processedChildren = processNodes(children);
-      return <code className={`${className}`} {...props}>{processedChildren}</code>;
-    }
-
-    // This is an inline code element
-    const processedChildren = typeof children === 'string' ? processEasterEggs(children) : processNodes(children);
-    return (
-      <span 
-        className="not-italic text-sm bg-gray-900 p-1 rounded-md border border-gray-700 font-mono"
-        {...props}
-      >
-        {processedChildren}
-      </span>
-    );
-  },
-  
-  // Custom component for code blocks
-  pre: ({ node, children, ...props }: { node?: any; children?: React.ReactNode; [key: string]: any }) => {
-    return (
-      <pre 
-        className="border border-gray-700 bg-gray-900 rounded-md p-4 overflow-x-auto"
-        {...props}
-      >
-        {children}
-      </pre>
-    );
-  },
-  
-  a: ({ node, children, ...props }: { node?: any; children?: React.ReactNode; [key: string]: any }) => (
-    <a {...props}>{processNodes(children)}</a>
-  )
+  code: createComponent('code'),
+  pre: createComponent('pre'),
+  a: createComponent('a'),
 };
 
 type MarkdownRendererProps = {
@@ -145,7 +104,7 @@ type MarkdownRendererProps = {
 
 export function MarkdownRenderer({ markdown, className = "" }: MarkdownRendererProps): React.JSX.Element {
   return (
-    <div className={`${className} prose prose-invert max-w-none`}>
+    <div className={`${className} markdown-container prose prose-invert max-w-none`}>
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {markdown}
       </ReactMarkdown>

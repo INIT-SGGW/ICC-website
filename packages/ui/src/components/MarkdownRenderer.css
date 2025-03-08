@@ -1,0 +1,31 @@
+.markdown-container p,
+.markdown-container b,
+.markdown-container a,
+.markdown-container em,
+.markdown-container strong,
+.markdown-container li,
+.markdown-container code
+{
+  @apply text-lg;
+}
+
+.markdown-container pre {
+  @apply border border-gray-700 bg-gray-900 rounded-md p-4 overflow-x-auto font-mono;
+}
+
+.markdown-container code:not(pre > code) {
+  @apply not-italic bg-gray-900 py-1 px-2 rounded-md border border-gray-700 font-mono font-normal;
+}
+
+.markdown-container code:not(pre > code)::before,
+.markdown-container code:not(pre > code)::after {
+  @apply content-none;
+}
+
+.markdown-container .markdown-easter-egg {
+  @apply  text-yellow-300 rounded cursor-help;
+
+  display: inline-block;
+  transform-origin: center;
+}
+
