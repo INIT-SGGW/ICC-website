@@ -10,9 +10,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@repo/types": "workspace:*",
     "@repo/ui": "workspace:*",
     "@tailwindcss/typography": "^0.5.16",
-    "@repo/types": "workspace:*",
     "next": "^15.1.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

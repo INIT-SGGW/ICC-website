@@ -2,8 +2,7 @@
 
 import { useGetTask } from "@/services/api"
 import { Semester } from "@repo/types"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
+import { MarkdownRenderer } from "@repo/ui"
 
 type Props = {
     year: number
@@ -30,16 +29,11 @@ export function Content({ year, semester, task, part }: Props): React.JSX.Elemen
                             <>
                                 <p className="text-[#FF0000] text-lg">{new Date(data.releaseDate).toLocaleDateString("pl-PL")}</p>
                                 <div className="prose prose-invert max-w-none">
-                                    <ReactMarkdown
-                                        remarkPlugins={[remarkGfm]}
-                                    >
-                                        {part === "B" ? data.partB : data.partA}
-                                    </ReactMarkdown>
+                                    <MarkdownRenderer markdown={part === "B" ? data.partB : data.partA} />
                                 </div>
                             </>
                         )
             }
-
         </div>
     )
 }
