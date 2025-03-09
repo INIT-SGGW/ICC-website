@@ -3,7 +3,8 @@
 import { useRegister } from "@/services/api"
 import CustomError from "@/utils/CustomError"
 import { Button, Input, Select } from "@repo/ui"
-import { FormEvent, useState } from "react"
+import type { FormEvent } from "react";
+import { useState } from "react"
 import { Degree, Faculty, type RegisterFormDTO } from "@repo/types"
 import { HttpMethods } from "@/types/enums"
 import { useRouter } from "next/navigation"
@@ -40,8 +41,8 @@ export function RegisterCard(): React.JSX.Element {
 
     const [error, setError] = useState<string | undefined>(undefined)
 
-    const handleRegister = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-        e.preventDefault();
+    const handleRegister = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+        event.preventDefault();
         setError(undefined)
 
         const validationError = validateData(formData, repeatPassword)
@@ -70,7 +71,7 @@ export function RegisterCard(): React.JSX.Element {
     }
 
     return (
-        <form onSubmit={(e) => { void handleRegister(e) }} onError={(e) => { e.preventDefault(); }} className="bg-black p-4 flex flex-col items-start justify-start gap-4 w-full max-w-[350px]">
+        <form onSubmit={(e) => { void handleRegister(e) }} onInvalid={(e) => { e.preventDefault(); }} className="bg-black p-4 flex flex-col items-start justify-start gap-4 w-full max-w-[350px]">
             <Input type="text" autoComplete="given-name" placeholder="Imię*" value={formData.firstName} onChange={(e) => { setFormData((prev: RegisterFormDTO) => ({ ...prev, firstName: e.target.value })); }} />
             <Input type="text" autoComplete="family-name" placeholder="Nazwisko" value={formData.lastName} onChange={(e) => { setFormData((prev: RegisterFormDTO) => ({ ...prev, lastName: e.target.value })); }} />
             <Input type="email" autoComplete="email" placeholder="E-mail*" value={formData.email} onChange={(e) => { setFormData((prev: RegisterFormDTO) => ({ ...prev, email: e.target.value })); }} />

@@ -1,17 +1,16 @@
 "use client"
 
+import { useGetNextTask } from "@/services/api";
+import { Semester } from "@repo/types";
 import { useEffect, useMemo, useState } from "react";
-
-export const useNextTaskRelease = (year: number): Date => {
-    return new Date(year, 2, 10, 18);
-}
 
 type Props = {
     year: number
+    semester: Semester
 }
 
-export function TasksListHeader({ year }: Props): React.JSX.Element {
-    const nextTaskRelease = useNextTaskRelease(year);
+export function TasksListHeader({ year, semester }: Props): React.JSX.Element {
+    const { data, error, isLoading } = useGetNextTask(`/tasks/next?year=${year}&semester=${semester}`);
 
     const [now, setNow] = useState<Date | undefined>(undefined);
 
@@ -28,8 +27,9 @@ export function TasksListHeader({ year }: Props): React.JSX.Element {
 
     const timeUntilNextTaskRelease = useMemo(() => {
         if (!now) return "";
+        if (!data) return "";
 
-        const diffTime = nextTaskRelease.getTime() - now.getTime();
+        const diffTime = new Date(data.releaseDate).getTime() - now.getTime();
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
         const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
@@ -42,13 +42,22 @@ export function TasksListHeader({ year }: Props): React.JSX.Element {
         if (diffSeconds >= 0) result += `${diffSeconds} sekund`;
 
         return result;
-    }, [nextTaskRelease, now]);
+    }, [data, now]);
 
+    if (error) console.log(error);
 
     return (
         <>
-            <p className="text-xl">Nowe zadanie odblokuje się {nextTaskRelease.toLocaleString("pl-PL")}!</p>
-            <p className="text-lg text-gray-400">pozostało {timeUntilNextTaskRelease}</p>
+            {
+                (!data || isLoading) ? (
+                    <p className="text-xl">Zadania</p>
+                ) : (
+                    <>
+                        <p className="text-xl">Nowe zadanie odblokuje się {new Date(data.releaseDate).toLocaleString("pl-PL")}!</p>
+                        <p className="text-lg text-gray-400">pozostało {timeUntilNextTaskRelease}</p>
+                    </>
+                )
+            }
         </>
     )
 }

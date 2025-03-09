@@ -28,7 +28,6 @@ export function AccountCard(): React.JSX.Element {
 
     useEffect(() => {
         const savedUserId = localStorage.getItem("userId");
-        console.log(savedUserId);
         if (!savedUserId) {
             router.push("/login");
         } else {
@@ -59,7 +58,7 @@ export function AccountCard(): React.JSX.Element {
         if (userId) {
             void fetchUser();
         }
-    }, [userId, getUser]);
+    }, [userId, getUser, router]);
 
 
     const handleLogout = async (): Promise<void> => {

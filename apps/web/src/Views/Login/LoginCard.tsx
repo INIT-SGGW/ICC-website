@@ -2,7 +2,8 @@
 
 import { Input, Button } from "@repo/ui"
 import Link from "next/link"
-import { FormEvent, useEffect, useState } from "react"
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react"
 import { useLogin } from "@/services/api"
 import CustomError from "@/utils/CustomError"
 import type { LoginFormDTO } from "@repo/types"
@@ -36,8 +37,8 @@ export function LoginCard(): React.JSX.Element {
         }
     }, [router])
 
-    const handleLogin = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-        e.preventDefault();
+    const handleLogin = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+        event.preventDefault();
         setError(undefined)
 
         const validationError = validateData(formData)
@@ -61,7 +62,7 @@ export function LoginCard(): React.JSX.Element {
 
     return (
         <div className="bg-black p-4 flex flex-col items-start justify-start gap-2 w-full max-w-[350px]">
-            <form onSubmit={(e) => { void handleLogin(e) }} onError={(e) => { e.preventDefault(); }}>
+            <form onSubmit={(e) => { void handleLogin(e) }} onInvalid={(e) => { e.preventDefault(); }}>
                 <Input type="text" placeholder="Login" autoComplete="email" value={formData.email} onChange={(e) => { setFormData((prev: LoginFormDTO) => ({ ...prev, email: e.target.value })); }} className="mb-2" />
                 <Input type="password" placeholder="Hasło" autoComplete="current-password" value={formData.password} onChange={(e) => { setFormData((prev: LoginFormDTO) => ({ ...prev, password: e.target.value })); }} />
                 {/* <Link className="text-white text-sm" href="/password/reset">
