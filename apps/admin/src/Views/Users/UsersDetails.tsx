@@ -13,10 +13,11 @@ type Props = {
     id: number
 }
 
-export function UserDetails({ id }: Props) {
-    const fullName = fakeData?.firstName + " " + fakeData?.lastName;
+export function UserDetails({ id }: Props): React.JSX.Element {
+    const fullName = `${fakeData.firstName} ${fakeData.lastName}`;
 
-    const handleDelete = () => {
+    const handleDelete = (): void => {
+        // eslint-disable-next-line no-console -- Temporary
         console.log("Deleting user with id: ", id);
     }
 
