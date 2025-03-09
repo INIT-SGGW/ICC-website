@@ -21,3 +21,15 @@ export type RegisterRequest = {
     studentIndex: string
     aggrement: boolean
 }
+
+export type CreateTaskRequest = {
+    title: string
+    releaseDate: Date
+    partA: File
+    partB: File
+    answers: File
+}
+
+export type SendAnswerTaskRequest = {
+    answer: string
+}

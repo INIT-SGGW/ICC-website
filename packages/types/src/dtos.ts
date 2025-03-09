@@ -1,4 +1,5 @@
-import { UserResponse } from "./responses";
+import { Semester } from "./enums.js";
+import { UserResponse } from "./responses.js";
 
 export type User = UserResponse
 
@@ -18,4 +19,14 @@ export type RegisterFormDTO = {
     degree: string
     studentIndex: string
     aggrement: boolean
+}
+
+export type CreateTaskFormDTO = {
+    title: string
+    semester: Semester
+    taskNumber: number
+    releaseDate: Date
+    partA: File | null
+    partB: File | null
+    answers: File | null
 }
