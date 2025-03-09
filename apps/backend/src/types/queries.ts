@@ -1,21 +1,14 @@
+import { Semester } from '@repo/types';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
 
-export class FindTasksQuery {
+export class GetAllTasksQuery {
   @Transform(({ value }) => Number(value))
   @IsNotEmpty({ message: 'Pole "year" nie może być puste' })
   @IsNumber({}, { message: 'Pole "year" musi być liczbą' })
   year: number;
 
-  @Transform(({ value }) => Number(value))
-  @IsNotEmpty({ message: 'Pole "task" nie może być puste' })
-  @IsNumber({}, { message: 'Pole "task" musi być liczbą' })
-  task: number;
-}
-
-export class FindOpenTasksQuery {
-  @Transform(({ value }) => Number(value))
-  @IsNotEmpty({ message: 'Pole "year" nie może być puste' })
-  @IsNumber({}, { message: 'Pole "year" musi być liczbą' })
-  year: number;
+  @IsNotEmpty({ message: 'Pole "semester" nie może być puste' })
+  @IsEnum(Semester, { message: 'Pole "semester" musi być jednym z: "letni", "zimowy"' })
+  semester: Semester;
 }

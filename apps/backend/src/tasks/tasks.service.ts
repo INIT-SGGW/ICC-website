@@ -1,54 +1,283 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  AnswerTaskResponse,
-  FindOpenTasksResponse,
-  FindTaskResponse as FindTasksResponse,
-} from '@repo/types';
-import { AnswerTaskBody } from 'src/types/bodies';
-import { FindOpenTasksQuery, FindTasksQuery } from 'src/types/queries';
-import { Task, TaskSchema as TasSchema } from "../schemas/task.schema";
-import { Model } from 'mongoose';
-import { User } from 'src/schemas/user.schema';
+import type { GetTaskAnswersResponse, TaskParts, GetAllTasksResponse, GetTaskUserResponse, GetNextTaskResponse, Semester, SendAnswerTaskResponse } from '@repo/types';
+import { Model, Types } from 'mongoose';
+import { StatusCodes } from 'http-status-codes';
+import { TaskFileDTO, type UserPayloadDTO, type UserTokenDataDTO } from '../types/dtos.js';
+import type { AnswerTaskBody } from '../types/bodies.js';
+import type { GetAllTasksQuery } from '../types/queries.js';
+import { Task } from '../schemas/task.schema.js';
+import { User } from '../schemas/user.schema.js';
+import fs from 'fs';
+import { getRandomFile } from '../utils/GetRandomFile.js';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { pointCounter } from '../utils/PointCounter.js';
 
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectModel(Task.name) private taskModel: Model<Task>,
-    @InjectModel(User.name) private userModel: Model<User>
+    @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
+    @InjectModel(User.name, 'register') private userModel: Model<User>,
   ) { }
 
-  async findTasks(query: FindTasksQuery): Promise<FindTasksResponse> {
-    const user = await this.userModel.findOne({ first_name: "John" });
-    console.log(user);
+  async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
+    const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
+    if (tasks.length === 0) {
+      throw new HttpException(`Brak zadań dla roku ${query.year}`, StatusCodes.NOT_FOUND);
+    }
+
+    const today = new Date();
+
     return {
-      task: 'Task 1',
+      tasks: tasks.map((task) => ({
+        taskId: task._id.toString(),
+        title: task.title,
+        taskNumber: task.taskNumber,
+        releaseDate: task.releaseDate,
+        isOpen: task.releaseDate < today,
+      })),
     };
   }
 
-  findOpenTasks(query: FindOpenTasksQuery): FindOpenTasksResponse {
+  async getNextTask(query: GetAllTasksQuery): Promise<GetNextTaskResponse> {
+    try {
+      const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester }).sort({ releaseDate: 1 });
+      if (tasks.length === 0) {
+        throw new HttpException(`Brak zadań dla roku ${query.year}`, StatusCodes.NOT_FOUND);
+      }
+
+      const today = new Date();
+
+      const nextTask = tasks.find((task) => task.releaseDate > today);
+      if (!nextTask) {
+        throw new HttpException('Brak kolejnego zadania', StatusCodes.NOT_FOUND);
+      }
+
+      return {
+        taskId: nextTask._id.toString(),
+        releaseDate: nextTask.releaseDate,
+      };
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Wystąpił błąd podczas pobierania kolejnego zadania', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getTaskUser(year: number, semester: Semester, taskNumber: number): Promise<GetTaskUserResponse> {
+    const task = await this.taskModel.findOne({
+      releaseYear: year,
+      semester,
+      taskNumber,
+    });
+    if (!task) {
+      throw new HttpException('Wyszukiwane zadanie nie istnieje', StatusCodes.NOT_FOUND);
+    }
+
     return {
-      tasks: [
-        {
-          taskId: 1,
-          isOpen: true,
-        },
-      ],
+      partA: task.content.partA,
+      partB: task.content.partB,
+      releaseDate: task.releaseDate,
     };
   }
 
-  answerTask(body: AnswerTaskBody): AnswerTaskResponse {
-    return {
-      isCorrect: true,
-      previousAnswers: [
-        {
+  async getTaskAnswersUser(year: number, semester: Semester, taskNumber: number, userDTO: UserTokenDataDTO | undefined, part: string): Promise<GetTaskAnswersResponse> {
+    try {
+      if (!userDTO) {
+        throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
+      }
+
+      const { id } = userDTO;
+
+      if (!id || !Types.ObjectId.isValid(id)) {
+        throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
+      }
+
+      const user = await this.userModel.findById(new Types.ObjectId(id as string));
+      if (!user) {
+        throw new HttpException(`Nie znaleziono użytkownika o id ${id}`, StatusCodes.NOT_FOUND);
+      }
+
+      const task = await this.taskModel.findOne({
+        releaseYear: year,
+        semester,
+        taskNumber,
+      });
+      if (!task) {
+        throw new HttpException('Wyszukiwane zadanie nie istnieje', StatusCodes.NOT_FOUND);
+      }
+
+      let currentTask = user.started_tasks.find((_task) => _task.task_id.equals(task._id));
+
+      if (!currentTask) {
+        // initialize started task
+        const taskFile = getRandomFile(`./uploads/${year}/${semester}/${taskNumber}`);
+        if (!taskFile) {
+          throw new HttpException('Problem z odczytaniem pliku', StatusCodes.UNAUTHORIZED);
+        }
+
+        const taskContent = JSON.parse(fs.readFileSync(taskFile, 'utf8'));
+        const taskContentClass = plainToInstance<TaskFileDTO, unknown>(TaskFileDTO, taskContent);
+        const transformError = await validate(taskContentClass);
+        if (transformError.length > 0) {
+          throw new HttpException('Błąd podczas walidacji pliku', StatusCodes.INTERNAL_SERVER_ERROR);
+        }
+
+        currentTask = {
+          task_id: task._id,
+          input_path: taskFile,
+          seed: taskContentClass.seed,
+          partA: {
+            previous_answers: [],
+            correct_answer: taskContentClass.part1,
+            cooldown: 0,
+            points: 0,
+            is_correct: false,
+          },
+          partB: {
+            previous_answers: [],
+            correct_answer: taskContentClass.part2,
+            cooldown: 0,
+            points: 0,
+            is_correct: false,
+          },
+        }
+        user.started_tasks.push(currentTask);
+
+        await user.save();
+      }
+      const partToCheck = part === 'A' ? 'partA' : 'partB';
+      const currentPart = currentTask[partToCheck];
+
+      const input = JSON.parse(fs.readFileSync(currentTask.input_path, 'utf8'));
+      const inputDTO = plainToInstance<TaskFileDTO, unknown>(TaskFileDTO, input);
+      const transformError = await validate(inputDTO);
+      if (transformError.length > 0) {
+        throw new HttpException('Błąd podczas walidacji pliku', StatusCodes.INTERNAL_SERVER_ERROR);
+      }
+
+      return {
+        isCorrect: currentPart.is_correct,
+        input: inputDTO.input,
+        correctAnswer: currentPart.is_correct ? currentPart.correct_answer : undefined,
+        points: currentPart.is_correct ? currentPart.points : undefined,
+        previousAnswers: currentPart.previous_answers,
+      };
+    } catch (error: unknown) {
+      console.error(error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Wystąpił błąd podczas pobierania odpowiedzi na zadanie', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async answerTask(year: number, semester: Semester, taskNumber: number, part: TaskParts, userDTO: UserTokenDataDTO | undefined, body: AnswerTaskBody): Promise<SendAnswerTaskResponse> {
+    try {
+      if (!userDTO) {
+        throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
+      }
+
+      const { id } = userDTO;
+
+      if (!id || !Types.ObjectId.isValid(id)) {
+        throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
+      }
+
+      const user = await this.userModel.findById(new Types.ObjectId(id as string));
+
+      if (!user) {
+        throw new HttpException(`Nie znaleziono użytkownika o id ${id}`, StatusCodes.NOT_FOUND);
+      }
+
+      const task = await this.taskModel.findOne({
+        releaseYear: year,
+        semester,
+        taskNumber,
+      });
+
+      if (!task) {
+        throw new HttpException('Wyszukiwane zadanie nie istnieje', StatusCodes.NOT_FOUND);
+      }
+
+      const currentTask = user.started_tasks.find((_task) => _task.task_id.equals(task._id));
+
+      if (!currentTask) {
+        throw new HttpException('Nie rozpocząłeś tego zadania', StatusCodes.NOT_FOUND);
+      }
+
+      const partToCheck = part === 'A' ? 'partA' : 'partB';
+      const currentPart = currentTask[partToCheck];
+
+      if (currentPart.is_correct) {
+        return {
+          isCorrect: true,
+          previousAnswers: currentPart.previous_answers,
+          points: currentPart.points,
+          correctAnswer: currentPart.correct_answer,
+          cooldown: 0,
+        };
+      }
+
+      if (currentPart.cooldown > 0) {
+        throw new HttpException('Otrzymałeś cooldown, za zaszybkie odpowiadanie', StatusCodes.FORBIDDEN);
+      }
+      if (body.answer !== currentPart.correct_answer) {
+        if (currentPart.previous_answers.length >= 3) console.log(currentPart.previous_answers, currentPart.previous_answers[currentPart.previous_answers.length - 2])
+        currentPart.previous_answers.push({
           date: new Date(),
-          answer: 'answer',
-        },
-      ],
-      correctAnswer: 'answer',
-      cooldown: 0,
-      points: 10,
-    };
+          answer: body.answer,
+        });
+
+        user.started_tasks = user.started_tasks.map((_task) => {
+          if (_task.task_id.equals(task._id)) {
+            _task[partToCheck] = currentPart;
+          }
+          return _task;
+        });
+        user.markModified('started_tasks');
+        await user.save();
+
+        return {
+          isCorrect: false,
+          previousAnswers: currentPart.previous_answers,
+          cooldown: 0,
+        };
+      } else {
+        currentPart.is_correct = true;
+        currentPart.previous_answers.push({
+          date: new Date(),
+          answer: body.answer,
+        });
+        currentPart.points = pointCounter(task.usersFinished[partToCheck].length);
+        task.usersFinished[partToCheck].push(user._id);
+        task.markModified('usersFinished');
+        await task.save();
+
+        user.started_tasks = user.started_tasks.map((_task) => {
+          if (_task.task_id.equals(task._id)) {
+            _task[partToCheck] = currentPart;
+          }
+          return _task;
+        });
+        user.markModified('started_tasks');
+        await user.save();
+
+        return {
+          isCorrect: true,
+          previousAnswers: currentPart.previous_answers,
+          points: currentPart.points,
+          correctAnswer: currentPart.correct_answer,
+        }
+      }
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      console.log(error);
+      throw new HttpException('Wystąpił błąd podczas pobierania zadania', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
   }
 }

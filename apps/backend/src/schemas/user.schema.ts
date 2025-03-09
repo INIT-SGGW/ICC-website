@@ -1,18 +1,67 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { type HydratedDocument, Types } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
+@Schema()
+export class PreviousAnswers {
+  @Prop({ required: true })
+  answer: string;
+
+  @Prop({ required: true, default: Date.now })
+  date: Date;
+}
+
+@Schema()
+export class Part {
+  @Prop()
+  previous_answers: PreviousAnswers[];
+
+  @Prop({ required: true })
+  correct_answer: string;
+
+  @Prop({ default: 0 })
+  cooldown: number;
+
+  @Prop({ default: 0 })
+  points: number;
+
+  @Prop({ default: false })
+  is_correct: boolean;
+}
+
+@Schema({ id: true })
+export class Answers {
+  @Prop({ required: true, type: Types.ObjectId, ref: "Task" })
+  task_id: Types.ObjectId;
+
+  @Prop({ required: true, type: String })
+  input_path: string;
+
+  @Prop({ required: true, type: String })
+  seed: string;
+
+  @Prop({ required: true })
+  partA: Part;
+
+  @Prop({ required: true })
+  partB: Part;
+}
 
 @Schema()
 export class User {
-    @Prop({ required: true })
-    first_name: string;
+  @Prop({ required: true })
+  first_name: string;
 
-    @Prop({ required: true, unique: true })
-    last_name: string;
+  @Prop({ required: true, unique: true })
+  last_name: string;
 
-    @Prop()
-    emails: Array<string>;
+  @Prop()
+  emails: string[];
+
+  @Prop()
+  started_tasks: Answers[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.set('collection', 'Users');

@@ -1,18 +1,9 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { SendAnswerTaskRequest } from '@repo/types';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class AnswerTaskBody {
-  @IsNotEmpty()
-  @IsNumber()
-  year: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  task: number;
-
-  @IsNotEmpty()
-  @IsString()
-  part: string;
-
+export class AnswerTaskBody implements SendAnswerTaskRequest {
+  @ApiProperty({ type: String, example: 'INIT', description: 'Answer to task' })
   @IsNotEmpty()
   @IsString()
   answer: string;
