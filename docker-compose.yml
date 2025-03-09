@@ -16,3 +16,14 @@ services:
       - "1337:3000"
     environment:
       - NODE_ENV=production
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    env_file:
+      - apps/backend/.env.development.local
+    ports:
+      - "4001:4000"
+    environment:
+      - NODE_ENV=production
