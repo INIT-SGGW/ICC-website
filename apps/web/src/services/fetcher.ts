@@ -56,7 +56,7 @@ export const fetcherICC = async <R, T>(url: string, { arg }: { arg?: FetcherArgs
     let api_url: string;
     switch (process.env.NODE_ENV) {
         case "development":
-            api_url = process.env.NEXT_PUBLIC_INIT_API_URL || "";
+            api_url = process.env.NEXT_PUBLIC_ICC_API_URL || "";
             break;
         case "production":
             api_url = "https://initcodingchallenge.pl/backend";

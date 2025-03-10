@@ -51,6 +51,6 @@ export function useGetUserStats(): SWRResponse<GetUserStatsResponse, CustomError
     return useSWR("/users/stats", (url) => fetcherICC<null, GetUserStatsResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
 }
 
-export function useGetRanking(): SWRResponse<GetRankingResponse, CustomError> {
-    return useSWR("/ranking", (url) => fetcherICC<null, GetRankingResponse>(url, { arg: { method: HttpMethods.GET } }));
+export function useGetRanking(url: string): SWRResponse<GetRankingResponse, CustomError> {
+    return useSWR(url, (_url) => fetcherICC<null, GetRankingResponse>(_url, { arg: { method: HttpMethods.GET } }));
 }
