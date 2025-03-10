@@ -95,3 +95,21 @@ export type SendAnswerTaskResponse = {
     cooldown?: number
     points?: number
 }
+
+export type GetUserStatsResponse = {
+    rankingPosition: number;
+    pointsGeneral: number;
+    pointsTask: number[];
+}
+
+export type Ranking = {
+    firstName: string,
+    lastName: string,
+    indexNumber: number,
+    points: number,
+}[]
+
+export type GetRankingResponse = {
+    general: Ranking,
+    perTask: Ranking[],
+}
