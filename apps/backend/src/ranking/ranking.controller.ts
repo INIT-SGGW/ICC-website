@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import type { GetRankingDTO } from 'src/types/dtos.js';
 import { RankingService } from './ranking.service.js';
+import { GetRankingQuery } from '../types/queries.js';
 
 @Controller('/ranking')
 export class RankingController {
-  constructor(private readonly rankingService: RankingService) {}
+  constructor(private readonly rankingService: RankingService) { }
 
   @Get()
-  async getRanking(): Promise<GetRankingDTO> {
-    return this.rankingService.getRanking();
+  async getRanking(@Query() query: GetRankingQuery): Promise<GetRankingDTO> {
+    return this.rankingService.getRanking(query);
   }
 }
