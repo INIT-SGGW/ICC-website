@@ -1,7 +1,7 @@
 import { fetcher, fetcherICC } from "./fetcher";
 import type { Key, SWRResponse } from "swr";
 import useSWRMutation, { type SWRMutationResponse } from "swr/mutation";
-import type { GetAllTasksResponse, GetNextTaskResponse, GetTaskAnswersResponse, GetTaskUserResponse, LoginRequest, LoginResponseBody, RegisterRequest, RegisterResponse, SendAnswerTaskRequest, SendAnswerTaskResponse, UserResponse, VerifyEmailRequest } from "@repo/types";
+import type { GetAllTasksResponse, GetNextTaskResponse, GetRankingResponse, GetTaskAnswersResponse, GetTaskUserResponse, GetUserStatsResponse, LoginRequest, LoginResponseBody, RegisterRequest, RegisterResponse, SendAnswerTaskRequest, SendAnswerTaskResponse, UserResponse, VerifyEmailRequest } from "@repo/types";
 import type { FetcherArgs } from "@/types/types";
 import { HttpMethods } from "@/types/enums";
 import type CustomError from "@/utils/CustomError";
@@ -45,4 +45,12 @@ export function useGetTaskAnswers(url: string): SWRResponse<GetTaskAnswersRespon
 
 export function useSendAnswerTask(url: string): SWRMutationResponse<SendAnswerTaskResponse, CustomError, Key, FetcherArgs<SendAnswerTaskRequest> | undefined> {
     return useSWRMutation(url, fetcherICC<SendAnswerTaskRequest, SendAnswerTaskResponse>);
+}
+
+export function useGetUserStats(): SWRResponse<GetUserStatsResponse, CustomError> {
+    return useSWR("/users/stats", (url) => fetcherICC<null, GetUserStatsResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
+}
+
+export function useGetRanking(): SWRResponse<GetRankingResponse, CustomError> {
+    return useSWR("/ranking", (url) => fetcherICC<null, GetRankingResponse>(url, { arg: { method: HttpMethods.GET } }));
 }

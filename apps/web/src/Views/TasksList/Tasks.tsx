@@ -25,7 +25,7 @@ export function Tasks({ year, semester }: Props): React.JSX.Element {
             {
                 data ? <>
                     {data.tasks.sort((a, b) => a.taskNumber - b.taskNumber).map((task) => (
-                        <TaskSquare key={task.taskId} semester={semester} index={task.taskNumber - 1} unlocked={task.isOpen} />
+                        <TaskSquare key={task.taskId} semester={semester} index={task.taskNumber - 1} unlocked={new Date(task.releaseDate) < new Date()} />
                     ))}
                 </> : null
             }

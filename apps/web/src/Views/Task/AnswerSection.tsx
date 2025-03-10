@@ -63,9 +63,11 @@ export function AnswerSection({ year, semester, task, part }: Props): React.JSX.
     }
 
     const handleSubmit = async (): Promise<void> => {
-        const response = await trigger({ body: { answer }, method: HttpMethods.POST, credentials: true });
-        const prevAns = response.previousAnswers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        setAnswerData((prev) => ({ ...prev, ...response, previousAnswers: prevAns }));
+        try {
+            const response = await trigger({ body: { answer }, method: HttpMethods.POST, credentials: true });
+            const prevAns = response.previousAnswers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+            setAnswerData((prev) => ({ ...prev, ...response, previousAnswers: prevAns }));
+        } catch (e) { } //eslint-disable-line no-empty -- errors are handled by SWR
     }
 
 
@@ -95,8 +97,11 @@ export function AnswerSection({ year, semester, task, part }: Props): React.JSX.
                             <div className="flex flex-col items-center justify-center gap-4">
                                 <Image src="/trophy_transparent.svg" alt="trophy" width={75} height={75} />
                                 <p className="text-white text-2xl">Gratulacje!</p>
-                                <p className="text-white text-2xl text-center">Rozwiązałeś zagadkę! Zdobyłeś:</p>
-                                <p className="text-white text-4xl">{answerData.points}</p>
+                                <div className="flex flex-col items-center justify-center">
+                                    <p className="text-white text-2xl text-center">Rozwiązałeś/aś zagadkę!</p>
+                                    <p className="text-cred text-4xl">{answerData.points}</p>
+                                    <p className="text-white text-2xl">punktów</p>
+                                </div>
                             </div>
                         ) : (
                             <>

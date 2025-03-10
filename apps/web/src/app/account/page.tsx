@@ -1,5 +1,6 @@
 import { jerseyFont } from "@/assets/fonts";
 import { AccountCard } from "@/Views/Account/AccountCard";
+import { StatsCard } from "@/Views/Account/StatsCard";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -15,10 +16,10 @@ export default function Page(): JSX.Element {
                 <h4 className="text-4xl text-white">Twoje dane</h4>
                 <AccountCard />
             </div>
-            {/* <div className="flex flex-col gap-4 max-w-[350px] w-full">
+            <div className="flex flex-col gap-4 max-w-[350px] w-full">
                 <h4 className="text-4xl text-white">Twoje wyniki</h4>
                 <StatsCard />
-            </div> */}
+            </div>
         </div>
     );
 }
