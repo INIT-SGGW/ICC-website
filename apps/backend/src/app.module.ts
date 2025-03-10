@@ -7,6 +7,7 @@ import { TasksModule } from './tasks/tasks.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
 import { AdminModule } from './admin/admin.module.js';
+import { RankingModule } from './ranking/ranking.module.js';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AdminModule } from './admin/admin.module.js';
     AuthModule,
     UsersModule,
     AdminModule,
+    RankingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

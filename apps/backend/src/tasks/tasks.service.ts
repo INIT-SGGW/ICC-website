@@ -31,14 +31,33 @@ export class TasksService {
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
-    if (tasks.length === 0) {
-      throw new HttpException(`Brak zadań dla roku ${query.year}`, StatusCodes.NOT_FOUND);
-    }
 
     const today = new Date();
 
+    const fakeTasks = Array.from({ length: 12 }, (_, i) => ({
+      _id: i.toString(),
+      title: 'title',
+      taskNumber: i + 1,
+      releaseDate: new Date('2040-01-01'),
+      isOpen: false,
+    }));
+
+    const tasksArray = fakeTasks.map((task) => {
+      const tempTask = tasks.find((t) => t.taskNumber === task.taskNumber);
+      if (tempTask) {
+        return {
+          _id: tempTask._id,
+          title: tempTask.title,
+          taskNumber: tempTask.taskNumber,
+          releaseDate: tempTask.releaseDate,
+          isOpen: tempTask.releaseDate < today,
+        };
+      }
+      return task;
+    });
+
     return {
-      tasks: tasks.map((task) => ({
+      tasks: tasksArray.map((task) => ({
         taskId: task._id.toString(),
         title: task.title,
         taskNumber: task.taskNumber,
@@ -227,6 +246,10 @@ export class TasksService {
         throw new HttpException('Wyszukiwane zadanie nie istnieje', StatusCodes.NOT_FOUND);
       }
 
+      if (task.releaseDate > new Date()) {
+        throw new HttpException('Zadanie jeszcze nie zostało udostępnione', StatusCodes.FORBIDDEN);
+      }
+
       const currentTask = user.started_tasks.find((_task) => _task.task_id.equals(task._id));
 
       if (!currentTask) {
@@ -250,11 +273,11 @@ export class TasksService {
         throw new HttpException('Otrzymałeś cooldown, za zaszybkie odpowiadanie', StatusCodes.FORBIDDEN);
       }
       if (body.answer !== currentPart.correct_answer) {
-        if (currentPart.previous_answers.length >= 3)
-          currentPart.previous_answers.push({
-            date: new Date(),
-            answer: body.answer,
-          });
+        // if (currentPart.previous_answers.length >= 3)
+        currentPart.previous_answers.push({
+          date: new Date(),
+          answer: body.answer,
+        });
 
         user.started_tasks = user.started_tasks.map((_task) => {
           if (_task.task_id.equals(task._id)) {
@@ -277,11 +300,18 @@ export class TasksService {
         answer: body.answer,
       });
       currentPart.points = pointCounter(task.usersFinished[partToCheck].length);
-      task.usersFinished[partToCheck].push(user._id);
+      if (user.pointsGeneral) {
+        user.pointsGeneral += currentPart.points;
+      } else {
+        user.pointsGeneral = currentPart.points;
+      }
+
+      task.usersFinished[partToCheck].push({ userId: user, finishedAt: new Date(), points: currentPart.points });
       task.markModified('usersFinished');
       await task.save();
 
       user.started_tasks = user.started_tasks.map((_task) => {
+        ``;
         if (_task.task_id.equals(task._id)) {
           _task[partToCheck] = currentPart;
         }

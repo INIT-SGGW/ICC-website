@@ -1,18 +1,26 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AdminAuthGuard } from '../auth/auth.guard.js';
-import type { GetAllUsersDTO } from '../types/dtos.js';
+import { Request as Req } from 'express';
+import { AdminAuthGuard, UserAuthGuard } from '../auth/auth.guard.js';
+import type { GetAllUsersDTO, GetUserStatsDTO } from '../types/dtos.js';
 import { UsersService } from './users.service.js';
 
-@Controller('/admin/users')
-@ApiTags('users', 'admin')
-@UseGuards(AdminAuthGuard)
+@Controller('/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
+  @Get('/admin')
+  @ApiTags('users', 'admin')
+  @UseGuards(AdminAuthGuard)
   getAllUsers(): Promise<GetAllUsersDTO> {
     return this.usersService.getAllUsers();
+  }
+
+  @Get('/stats')
+  @ApiTags('users')
+  @UseGuards(UserAuthGuard)
+  async getStats(@Request() { user }: Req): Promise<GetUserStatsDTO> {
+    return this.usersService.getUserStats(user);
   }
 
   // @Post()

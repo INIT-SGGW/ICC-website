@@ -7,10 +7,12 @@ import type {
   GetTaskUserResponse,
   ServerError,
   SendAnswerTaskResponse,
+  GetUserStatsResponse,
+  GetRankingResponse,
 } from '@repo/types';
 import { Semester } from '@repo/types';
 import { Transform } from 'class-transformer';
-import { IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class TaskUserDTO {
   @ApiProperty({
@@ -341,7 +343,7 @@ export class TaskFileDTO {
   @IsString()
   input: string;
 
-  @Transform(({ value }) => value.toString())
+  @Transform(({ value }) => value.toString()) //eslint-disable-line @typescript-eslint/no-unsafe-assignment -- value is always string
   @IsNotEmpty()
   @IsString()
   part1: string;
@@ -354,4 +356,48 @@ export class TaskFileDTO {
   @IsNotEmpty()
   @IsString()
   seed: string;
+}
+
+export class GetUserStatsDTO implements GetUserStatsResponse {
+  @IsNotEmpty()
+  @IsNumber()
+  pointsGeneral: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  rankingPosition: number;
+
+  @IsNotEmpty()
+  @IsArray()
+  pointsTask: number[];
+}
+
+export class RankingDTO {
+  @ApiProperty({ type: String, example: 'John', description: 'User first name' })
+  @IsNotEmpty()
+  @IsString()
+  firstName: string;
+
+  @ApiProperty({ type: String, example: 'Doe', description: 'User last name' })
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
+
+  @ApiProperty({ type: Number, example: 210834, description: 'User index number' })
+  @IsNotEmpty()
+  @IsNumber()
+  indexNumber: number;
+
+  @ApiProperty({ type: Number, example: 100, description: 'User points' })
+  @IsNotEmpty()
+  @IsNumber()
+  points: number;
+}
+
+export class GetRankingDTO implements GetRankingResponse {
+  @ApiProperty({ type: [RankingDTO], description: 'Ranking' })
+  general: RankingDTO[];
+
+  @ApiProperty({ type: [RankingDTO], description: 'Ranking per task' })
+  perTask: RankingDTO[][];
 }

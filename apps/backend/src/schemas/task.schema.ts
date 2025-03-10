@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Semester } from '@repo/types';
-import type { Types, HydratedDocument } from 'mongoose';
+import type { HydratedDocument } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
+import { User } from './user.schema.js';
 
 export type TaskDocument = HydratedDocument<Task>;
 
-@Schema()
+@Schema({ _id: false })
 export class Content {
   @Prop({ required: true })
   partA: string;
@@ -13,13 +15,25 @@ export class Content {
   partB: string;
 }
 
-@Schema()
-export class UsersFinished {
-  @Prop({ type: Array<Types.ObjectId>, ref: 'User', default: [] })
-  partA: Types.ObjectId[];
+@Schema({ _id: false })
+export class UserFinishedPart {
+  @Prop({ required: true, type: Types.ObjectId, ref: User.name })
+  userId: User;
 
-  @Prop({ type: Array<Types.ObjectId>, ref: 'User', default: [] })
-  partB: Types.ObjectId[];
+  @Prop({ required: true, type: Date })
+  finishedAt: Date;
+
+  @Prop({ required: true, type: Number })
+  points: number;
+}
+
+@Schema({ _id: false })
+export class UsersFinished {
+  @Prop({ type: [UserFinishedPart], default: [] })
+  partA: UserFinishedPart[];
+
+  @Prop({ type: [UserFinishedPart], default: [] })
+  partB: UserFinishedPart[];
 }
 
 @Schema({

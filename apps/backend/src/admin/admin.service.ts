@@ -11,13 +11,10 @@ import type { GetAllTasksQuery } from '../types/queries.js';
 
 @Injectable()
 export class AdminService {
-  constructor(@InjectModel(Task.name, 'icc') private taskModel: Model<Task>) { }
+  constructor(@InjectModel(Task.name, 'icc') private taskModel: Model<Task>) {}
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
-    if (tasks.length === 0) {
-      throw new HttpException(`Brak zadań dla roku ${query.year} i semestru ${query.semester}`, StatusCodes.NOT_FOUND);
-    }
 
     const today = new Date();
 
@@ -126,7 +123,7 @@ export class AdminService {
         task.filePath = newInputsPath;
       } else {
         // if path hasn't changed
-        if (typeof body.answers !== 'string') { //eslint-disable-line @typescript-eslint/no-unnecessary-condition -- in other case, do nothing
+        if (typeof body.answers !== 'string') {
           // upload new file
           unzipFile('./uploads/temp/inputs.zip', task.filePath);
         }

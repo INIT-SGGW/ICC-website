@@ -1,18 +1,16 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from '../auth/auth.module.js';
 import { User, UserSchema } from '../schemas/user.schema.js';
 import { Task, TaskSchema } from '../schemas/task.schema.js';
-import { UsersController } from './users.controller.js';
-import { UsersService } from './users.service.js';
+import { RankingController } from './ranking.controller.js';
+import { RankingService } from './ranking.service.js';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }], 'register'),
     MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }], 'icc'),
-    AuthModule,
   ],
-  controllers: [UsersController],
-  providers: [UsersService],
+  controllers: [RankingController],
+  providers: [RankingService],
 })
-export class UsersModule {}
+export class RankingModule {}

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type HydratedDocument, Types } from 'mongoose';
+import { Task } from './task.schema.js';
 
 export type UserDocument = HydratedDocument<User>;
 @Schema()
@@ -29,7 +30,7 @@ export class Part {
   is_correct: boolean;
 }
 
-@Schema({ id: true })
+@Schema({ _id: false })
 export class Answers {
   @Prop({ required: true, type: Types.ObjectId, ref: 'Task' })
   task_id: Types.ObjectId;
@@ -58,8 +59,14 @@ export class User {
   @Prop()
   emails: string[];
 
-  @Prop()
+  @Prop({ default: [] })
   started_tasks: Answers[];
+
+  @Prop({ default: 0 })
+  pointsGeneral: number;
+
+  @Prop()
+  student_index: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

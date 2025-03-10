@@ -24,7 +24,7 @@ import { AdminService } from './admin.service.js';
 @ApiTags('admin')
 @UseGuards(AdminAuthGuard)
 export class AdminController {
-  constructor(private readonly adminService: AdminService) { }
+  constructor(private readonly adminService: AdminService) {}
 
   @Get('/tasks')
   @ApiOperation({ summary: 'Get all tasks for user', description: 'Get all tasks for user in given year' })
