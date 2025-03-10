@@ -28,7 +28,7 @@ export function useLogout(): SWRMutationResponse<unknown, unknown, Key, FetcherA
 }
 
 export function useGetAllUsers(): SWRResponse<GetAllUsersResponse, CustomError> {
-    return useSWR("/admin/users", (url) => fetcherICC<null, GetAllUsersResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
+    return useSWR("/users/admin", (url) => fetcherICC<null, GetAllUsersResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
 }
 
 export function useGetTask(url: string): SWRResponse<GetTaskAdminResponse, CustomError> {
@@ -39,6 +39,6 @@ export function useGetAllTasks(url: string): SWRResponse<GetAllTasksResponse, Cu
     return useSWR(url, () => fetcherICC<null, GetAllTasksResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
 }
 
-export function useDeleteTask(url: string): SWRMutationResponse<void, CustomError, Key, FetcherArgs<null> | undefined> {
-    return useSWRMutation(url, () => fetcherICC<null, void>(url, { arg: { method: HttpMethods.DELETE, credentials: true } }));
+export function useDeleteTask(url: string): SWRMutationResponse<null, CustomError, Key, FetcherArgs<null> | undefined> {
+    return useSWRMutation(url, () => fetcherICC<null, null>(url, { arg: { method: HttpMethods.DELETE, credentials: true } }));
 }

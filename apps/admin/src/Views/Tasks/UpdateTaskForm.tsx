@@ -72,11 +72,15 @@ export function UpdateTaskForm({ id }: Props): React.JSX.Element {
             return;
         }
 
+        const correctTimeDate = new Date(formData.releaseDate);
+        correctTimeDate.setHours(18, 0, 0, 0);
+
         const updateData = new FormData();
         updateData.append("title", formData.title);
         updateData.append("taskNumber", formData.taskNumber.toString());
-        updateData.append("releaseDate", formData.releaseDate.toISOString());
+        updateData.append("releaseDate", correctTimeDate.toUTCString());
         updateData.append("semester", formData.semester);
+
         if (formData.partA) {
             const partAContent = await formData.partA.text();
             updateData.append("partA", partAContent);

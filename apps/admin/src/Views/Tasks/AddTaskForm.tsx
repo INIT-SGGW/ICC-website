@@ -54,17 +54,22 @@ export function AddTaskForm(): React.JSX.Element {
             return;
         }
 
+        const correctTimeDate = new Date(formData.releaseDate);
+        correctTimeDate.setHours(18);
+        correctTimeDate.setMinutes(0);
+        correctTimeDate.setSeconds(0);
+        setFormData((prev) => ({ ...prev, releaseDate: correctTimeDate }));
+
         const partAContent = await formData.partA!.text(); //eslint-disable-line @typescript-eslint/no-non-null-assertion -- checked by validation
         const partBContent = await formData.partB!.text(); //eslint-disable-line @typescript-eslint/no-non-null-assertion -- checked by validation
         const data = new FormData();
         data.append("title", formData.title);
         data.append("taskNumber", formData.taskNumber.toString());
-        data.append("releaseDate", formData.releaseDate.toISOString());
+        data.append("releaseDate", formData.releaseDate.toUTCString());
         data.append("semester", formData.semester);
         data.append("partA", partAContent);
         data.append("partB", partBContent);
         data.append("answers", formData.answers as Blob);
-
         try {
             const url = process.env.NEXT_PUBLIC_ICC_API_URL || "";
             // formData type is garantued by validation check

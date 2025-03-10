@@ -29,7 +29,9 @@ function Table({ data, isLoading, error }: Props): JSX.Element {
                         <tbody className="text-center text-white bg-black">
                             <tr>
                                 <td colSpan={5}>
-                                    {error ? `Error: ${error.message}` : isLoading ? "Loading..." : "Brak zadań"}
+                                    {error ? `Error: ${error.message}` : null}
+                                    {isLoading && !error && !data ? "Ładowanie..." : null}
+                                    {!data && !error ? "Brak danych" : null}
                                 </td>
                             </tr>
                         </tbody>
