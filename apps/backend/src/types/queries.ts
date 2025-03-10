@@ -17,9 +17,9 @@ export class GetRankingQuery {
   @Transform(({ value }) => Number(value))
   @IsOptional()
   @IsNumber({}, { message: 'Pole "year" musi być liczbą' })
-  year?: number
+  year?: number;
 
   @IsOptional()
   @IsEnum(Faculty, { message: 'Pole "faculty" musi być jednym z: "Informatyka", "Informatyka i Ekonometria"' })
-  faculty?: Faculty
+  faculty?: Faculty;
 }

@@ -1,17 +1,17 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Faculty, Ranking, type GetRankingResponse } from '@repo/types';
+import type { Ranking, GetRankingResponse } from '@repo/types';
 import { Model } from 'mongoose';
 import { User } from '../schemas/user.schema.js';
 import { Task } from '../schemas/task.schema.js';
-import { GetRankingQuery } from '../types/queries.js';
+import type { GetRankingQuery } from '../types/queries.js';
 
 @Injectable()
 export class RankingService {
   constructor(
     @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
     @InjectModel(User.name, 'register') private userModel: Model<User>,
-  ) { }
+  ) {}
 
   async getRanking(query: GetRankingQuery): Promise<GetRankingResponse> {
     try {
@@ -21,7 +21,7 @@ export class RankingService {
         points: user.pointsGeneral,
         indexNumber: user.student_index,
         faculty: user.faculity,
-        year: user.academic_year
+        year: user.academic_year,
       }));
 
       if (query.faculty) {
@@ -44,7 +44,6 @@ export class RankingService {
         perTask: Array.from({ length: 5 }, () => finalRanking),
       };
     } catch (error: unknown) {
-      console.error(error);
       throw new HttpException('Wystąpił błąd podczas pobierania rankingu', 500);
     }
   }

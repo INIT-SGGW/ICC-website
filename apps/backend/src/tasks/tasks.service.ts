@@ -27,7 +27,7 @@ export class TasksService {
   constructor(
     @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
     @InjectModel(User.name, 'register') private userModel: Model<User>,
-  ) { }
+  ) {}
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
@@ -201,7 +201,6 @@ export class TasksService {
         previousAnswers: currentPart.previous_answers,
       };
     } catch (error: unknown) {
-      console.log(error)
       if (error instanceof HttpException) {
         throw error;
       }

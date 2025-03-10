@@ -56,7 +56,7 @@ export function Ranking(): React.JSX.Element {
       <div className="w-full flex md:!flex-row flex-col items-center justify-start gap-4">
         <div className="flex flex-col items-start justify-start w-full">
           <label htmlFor="year" className={`text-red-500 ${jerseyFont.className} text-xl`}>Rok akademicki:</label>
-          <Select className={`!text-red-500 !border-red-500 !border-[2px] text-xl ${jerseyFont.className}`} id="year" onChange={(e) => setSelectedYear(e.target.value === "all" ? null : Number(e.target.value))} value={selectedYear || "all"}>
+          <Select className={`!text-red-500 !border-red-500 !border-[2px] text-xl ${jerseyFont.className}`} id="year" onChange={(e) => { setSelectedYear(e.target.value === "all" ? null : Number(e.target.value)) }} value={selectedYear || "all"}>
             <option value="all">Wszystkie</option>
             <option value="1">I</option>
             <option value="2">II</option>
@@ -67,7 +67,7 @@ export function Ranking(): React.JSX.Element {
         </div>
         <div className="flex flex-col items-start justify-start w-full">
           <label htmlFor="faculty" className={`text-red-500 ${jerseyFont.className} text-xl`}>Kierunek:</label>
-          <Select id="faculty" className={`!text-red-500 !border-red-500 !border-[2px] text-xl ${jerseyFont.className}`} onChange={(e) => setSelectedFaculty(e.target.value === "all" ? null : e.target.value as Faculty)} value={selectedFaculty || "all"}>
+          <Select id="faculty" className={`!text-red-500 !border-red-500 !border-[2px] text-xl ${jerseyFont.className}`} onChange={(e) => { setSelectedFaculty(e.target.value === "all" ? null : e.target.value as Faculty) }} value={selectedFaculty || "all"}>
             <option value="all">Wszystkie</option>
             <option value={Faculty.INF}>Informatyka</option>
             <option value={Faculty.INFEKO}>Informatyka i Ekonometria</option>

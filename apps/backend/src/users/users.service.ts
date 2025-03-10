@@ -12,7 +12,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name, 'register') private userModel: Model<User>,
     @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
-  ) { }
+  ) {}
 
   async getAllUsers(): Promise<GetAllUsersResponse> {
     try {

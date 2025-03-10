@@ -343,11 +343,13 @@ export class TaskFileDTO {
   @IsString()
   input: string;
 
-  @Transform(({ value }) => value.toString()) //eslint-disable-line @typescript-eslint/no-unsafe-assignment -- value is always string
+  //eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- This is a class-transformer decorator
+  @Transform(({ value }) => value.toString())
   @IsNotEmpty()
   @IsString()
   part1: string;
 
+  //eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- This is a class-transformer decorator
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()
   @IsString()
