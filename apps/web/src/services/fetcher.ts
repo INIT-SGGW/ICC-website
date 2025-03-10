@@ -3,7 +3,20 @@ import type { FetcherArgs } from "@/types/types";
 import type { ServerError } from "@repo/types";
 
 export const fetcher = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R> }): Promise<T> => {
-    const api_url = process.env.NEXT_PUBLIC_INIT_API_URL || "https://initcodingchallenge.pl/api/v1";
+    let api_url: string;
+    switch (process.env.NODE_ENV) {
+        case "development":
+            api_url = process.env.NEXT_PUBLIC_INIT_API_URL || "";
+            break;
+        case "production":
+            api_url = "https://initcodingchallenge.pl/api/v1";
+            break;
+        case "test":
+            api_url = "https://initcodingchallenge.pl:5000/api/v1";
+            break;
+        default:
+            api_url = "http://localhost:8080";
+    }
 
     const fullUrl = api_url + url;
     const response = await fetch(fullUrl, {
@@ -40,7 +53,20 @@ export const fetcher = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R>
 };
 
 export const fetcherICC = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R> }): Promise<T> => {
-    const api_url = process.env.NEXT_PUBLIC_ICC_API_URL || "https://initcodingchallenge.pl/";
+    let api_url: string;
+    switch (process.env.NODE_ENV) {
+        case "development":
+            api_url = process.env.NEXT_PUBLIC_INIT_API_URL || "";
+            break;
+        case "production":
+            api_url = "https://initcodingchallenge.pl/backend";
+            break;
+        case "test":
+            api_url = "https://initcodingchallenge.pl:5000/backend";
+            break;
+        default:
+            api_url = "http://localhost:4000";
+    }
 
     const fullUrl = api_url + url;
     const response = await fetch(fullUrl, {

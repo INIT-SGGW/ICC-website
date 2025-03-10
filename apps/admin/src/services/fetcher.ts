@@ -78,7 +78,7 @@ export const fetcherICC = async <R, T>(url: string, { arg }: { arg?: FetcherArgs
             break;
         default:
             api_key = "ApiKey";
-            api_url = "http://localhost:8080";
+            api_url = "http://localhost:4000";
     }
 
     const fullUrl = api_url + url;
