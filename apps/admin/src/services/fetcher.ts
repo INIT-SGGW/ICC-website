@@ -3,8 +3,28 @@ import type { FetcherArgs } from "../types/types";
 import type { ServerError } from "@repo/types";
 
 export const fetcher = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R> }): Promise<T> => {
-    const api_key = process.env.NEXT_PUBLIC_INIT_API_KEY || "0b1cd31926e67d44a01727abcdcdd044f939d1373b16f8daec2e91007faf14f92b3";
-    const api_url = process.env.NEXT_PUBLIC_INIT_API_URL || "https://initcodingchallenge.pl/api/v1";
+    let api_key: string;
+    let api_url: string;
+    switch (process.env.NODE_ENV) {
+        case "development":
+            api_key = process.env.NEXT_PUBLIC_INIT_API_KEY || "";
+            api_url = process.env.NEXT_PUBLIC_INIT_API_URL || "";
+            break;
+        case "production":
+            api_key = "0b1cd31926e67d44a01727abcdcdd044f939d1373b16f8daec2e91007faf14f92b3";
+            api_url = "https://initcodingchallenge.pl/api/v1";
+            break;
+        case "test":
+            api_key = "ApiKey";
+            api_url = "https://initcodingchallenge.pl:5000/api/v1";
+            break;
+        default:
+            api_key = "ApiKey";
+            api_url = "http://localhost:8080";
+    }
+
+    // const api_key = process.env.NEXT_PUBLIC_INIT_API_KEY || "0b1cd31926e67d44a01727abcdcdd044f939d1373b16f8daec2e91007faf14f92b3";
+    // const api_url = process.env.NEXT_PUBLIC_INIT_API_URL || "https://initcodingchallenge.pl/api/v1";
 
     const fullUrl = api_url + url;
     const response = await fetch(fullUrl, {
@@ -41,7 +61,25 @@ export const fetcher = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R>
 };
 
 export const fetcherICC = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R> }): Promise<T> => {
-    const api_url = process.env.NEXT_PUBLIC_ICC_API_URL || "https://initcodingchallenge.pl/backend";
+    let api_key: string;
+    let api_url: string;
+    switch (process.env.NODE_ENV) {
+        case "development":
+            api_key = process.env.NEXT_PUBLIC_INIT_API_KEY || "";
+            api_url = process.env.NEXT_PUBLIC_INIT_API_URL || "";
+            break;
+        case "production":
+            api_key = "0b1cd31926e67d44a01727abcdcdd044f939d1373b16f8daec2e91007faf14f92b3";
+            api_url = "https://initcodingchallenge.pl/backend";
+            break;
+        case "test":
+            api_key = "ApiKey";
+            api_url = "https://initcodingchallenge.pl:5000/backend";
+            break;
+        default:
+            api_key = "ApiKey";
+            api_url = "http://localhost:8080";
+    }
 
     const fullUrl = api_url + url;
     const response = await fetch(fullUrl, {
