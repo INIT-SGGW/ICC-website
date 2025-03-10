@@ -1,6 +1,7 @@
 "use client"
 
-import React, { ReactNode } from "react"
+import type { ReactNode } from "react";
+import React from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import type { Components } from "react-markdown"
@@ -11,35 +12,35 @@ import './MarkdownRenderer.css'
 const processEasterEggs = (text: string): ReactNode[] => {
   // Match pattern like [!egg]{text="Easter Egg" tooltip="Jajko niespodzianka"}
   const regex = /\[!egg\]\{text="([^"]+)" tooltip="([^"]+)"\}/g;
-  
+
   const parts: ReactNode[] = [];
   let lastIndex = 0;
   let match;
-  
+
   // Find all matches and build an array of text and easter egg components
   while ((match = regex.exec(text)) !== null) {
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index));
     }
-    
+
     parts.push(
-      <span 
+      <span
+        className="markdown-easter-egg"
         key={match.index}
-        className="markdown-easter-egg" 
         title={match[2]}
       >
         {match[1]}
       </span>
     );
-    
+
     lastIndex = match.index + match[0].length;
   }
-  
+
   // Add any remaining text
   if (lastIndex < text.length) {
     parts.push(text.slice(lastIndex));
   }
-  
+
   // If we found at least one match, return the processed parts
   // Even if parts.length is 1, we should return it if we found matches
   return lastIndex > 0 ? parts : [text];
@@ -66,14 +67,14 @@ const processNodes = (nodes: ReactNode): ReactNode => {
     // If it's not a string or doesn't have children, return it as is
     return nodes;
   }
-  
+
   // Process text content
   return processEasterEggs(nodes);
 };
 
 // Create a component for each Markdown element we want to process
 const createComponent = (type: keyof JSX.IntrinsicElements) => {
-  return ({ node, children, ...props }: { node?: any; children?: React.ReactNode; [key: string]: any }) => {
+  return function ({ node, children, ...props }: { node?: any; children?: React.ReactNode;[key: string]: any }) {
     const Tag = type as React.ElementType;
     return <Tag {...props}>{processNodes(children)}</Tag>;
   };
@@ -100,12 +101,12 @@ const components: Components = {
 type MarkdownRendererProps = {
   markdown: string;
   className?: string;
-};
+}
 
 export function MarkdownRenderer({ markdown, className = "" }: MarkdownRendererProps): React.JSX.Element {
   return (
     <div className={`${className} markdown-container prose prose-invert max-w-none`}>
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+      <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
         {markdown}
       </ReactMarkdown>
     </div>

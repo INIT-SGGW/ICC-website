@@ -1,6 +1,7 @@
 "use client";
 
-import { CreateTaskFormDTO, CreateTaskRequest, Semester } from "@repo/types";
+import type { CreateTaskFormDTO, ServerError } from "@repo/types";
+import { Semester } from "@repo/types";
 import { Button, Input, Select } from "@repo/ui";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,11 +12,11 @@ const validateData = (data: CreateTaskFormDTO): string | null => {
     if (data.title.length === 0) return "Tytuł nie może być pusty";
     if (data.taskNumber <= 0 && data.taskNumber <= 12) return "Numer zadania musi być większy od 0 i mniejszy od 12";
     if (data.partA === null) return "Musisz dodać plik z częścią A";
-    if (data.partA?.name.match(/\.md$/) === null) return "Plik z części A musi być w formacie .md";
+    if (/\.md$/.exec(data.partA.name) === null) return "Plik z części A musi być w formacie .md";
     if (data.partB === null) return "Musisz dodać plik z częścią B";
-    if (data.partB?.name.match(/\.md$/) === null) return "Plik z części B musi być w formacie .md";
+    if (/\.md$/.exec(data.partB.name) === null) return "Plik z części B musi być w formacie .md";
     if (data.answers === null) return "Musisz dodać plik z odpowiedziami";
-    if (data.answers.name.match(/\.zip$/) === null) return "Plik z odpowiedziami musi być w formacie .zip";
+    if ((/\.zip$/.exec(data.answers.name)) === null) return "Plik z odpowiedziami musi być w formacie .zip";
 
     return null;
 }
@@ -53,8 +54,8 @@ export function AddTaskForm(): React.JSX.Element {
             return;
         }
 
-        const partAContent = await formData.partA!.text();
-        const partBContent = await formData.partB!.text();
+        const partAContent = await formData.partA!.text(); //eslint-disable-line @typescript-eslint/no-non-null-assertion -- checked by validation
+        const partBContent = await formData.partB!.text(); //eslint-disable-line @typescript-eslint/no-non-null-assertion -- checked by validation
         const data = new FormData();
         data.append("title", formData.title);
         data.append("taskNumber", formData.taskNumber.toString());
@@ -74,7 +75,7 @@ export function AddTaskForm(): React.JSX.Element {
             });
 
             if (!response.ok) {
-                const res = await response.json();
+                const res = await response.json() as ServerError;
                 let message = "Wystąpił błąd podczas komunikacji z serwerem.";
                 if (res.errors && res.errors.length > 0 && res.errors[0].message) {
                     message = res.errors[0].message;
@@ -84,14 +85,14 @@ export function AddTaskForm(): React.JSX.Element {
                     message = res.status;
                 }
 
-                const error = new CustomError(message);
-                error.status = response.status;
-                throw error;
+                const err = new CustomError(message);
+                err.status = response.status;
+                throw err;
             }
             router.push("/tasks");
-        } catch (e: unknown) {
-            if (e instanceof Error || e instanceof CustomError) {
-                setError(e.message);
+        } catch (er: unknown) {
+            if (er instanceof Error || er instanceof CustomError) {
+                setError(er.message);
                 setIsFetching(false);
                 return;
             }
@@ -100,7 +101,7 @@ export function AddTaskForm(): React.JSX.Element {
     }
 
     return (
-        <form className="w-full max-w-[600px] flex flex-col gap-2" noValidate onSubmit={(e) => { handleSubmit(e) }} >
+        <form className="w-full max-w-[600px] flex flex-col gap-2" noValidate onSubmit={(e) => { void handleSubmit(e) }} >
             <Input type="text" placeholder="Tytuł" value={formData.title} onChange={(e) => { setFormData((prev) => ({ ...prev, title: e.target.value })); }} />
             <div >
                 <label htmlFor="task-number" className="text-white">Numer zadania</label>

@@ -1,21 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { CreateTaskDTO, TaskAdminDTO, UpdateTaskDTO } from '../types/dtos.js';
-import { HttpException } from '@nestjs/common';
+import fs from 'node:fs';
+import { Injectable, HttpException } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
-import fs from 'fs';
-import { unzipFile } from '../utils/UnzipFile.js';
 import { InjectModel } from '@nestjs/mongoose';
-import { Task } from '../schemas/task.schema.js';
 import { Model, Types } from 'mongoose';
-import { GetAllTasksResponse, GetTaskAdminResponse, GetTaskUserResponse } from '@repo/types';
-import { GetAllTasksQuery } from '../types/queries.js';
-
+import type { GetAllTasksResponse, GetTaskAdminResponse } from '@repo/types';
+import { Task } from '../schemas/task.schema.js';
+import type { CreateTaskDTO, TaskAdminDTO, UpdateTaskDTO } from '../types/dtos.js';
+import { unzipFile } from '../utils/UnzipFile.js';
+import type { GetAllTasksQuery } from '../types/queries.js';
 
 @Injectable()
 export class AdminService {
-  constructor(
-    @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
-  ) { }
+  constructor(@InjectModel(Task.name, 'icc') private taskModel: Model<Task>) { }
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
@@ -48,7 +44,7 @@ export class AdminService {
         title: task.title,
         taskNumber: task.taskNumber,
         releaseDate: task.releaseDate,
-        semester: task.semester
+        semester: task.semester,
       };
     } catch (error: unknown) {
       if (error instanceof HttpException) {
@@ -66,14 +62,10 @@ export class AdminService {
       throw new HttpException('Zadanie o podanym roku wydania, semestrze i numerze już istnieje', StatusCodes.CONFLICT);
     }
 
-    try {
-      await unzipFile("./uploads/temp/inputs.zip", savePath);
-    } catch (error: unknown) {
-      throw new HttpException('Wystąpił błąd podczas rozpakowywania pliku', StatusCodes.INTERNAL_SERVER_ERROR);
-    }
+    unzipFile('./uploads/temp/inputs.zip', savePath);
 
     try {
-      const task = new this.taskModel({
+      await this.taskModel.create({
         title: body.title,
         releaseDate: body.releaseDate,
         semester: body.semester,
@@ -84,14 +76,13 @@ export class AdminService {
         },
         filePath: savePath,
       });
-
-      await task.save();
     } catch (error: unknown) {
       fs.rmSync(savePath, { recursive: true });
-      throw new HttpException('Wystąpił błąd podczas zapisywania zadania w bazie danych', StatusCodes.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Wystąpił błąd podczas zapisywania zadania w bazie danych',
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
     }
-
-    return;
   }
 
   async updateTask(id: string, body: UpdateTaskDTO): Promise<TaskAdminDTO> {
@@ -116,26 +107,28 @@ export class AdminService {
 
       if (newInputsPath !== task.filePath && fs.existsSync(newInputsPath)) {
         // if task with the same year, semester and number already exists
-        throw new HttpException('Zadanie o podanym roku wydania, semestrze i numerze już istnieje', StatusCodes.CONFLICT);
+        throw new HttpException(
+          'Zadanie o podanym roku wydania, semestrze i numerze już istnieje',
+          StatusCodes.CONFLICT,
+        );
       }
 
-      console.log(typeof body.answers !== "string", task.filePath !== newInputsPath);
       if (task.filePath !== newInputsPath) {
         // if path has changed
-        if (typeof body.answers === "string") {
+        if (typeof body.answers === 'string') {
           // copy to new location
           fs.cpSync(task.filePath, newInputsPath, { recursive: true });
         } else {
           // upload new file
-          await unzipFile("./uploads/temp/inputs.zip", newInputsPath);
+          unzipFile('./uploads/temp/inputs.zip', newInputsPath);
         }
         fs.rmSync(task.filePath, { recursive: true });
         task.filePath = newInputsPath;
       } else {
         // if path hasn't changed
-        if (typeof body.answers !== "string") {
+        if (typeof body.answers !== 'string') { //eslint-disable-line @typescript-eslint/no-unnecessary-condition -- in other case, do nothing
           // upload new file
-          await unzipFile("./uploads/temp/inputs.zip", task.filePath);
+          unzipFile('./uploads/temp/inputs.zip', task.filePath);
         }
       }
 
@@ -145,7 +138,7 @@ export class AdminService {
         title: task.title,
         taskNumber: task.taskNumber,
         releaseDate: task.releaseDate,
-        semester: task.semester
+        semester: task.semester,
       };
     } catch (error: unknown) {
       if (error instanceof HttpException) {

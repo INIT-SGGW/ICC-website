@@ -1,17 +1,25 @@
+import fs from 'node:fs';
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { GetTaskAnswersResponse, TaskParts, GetAllTasksResponse, GetTaskUserResponse, GetNextTaskResponse, Semester, SendAnswerTaskResponse } from '@repo/types';
+import type {
+  GetTaskAnswersResponse,
+  GetAllTasksResponse,
+  GetTaskUserResponse,
+  GetNextTaskResponse,
+  Semester,
+  SendAnswerTaskResponse,
+} from '@repo/types';
+import { TaskParts } from '@repo/types';
 import { Model, Types } from 'mongoose';
 import { StatusCodes } from 'http-status-codes';
-import { TaskFileDTO, type UserPayloadDTO, type UserTokenDataDTO } from '../types/dtos.js';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { TaskFileDTO, type UserTokenDataDTO } from '../types/dtos.js';
 import type { AnswerTaskBody } from '../types/bodies.js';
 import type { GetAllTasksQuery } from '../types/queries.js';
 import { Task } from '../schemas/task.schema.js';
 import { User } from '../schemas/user.schema.js';
-import fs from 'fs';
 import { getRandomFile } from '../utils/GetRandomFile.js';
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
 import { pointCounter } from '../utils/PointCounter.js';
 
 @Injectable()
@@ -19,7 +27,7 @@ export class TasksService {
   constructor(
     @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
     @InjectModel(User.name, 'register') private userModel: Model<User>,
-  ) { }
+  ) {}
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
@@ -42,7 +50,9 @@ export class TasksService {
 
   async getNextTask(query: GetAllTasksQuery): Promise<GetNextTaskResponse> {
     try {
-      const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester }).sort({ releaseDate: 1 });
+      const tasks = await this.taskModel
+        .find({ releaseYear: query.year, semester: query.semester })
+        .sort({ releaseDate: 1 });
       if (tasks.length === 0) {
         throw new HttpException(`Brak zadań dla roku ${query.year}`, StatusCodes.NOT_FOUND);
       }
@@ -83,7 +93,13 @@ export class TasksService {
     };
   }
 
-  async getTaskAnswersUser(year: number, semester: Semester, taskNumber: number, userDTO: UserTokenDataDTO | undefined, part: string): Promise<GetTaskAnswersResponse> {
+  async getTaskAnswersUser(
+    year: number,
+    semester: Semester,
+    taskNumber: number,
+    userDTO: UserTokenDataDTO | undefined,
+    part: string,
+  ): Promise<GetTaskAnswersResponse> {
     try {
       if (!userDTO) {
         throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
@@ -95,7 +111,7 @@ export class TasksService {
         throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
       }
 
-      const user = await this.userModel.findById(new Types.ObjectId(id as string));
+      const user = await this.userModel.findById(new Types.ObjectId(id));
       if (!user) {
         throw new HttpException(`Nie znaleziono użytkownika o id ${id}`, StatusCodes.NOT_FOUND);
       }
@@ -118,7 +134,7 @@ export class TasksService {
           throw new HttpException('Problem z odczytaniem pliku', StatusCodes.UNAUTHORIZED);
         }
 
-        const taskContent = JSON.parse(fs.readFileSync(taskFile, 'utf8'));
+        const taskContent: unknown = JSON.parse(fs.readFileSync(taskFile, 'utf8'));
         const taskContentClass = plainToInstance<TaskFileDTO, unknown>(TaskFileDTO, taskContent);
         const transformError = await validate(taskContentClass);
         if (transformError.length > 0) {
@@ -143,7 +159,7 @@ export class TasksService {
             points: 0,
             is_correct: false,
           },
-        }
+        };
         user.started_tasks.push(currentTask);
 
         await user.save();
@@ -151,7 +167,7 @@ export class TasksService {
       const partToCheck = part === 'A' ? 'partA' : 'partB';
       const currentPart = currentTask[partToCheck];
 
-      const input = JSON.parse(fs.readFileSync(currentTask.input_path, 'utf8'));
+      const input: unknown = JSON.parse(fs.readFileSync(currentTask.input_path, 'utf8'));
       const inputDTO = plainToInstance<TaskFileDTO, unknown>(TaskFileDTO, input);
       const transformError = await validate(inputDTO);
       if (transformError.length > 0) {
@@ -166,15 +182,24 @@ export class TasksService {
         previousAnswers: currentPart.previous_answers,
       };
     } catch (error: unknown) {
-      console.error(error);
       if (error instanceof HttpException) {
         throw error;
       }
-      throw new HttpException('Wystąpił błąd podczas pobierania odpowiedzi na zadanie', StatusCodes.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Wystąpił błąd podczas pobierania odpowiedzi na zadanie',
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  async answerTask(year: number, semester: Semester, taskNumber: number, part: TaskParts, userDTO: UserTokenDataDTO | undefined, body: AnswerTaskBody): Promise<SendAnswerTaskResponse> {
+  async answerTask(
+    year: number,
+    semester: Semester,
+    taskNumber: number,
+    part: TaskParts,
+    userDTO: UserTokenDataDTO | undefined,
+    body: AnswerTaskBody,
+  ): Promise<SendAnswerTaskResponse> {
     try {
       if (!userDTO) {
         throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
@@ -186,7 +211,7 @@ export class TasksService {
         throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
       }
 
-      const user = await this.userModel.findById(new Types.ObjectId(id as string));
+      const user = await this.userModel.findById(new Types.ObjectId(id));
 
       if (!user) {
         throw new HttpException(`Nie znaleziono użytkownika o id ${id}`, StatusCodes.NOT_FOUND);
@@ -208,7 +233,7 @@ export class TasksService {
         throw new HttpException('Nie rozpocząłeś tego zadania', StatusCodes.NOT_FOUND);
       }
 
-      const partToCheck = part === 'A' ? 'partA' : 'partB';
+      const partToCheck = part === TaskParts.A ? 'partA' : 'partB';
       const currentPart = currentTask[partToCheck];
 
       if (currentPart.is_correct) {
@@ -225,11 +250,11 @@ export class TasksService {
         throw new HttpException('Otrzymałeś cooldown, za zaszybkie odpowiadanie', StatusCodes.FORBIDDEN);
       }
       if (body.answer !== currentPart.correct_answer) {
-        if (currentPart.previous_answers.length >= 3) console.log(currentPart.previous_answers, currentPart.previous_answers[currentPart.previous_answers.length - 2])
-        currentPart.previous_answers.push({
-          date: new Date(),
-          answer: body.answer,
-        });
+        if (currentPart.previous_answers.length >= 3)
+          currentPart.previous_answers.push({
+            date: new Date(),
+            answer: body.answer,
+          });
 
         user.started_tasks = user.started_tasks.map((_task) => {
           if (_task.task_id.equals(task._id)) {
@@ -245,38 +270,36 @@ export class TasksService {
           previousAnswers: currentPart.previous_answers,
           cooldown: 0,
         };
-      } else {
-        currentPart.is_correct = true;
-        currentPart.previous_answers.push({
-          date: new Date(),
-          answer: body.answer,
-        });
-        currentPart.points = pointCounter(task.usersFinished[partToCheck].length);
-        task.usersFinished[partToCheck].push(user._id);
-        task.markModified('usersFinished');
-        await task.save();
-
-        user.started_tasks = user.started_tasks.map((_task) => {
-          if (_task.task_id.equals(task._id)) {
-            _task[partToCheck] = currentPart;
-          }
-          return _task;
-        });
-        user.markModified('started_tasks');
-        await user.save();
-
-        return {
-          isCorrect: true,
-          previousAnswers: currentPart.previous_answers,
-          points: currentPart.points,
-          correctAnswer: currentPart.correct_answer,
-        }
       }
+      currentPart.is_correct = true;
+      currentPart.previous_answers.push({
+        date: new Date(),
+        answer: body.answer,
+      });
+      currentPart.points = pointCounter(task.usersFinished[partToCheck].length);
+      task.usersFinished[partToCheck].push(user._id);
+      task.markModified('usersFinished');
+      await task.save();
+
+      user.started_tasks = user.started_tasks.map((_task) => {
+        if (_task.task_id.equals(task._id)) {
+          _task[partToCheck] = currentPart;
+        }
+        return _task;
+      });
+      user.markModified('started_tasks');
+      await user.save();
+
+      return {
+        isCorrect: true,
+        previousAnswers: currentPart.previous_answers,
+        points: currentPart.points,
+        correctAnswer: currentPart.correct_answer,
+      };
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         throw error;
       }
-      console.log(error);
       throw new HttpException('Wystąpił błąd podczas pobierania zadania', StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }

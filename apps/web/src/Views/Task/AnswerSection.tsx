@@ -1,12 +1,11 @@
 "use client"
 
-import { KeyboardEvent, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "@repo/ui"
 import Image from "next/image"
 import Link from "next/link"
 import { useGetTaskAnswers, useSendAnswerTask } from "@/services/api"
-import { Semester, SendAnswerTaskResponse } from "@repo/types"
-import CustomError from "@/utils/CustomError"
+import type { Semester, SendAnswerTaskResponse } from "@repo/types"
 import { HttpMethods } from "@/types/enums"
 
 type Props = {
@@ -69,7 +68,7 @@ export function AnswerSection({ year, semester, task, part }: Props): React.JSX.
         setAnswerData((prev) => ({ ...prev, ...response, previousAnswers: prevAns }));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- This is a temporary condition
+
     if (!loggedIn) {
         return (
             <div className="flex flex-col items-center justify-center gap-6 mt-16">
@@ -102,8 +101,8 @@ export function AnswerSection({ year, semester, task, part }: Props): React.JSX.
                         ) : (
                             <>
                                 <p className="text-cred text-sm">{answerError?.message}</p>
-                                <Input placeholder="Odpowiedź" value={answer} onChange={(e) => { setAnswer(e.target.value); }} onKeyDown={(e) => { e.key === "Enter" && handleSubmit() }} />
-                                <button className="bg-[#FF0000] text-white p-2 w-full" onClick={handleDownloadInput}>Pobierz input</button>
+                                <Input placeholder="Odpowiedź" value={answer} onChange={(e) => { setAnswer(e.target.value); }} onKeyDown={(e) => { e.key === "Enter" && void handleSubmit() }} />
+                                <button type="button" className="bg-[#FF0000] text-white p-2 w-full" onClick={() => { handleDownloadInput() }}>Pobierz input</button>
                             </>
                         )}
 

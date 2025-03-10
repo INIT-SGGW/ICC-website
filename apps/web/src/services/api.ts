@@ -4,7 +4,7 @@ import useSWRMutation, { type SWRMutationResponse } from "swr/mutation";
 import type { GetAllTasksResponse, GetNextTaskResponse, GetTaskAnswersResponse, GetTaskUserResponse, LoginRequest, LoginResponseBody, RegisterRequest, RegisterResponse, SendAnswerTaskRequest, SendAnswerTaskResponse, UserResponse, VerifyEmailRequest } from "@repo/types";
 import type { FetcherArgs } from "@/types/types";
 import { HttpMethods } from "@/types/enums";
-import CustomError from "@/utils/CustomError";
+import type CustomError from "@/utils/CustomError";
 import useSWR from "swr";
 
 export function useUser(url: string): SWRMutationResponse<UserResponse, unknown, Key, FetcherArgs<null> | undefined> {
@@ -28,11 +28,11 @@ export function useLogout(): SWRMutationResponse<unknown, unknown, Key, FetcherA
 }
 
 export function useGetTask(url: string): SWRResponse<GetTaskUserResponse, CustomError> {
-    return useSWR(url, (url) => fetcherICC<null, GetTaskUserResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
+    return useSWR(url, (_url) => fetcherICC<null, GetTaskUserResponse>(_url, { arg: { method: HttpMethods.GET, credentials: true } }));
 }
 
 export function useGetNextTask(url: string): SWRResponse<GetNextTaskResponse, CustomError> {
-    return useSWR(url, (url) => fetcherICC<null, GetNextTaskResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
+    return useSWR(url, (_url) => fetcherICC<null, GetNextTaskResponse>(_url, { arg: { method: HttpMethods.GET, credentials: true } }));
 }
 
 export function useGetAllTasks(url: string): SWRResponse<GetAllTasksResponse, CustomError> {

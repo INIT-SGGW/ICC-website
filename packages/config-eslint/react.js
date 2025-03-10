@@ -36,7 +36,13 @@ module.exports = {
   ignorePatterns: ["node_modules/", "dist/", ".eslintrc.js", "**/*.css"],
   // add rules configurations here
   rules: {
+    "react/jsx-sort-props": "off",
     "import/no-default-export": "off",
+    "import/order": "off",
+    "unicorn/filename-case": "off",
+    "camelcase": "off",
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "no-unused-vars": 'off',
   },
   overrides: [
     {

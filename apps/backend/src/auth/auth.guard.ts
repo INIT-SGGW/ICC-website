@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import type { UserPayloadDTO, UserTokenDataDTO } from '../types/dtos.js';
+import type { UserTokenDataDTO } from '../types/dtos.js';
 
 @Injectable()
 export class UserAuthGuard extends AuthGuard('jwt') {

@@ -1,7 +1,6 @@
 "use client"
 
 import { Input, Button } from "@repo/ui"
-import Link from "next/link"
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react"
 import { useLogin } from "../../services/api"

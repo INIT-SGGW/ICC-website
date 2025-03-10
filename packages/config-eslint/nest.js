@@ -27,6 +27,7 @@ module.exports = {
         '@typescript-eslint/no-floating-promises': 'warn',
         '@typescript-eslint/no-unsafe-argument': 'warn',
         "@typescript-eslint/no-extraneous-class": 'off',
+        "unicorn/filename-case": 'off',
     },
     ignorePatterns: ['eslint.config.mjs'], // Ignores this file from linting
 };

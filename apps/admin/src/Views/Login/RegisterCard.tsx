@@ -1,12 +1,12 @@
 "use client"
 
-import { useRegister } from "@/services/api"
-import CustomError from "@/utils/CustomError"
+import { useRegister } from "../../services/api"
+import CustomError from "../../utils/CustomError"
 import { Button, Input, Select } from "@repo/ui"
 import type { FormEvent } from "react";
 import { useState } from "react"
 import { Degree, Faculty, type RegisterFormDTO } from "@repo/types"
-import { HttpMethods } from "@/types/enums"
+import { HttpMethods } from "../../types/enums"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 

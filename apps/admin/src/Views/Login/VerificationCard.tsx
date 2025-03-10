@@ -1,8 +1,8 @@
 "use client";
 
-import { useVerifyEmail } from "@/services/api";
-import { HttpMethods } from "@/types/enums";
-import CustomError from "@/utils/CustomError";
+import { useVerifyEmail } from "../../services/api";
+import { HttpMethods } from "../../types/enums";
+import CustomError from "../../utils/CustomError";
 import { CustomLink } from "@repo/ui";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";

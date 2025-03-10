@@ -2,42 +2,8 @@
 
 import { useState } from "react";
 import { useGetAllUsers } from "../../services/api";
-import { GetAllUsersResponse } from "@repo/types";
-import CustomError from "../../utils/CustomError";
-
-type User = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-}
-
-const fakeData: User[] = [
-    {
-        id: "1",
-        firstName: "Jan",
-        lastName: "Kowalski",
-        email: "jan@cp.cod"
-    },
-    {
-        id: "2",
-        firstName: "Adam",
-        lastName: "Nowak",
-        email: "adam@asdf.coads"
-    },
-    {
-        id: "3",
-        firstName: "Jan",
-        lastName: "Kowalski",
-        email: "jan@cp.cod"
-    },
-    {
-        id: "4",
-        firstName: "Adam",
-        lastName: "Nowak",
-        email: "adam@asdf.coads"
-    },
-]
+import type { GetAllUsersResponse } from "@repo/types";
+import type CustomError from "../../utils/CustomError";
 
 type Props = {
     data: GetAllUsersResponse["users"] | undefined;
@@ -60,7 +26,13 @@ function Table({ data, isLoading, error }: Props): JSX.Element {
                 </thead>
                 {
                     (!data || data.length === 0) ? (
-                        <tbody className="text-center text-white bg-black"><tr><td colSpan={5}>{error ? `Error: ${error.message}` : isLoading ? "Loading..." : "Brak zadań"}</td></tr></tbody>
+                        <tbody className="text-center text-white bg-black">
+                            <tr>
+                                <td colSpan={5}>
+                                    {error ? `Error: ${error.message}` : isLoading ? "Loading..." : "Brak zadań"}
+                                </td>
+                            </tr>
+                        </tbody>
                     ) : (
                         <tbody>
                             {

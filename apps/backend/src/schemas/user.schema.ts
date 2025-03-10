@@ -31,7 +31,7 @@ export class Part {
 
 @Schema({ id: true })
 export class Answers {
-  @Prop({ required: true, type: Types.ObjectId, ref: "Task" })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'Task' })
   task_id: Types.ObjectId;
 
   @Prop({ required: true, type: String })

@@ -1,6 +1,6 @@
 import { TasksListHeader } from "@/Views/TasksList/Header";
 import { Tasks } from "@/Views/TasksList/Tasks";
-import { Semester } from "@repo/types";
+import type { Semester } from "@repo/types";
 import type { Metadata } from "next/types";
 import { use } from "react"; // eslint-disable-line import/named -- use is a named export
 

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { SendAnswerTaskRequest } from '@repo/types';
+import type { SendAnswerTaskRequest } from '@repo/types';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class AnswerTaskBody implements SendAnswerTaskRequest {

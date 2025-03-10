@@ -1,11 +1,11 @@
 import { fetcher, fetcherICC } from "./fetcher";
 import type { Key, SWRResponse } from "swr";
 import useSWRMutation, { type SWRMutationResponse } from "swr/mutation";
-import type { CreateTaskRequest, GetAllTasksResponse, GetAllUsersResponse, GetTaskAdminResponse, GetTaskUserResponse, LoginRequest, LoginResponseBody, RegisterRequest, RegisterResponse, ServerError, UserResponse, VerifyEmailRequest } from "@repo/types";
+import type { GetAllTasksResponse, GetAllUsersResponse, GetTaskAdminResponse, LoginRequest, LoginResponseBody, RegisterRequest, RegisterResponse, UserResponse, VerifyEmailRequest } from "@repo/types";
 import type { FetcherArgs } from "../types/types";
 import { HttpMethods } from "../types/enums";
 import useSWR from "swr";
-import CustomError from "../utils/CustomError";
+import type CustomError from "../utils/CustomError";
 
 export function useUser(url: string): SWRMutationResponse<UserResponse, unknown, Key, FetcherArgs<null> | undefined> {
     return useSWRMutation(url, () => fetcher(url, { arg: { method: HttpMethods.GET, credentials: true } }));

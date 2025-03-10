@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import type {
   GetTaskAnswersResponse,
-  CreateTaskRequest,
   GetAllTasksResponse,
   GetAllUsersResponse,
   GetTaskAdminResponse,
@@ -11,7 +10,7 @@ import type {
 } from '@repo/types';
 import { Semester } from '@repo/types';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class TaskUserDTO {
   @ApiProperty({
@@ -55,22 +54,6 @@ export class TasksDTO implements GetAllTasksResponse {
   tasks: TaskUserDTO[];
 }
 
-class TaskContentDTO {
-  @ApiProperty({
-    type: String,
-    example: 'Some text',
-    description: 'First part of task in markdown',
-  })
-  partA: string;
-
-  @ApiProperty({
-    type: String,
-    example: 'Some text',
-    description: 'Second part of task in markdown',
-  })
-  partB: string;
-}
-
 export class TaskDTO implements GetTaskUserResponse {
   @ApiProperty({
     type: String,
@@ -95,7 +78,7 @@ export class TaskDTO implements GetTaskUserResponse {
 }
 
 export class TaskAdminDTO implements GetTaskAdminResponse {
-  @ApiProperty({ type: String, example: 'Task title', description: 'Task title', })
+  @ApiProperty({ type: String, example: 'Task title', description: 'Task title' })
   title: string;
 
   @ApiProperty({
@@ -121,7 +104,7 @@ export class TaskAdminDTO implements GetTaskAdminResponse {
 }
 
 class ServerErrorErrorsList {
-  @ApiProperty({ type: String, example: "Field 'firstName' cannot be empty", description: 'Error message ', })
+  @ApiProperty({ type: String, example: "Field 'firstName' cannot be empty", description: 'Error message ' })
   message: string;
 }
 
@@ -229,9 +212,9 @@ export class GetTaskAnswersResponseDTO implements GetTaskAnswersResponse {
   points?: number;
 }
 
-export class CreateUserDTO { }
+export class CreateUserDTO {}
 
-export class UpdateUserDTO { }
+export class UpdateUserDTO {}
 
 export class CreateTaskDTO {
   @IsNotEmpty()
@@ -308,7 +291,7 @@ export class UserTokenDataDTO {
   @IsString()
   id: string;
 
-  @ApiProperty({ type: String, example: "example@wp.pl", description: 'User email' })
+  @ApiProperty({ type: String, example: 'example@wp.pl', description: 'User email' })
   @IsNotEmpty()
   @IsEmail()
   email: string;
@@ -320,17 +303,17 @@ export class UserPayloadDTO {
   @IsString()
   userId: string;
 
-  @ApiProperty({ type: String, example: "John", description: 'User first name' })
+  @ApiProperty({ type: String, example: 'John', description: 'User first name' })
   @IsNotEmpty()
   @IsString()
   firstName: string;
 
-  @ApiProperty({ type: String, example: "Doe", description: 'User last name' })
+  @ApiProperty({ type: String, example: 'Doe', description: 'User last name' })
   @IsNotEmpty()
   @IsString()
   lastName: string;
 
-  @ApiProperty({ type: String, example: "example@wp.pl", description: 'User email' })
+  @ApiProperty({ type: String, example: 'example@wp.pl', description: 'User email' })
   @IsNotEmpty()
   @IsEmail()
   email: string;
@@ -356,19 +339,19 @@ export class GetNextTaskDTO implements GetNextTaskDTO {
 export class TaskFileDTO {
   @IsNotEmpty()
   @IsString()
-  input: string
+  input: string;
 
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()
   @IsString()
-  part1: string
+  part1: string;
 
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()
   @IsString()
-  part2: string
+  part2: string;
 
   @IsNotEmpty()
   @IsString()
-  seed: string
+  seed: string;
 }

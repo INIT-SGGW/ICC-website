@@ -1,8 +1,8 @@
 "use client";
 
-import { CreateTaskFormDTO, GetTaskAdminResponse, GetTaskUpdateResponse, Semester } from "@repo/types";
+import type { CreateTaskFormDTO, GetTaskUpdateResponse, ServerError } from "@repo/types";
+import { Semester } from "@repo/types";
 import { Button, Input, Select } from "@repo/ui";
-import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 import CustomError from "../../utils/CustomError";
 import { HttpMethods } from "../../types/enums";
@@ -23,7 +23,7 @@ const validateData = (data: CreateTaskFormDTO): string | null => {
     return null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Temporary
+
 export function UpdateTaskForm({ id }: Props): React.JSX.Element {
     const router = useRouter();
     const { data, error, isLoading } = useGetTask(`/admin/tasks/${id}`);
@@ -72,23 +72,23 @@ export function UpdateTaskForm({ id }: Props): React.JSX.Element {
             return;
         }
 
-        const data = new FormData();
-        data.append("title", formData.title);
-        data.append("taskNumber", formData.taskNumber.toString());
-        data.append("releaseDate", formData.releaseDate.toISOString());
-        data.append("semester", formData.semester);
+        const updateData = new FormData();
+        updateData.append("title", formData.title);
+        updateData.append("taskNumber", formData.taskNumber.toString());
+        updateData.append("releaseDate", formData.releaseDate.toISOString());
+        updateData.append("semester", formData.semester);
         if (formData.partA) {
             const partAContent = await formData.partA.text();
-            data.append("partA", partAContent);
+            updateData.append("partA", partAContent);
         }
         if (formData.partB) {
             const partBContent = await formData.partB.text();
-            data.append("partB", partBContent);
+            updateData.append("partB", partBContent);
         }
         if (formData.answers) {
-            data.append("answers", formData.answers as Blob);
+            updateData.append("answers", formData.answers as Blob);
         } else {
-            data.append("answers", "false");
+            updateData.append("answers", "false");
         }
 
         try {
@@ -96,12 +96,12 @@ export function UpdateTaskForm({ id }: Props): React.JSX.Element {
             // formData type is garantued by validation check
             const response: Response = await fetch(`${url}/admin/tasks/${id}`, {
                 method: HttpMethods.PATCH,
-                body: data,
+                body: updateData,
                 credentials: "include"
             });
 
             if (!response.ok) {
-                const res = await response.json();
+                const res = await response.json() as ServerError;
                 let message = "Wystąpił błąd podczas komunikacji z serwerem.";
                 if (res.errors && res.errors.length > 0 && res.errors[0].message) {
                     message = res.errors[0].message;
@@ -111,9 +111,9 @@ export function UpdateTaskForm({ id }: Props): React.JSX.Element {
                     message = res.status;
                 }
 
-                const error = new CustomError(message);
-                error.status = response.status;
-                throw error;
+                const err = new CustomError(message);
+                err.status = response.status;
+                throw err;
             }
 
             const res = await response.json() as GetTaskUpdateResponse;
@@ -126,10 +126,10 @@ export function UpdateTaskForm({ id }: Props): React.JSX.Element {
                 partB: prev.partB,
                 answers: prev.answers
             }))
-            // router.push("/tasks");
-        } catch (e: unknown) {
-            if (e instanceof Error || e instanceof CustomError) {
-                setErrorMessage(e.message);
+            router.push("/tasks");
+        } catch (er: unknown) {
+            if (er instanceof Error || er instanceof CustomError) {
+                setErrorMessage(er.message);
                 setIsFetching(false);
                 return;
             }
@@ -140,7 +140,7 @@ export function UpdateTaskForm({ id }: Props): React.JSX.Element {
     if (isLoading) return <p className="text-white text-center">{error ? `Error: ${error.message}` : "Loading..."}</p>
 
     return (
-        <form className="w-full max-w-[600px] flex flex-col gap-2" noValidate onSubmit={(e) => { handleSubmit(e) }} >
+        <form className="w-full max-w-[600px] flex flex-col gap-2" noValidate onSubmit={(e) => { void handleSubmit(e) }} >
             <Input name="title" type="text" placeholder="Tytuł" value={formData.title} onChange={(e) => { setFormData((prev) => ({ ...prev, title: e.target.value })); }} />
             <div >
                 <label htmlFor="task-number" className="text-white">Numer zadania</label>

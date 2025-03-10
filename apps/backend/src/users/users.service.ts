@@ -1,19 +1,12 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import type { CreateUserDTO, GetAllUsersDTO, UpdateUserDTO } from '../types/dtos.js';
-import { User } from '../schemas/user.schema.js';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { GetAllUsersResponse } from '@repo/types';
+import type { GetAllUsersResponse } from '@repo/types';
+import { User } from '../schemas/user.schema.js';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(User.name, 'register') private userModel: Model<User>
-  ) { }
-
-  createUser(body: CreateUserDTO) {
-    return 'This action adds a new user';
-  }
+  constructor(@InjectModel(User.name, 'register') private userModel: Model<User>) {}
 
   async getAllUsers(): Promise<GetAllUsersResponse> {
     try {
@@ -35,19 +28,23 @@ export class UsersService {
       if (error instanceof HttpException) {
         throw error;
       }
-      throw new HttpException("Wystąpił błąd podczas pobierania użytkowników", 500);
+      throw new HttpException('Wystąpił błąd podczas pobierania użytkowników', 500);
     }
   }
 
-  getOneUser(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  // createUser(body: CreateUserDTO): string {
+  //   return 'This action adds a new user';
+  // }
 
-  updateUser(id: number, body: UpdateUserDTO) {
-    return `This action updates a #${id} user`;
-  }
+  // getOneUser(id: number) {
+  //   return `This action returns a #${id} user`;
+  // }
 
-  deleteUser(id: number) {
-    return `This action removes a #${id} user`;
-  }
+  // updateUser(id: number, body: UpdateUserDTO) {
+  //   return `This action updates a #${id} user`;
+  // }
+
+  // deleteUser(id: number) {
+  //   return `This action removes a #${id} user`;
+  // }
 }

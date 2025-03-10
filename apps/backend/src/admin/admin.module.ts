@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AdminService } from './admin.service.js';
-import { AdminController } from './admin.controller.js';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Task, TaskSchema } from '../schemas/task.schema.js';
 import { User, UserSchema } from '../schemas/user.schema.js';
 import { AuthModule } from '../auth/auth.module.js';
+import { AdminController } from './admin.controller.js';
+import { AdminService } from './admin.service.js';
 
 @Module({
   imports: [
@@ -15,4 +15,4 @@ import { AuthModule } from '../auth/auth.module.js';
   controllers: [AdminController],
   providers: [AdminService],
 })
-export class AdminModule { }
+export class AdminModule {}

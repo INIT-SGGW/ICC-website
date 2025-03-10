@@ -1,7 +1,7 @@
 "use client"
 
 import { useGetNextTask } from "@/services/api";
-import { Semester } from "@repo/types";
+import type { Semester } from "@repo/types";
 import { useEffect, useMemo, useState } from "react";
 
 type Props = {
@@ -44,19 +44,19 @@ export function TasksListHeader({ year, semester }: Props): React.JSX.Element {
         return result;
     }, [data, now]);
 
-    if (error) console.log(error);
+    if (isLoading) return <p className="text-xl">Zadania</p>;
+
+    if (error) {
+        return <p className="text-xl">Zadania</p>
+    };
 
     return (
         <>
             {
-                (!data || isLoading) ? (
-                    <p className="text-xl">Zadania</p>
-                ) : (
-                    <>
-                        <p className="text-xl">Nowe zadanie odblokuje się {new Date(data.releaseDate).toLocaleString("pl-PL")}!</p>
-                        <p className="text-lg text-gray-400">pozostało {timeUntilNextTaskRelease}</p>
-                    </>
-                )
+                data ? <>
+                    <p className="text-xl">Nowe zadanie odblokuje się {new Date(data.releaseDate).toLocaleString("pl-PL")}!</p>
+                    <p className="text-lg text-gray-400">pozostało {timeUntilNextTaskRelease}</p>
+                </> : null
             }
         </>
     )

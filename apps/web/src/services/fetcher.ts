@@ -1,7 +1,6 @@
 import CustomError from "@/utils/CustomError";
 import type { FetcherArgs } from "@/types/types";
 import type { ServerError } from "@repo/types";
-import { STATUS_CODES } from "http";
 
 export const fetcher = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R> }): Promise<T> => {
     const api_url = process.env.NEXT_PUBLIC_INIT_API_URL || "https://initcodingchallenge.pl/api/v1";

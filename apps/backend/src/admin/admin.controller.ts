@@ -1,14 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, UseInterceptors } from '@nestjs/common';
-import { AdminService } from './admin.service.js';
-import { CreateTaskDTO, ServerErrorDTO, TaskAdminDTO, UpdateTaskDTO } from '../types/dtos.js';
-import { GetAllTasksQuery } from '../types/queries.js';
-import { TasksDTO, TaskDTO } from '../types/dtos.js';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  UseInterceptors,
+  HttpCode,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { AdminAuthGuard } from '../auth/auth.guard.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { HttpCode } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
+import { CreateTaskDTO, ServerErrorDTO, TaskAdminDTO, UpdateTaskDTO, TasksDTO } from '../types/dtos.js';
+import { GetAllTasksQuery } from '../types/queries.js';
+import { AdminAuthGuard } from '../auth/auth.guard.js';
+import { AdminService } from './admin.service.js';
 
 @Controller('/admin')
 @ApiTags('admin')
@@ -16,7 +26,7 @@ import { StatusCodes } from 'http-status-codes';
 export class AdminController {
   constructor(private readonly adminService: AdminService) { }
 
-  @Get("/tasks")
+  @Get('/tasks')
   @ApiOperation({ summary: 'Get all tasks for user', description: 'Get all tasks for user in given year' })
   @ApiResponse({ status: 200, description: "Returns description of task's part A and part B", type: TasksDTO })
   @ApiResponse({ status: 404, description: 'No tasks in that year', type: ServerErrorDTO })
@@ -28,18 +38,18 @@ export class AdminController {
   @Get('/tasks/:id')
   @ApiOperation({ summary: 'Get open tasks', description: 'Get list of open tasks' })
   @ApiResponse({ status: 200, description: 'Returns list of open tasks', type: TaskAdminDTO })
-  @ApiQuery({ required: true, name: 'id', type: String, description: 'Task id', example: "as64c32647c1234c3421" })
+  @ApiQuery({ required: true, name: 'id', type: String, description: 'Task id', example: 'as64c32647c1234c3421' })
   async getTaskAdmin(@Param() id: string): Promise<TaskAdminDTO> {
     return this.adminService.getTask(id);
   }
 
-  @Post("/tasks")
+  @Post('/tasks')
   @UseInterceptors(
     FileInterceptor('answers', {
       storage: diskStorage({
-        destination: "./uploads/temp",
+        destination: './uploads/temp',
         filename: (req, file, cb) => {
-          cb(null, "inputs.zip");
+          cb(null, 'inputs.zip');
         },
       }),
     }),
@@ -55,9 +65,9 @@ export class AdminController {
   @UseInterceptors(
     FileInterceptor('answers', {
       storage: diskStorage({
-        destination: "./uploads/temp",
+        destination: './uploads/temp',
         filename: (req, file, cb) => {
-          cb(null, "inputs.zip");
+          cb(null, 'inputs.zip');
         },
       }),
     }),

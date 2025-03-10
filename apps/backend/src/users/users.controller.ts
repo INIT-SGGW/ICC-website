@@ -1,37 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AdminAuthGuard } from '../auth/auth.guard.js';
-import { CreateUserDTO, GetAllUsersDTO, UpdateUserDTO } from '../types/dtos.js';
+import type { GetAllUsersDTO } from '../types/dtos.js';
 import { UsersService } from './users.service.js';
 
 @Controller('/admin/users')
 @ApiTags('users', 'admin')
 @UseGuards(AdminAuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
-
-  @Post()
-  createUser(@Body() body: CreateUserDTO) {
-    return this.usersService.createUser(body);
-  }
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   getAllUsers(): Promise<GetAllUsersDTO> {
     return this.usersService.getAllUsers();
   }
 
-  @Get(':id')
-  getOneUser(@Param('id') id: string) {
-    return this.usersService.getOneUser(Number(id));
-  }
+  // @Post()
+  // createUser(@Body() body: CreateUserDTO) {
+  //   return this.usersService.createUser(body);
+  // }
 
-  @Patch(':id')
-  updateUser(@Param('id') id: string, @Body() body: UpdateUserDTO) {
-    return this.usersService.updateUser(Number(id), body);
-  }
+  // @Get(':id')
+  // getOneUser(@Param('id') id: string) {
+  //   return this.usersService.getOneUser(Number(id));
+  // }
 
-  @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    return this.usersService.deleteUser(Number(id));
-  }
+  // @Patch(':id')
+  // updateUser(@Param('id') id: string, @Body() body: UpdateUserDTO) {
+  //   return this.usersService.updateUser(Number(id), body);
+  // }
+
+  // @Delete(':id')
+  // deleteUser(@Param('id') id: string) {
+  //   return this.usersService.deleteUser(Number(id));
+  // }
 }

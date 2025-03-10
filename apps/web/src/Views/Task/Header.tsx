@@ -1,6 +1,6 @@
 "use client"
 
-import { Semester } from "@repo/types";
+import type { Semester } from "@repo/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

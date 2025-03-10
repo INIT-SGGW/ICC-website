@@ -28,9 +28,9 @@ export function TaskDetails({ id }: Props): React.JSX.Element {
         try {
             await trigger();
             router.push("/tasks");
-        } catch (error: unknown) {
-            if (error instanceof Error || error instanceof CustomError) {
-                setErrorMessage(error.message);
+        } catch (err: unknown) {
+            if (err instanceof Error || err instanceof CustomError) {
+                setErrorMessage(err.message);
             } else {
                 setErrorMessage("Wystąpił błąd podczas usuwania zadania");
             }

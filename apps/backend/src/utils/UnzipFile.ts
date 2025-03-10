@@ -1,27 +1,29 @@
+import fs from 'node:fs';
+import { join } from 'node:path';
 import AdmZip from 'adm-zip';
-import fs from 'fs';
-import { join } from 'path';
+import { HttpException } from '@nestjs/common';
+import { StatusCodes } from 'http-status-codes';
 
-export async function unzipFile(zipFilePath: string, extractTo: string) {
-    try {
-        const zip = new AdmZip(zipFilePath);
-        const zipEntries = zip.getEntries();
+export function unzipFile(zipFilePath: string, extractTo: string): void {
+  try {
+    const zip = new AdmZip(zipFilePath);
+    const zipEntries = zip.getEntries();
 
-        zipEntries.forEach((entry) => {
-            const entryPath = join(extractTo, entry.name);
+    zipEntries.forEach((entry) => {
+      const entryPath = join(extractTo, entry.name);
 
-            if (entry.isDirectory) {
-                fs.mkdirSync(entryPath, { recursive: true });
-            } else {
-                const fileData = zip.readFile(entry);
-                if (fileData) {
-                    fs.writeFileSync(entryPath, fileData);
-                }
-            }
-        });
+      if (entry.isDirectory) {
+        fs.mkdirSync(entryPath, { recursive: true });
+      } else {
+        const fileData = zip.readFile(entry);
+        if (fileData) {
+          fs.writeFileSync(entryPath, fileData);
+        }
+      }
+    });
 
-        fs.unlinkSync(zipFilePath);
-    } catch (error) {
-        throw new Error('Failed to unzip the file');
-    }
+    fs.unlinkSync(zipFilePath);
+  } catch (error) {
+    throw new HttpException('Wystąpił błąd podczas rozpakowywania pliku', StatusCodes.INTERNAL_SERVER_ERROR);
+  }
 }

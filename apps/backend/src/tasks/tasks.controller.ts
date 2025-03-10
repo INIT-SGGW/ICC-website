@@ -1,27 +1,24 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Semester, TaskParts } from '@repo/types';
+import { Request as Req } from 'express';
 import { GetAllTasksQuery } from '../types/queries.js';
 import { AnswerTaskBody } from '../types/bodies.js';
 import { UserAuthGuard } from '../auth/auth.guard.js';
-import { GetTaskAnswersResponseDTO, TasksDTO, ServerErrorDTO, TaskDTO, CreateTaskDTO, TaskUserDTO, GetNextTaskDTO, SendAnswerTaskResponseDTO } from '../types/dtos.js';
+import {
+  GetTaskAnswersResponseDTO,
+  TasksDTO,
+  ServerErrorDTO,
+  TaskDTO,
+  GetNextTaskDTO,
+  SendAnswerTaskResponseDTO,
+} from '../types/dtos.js';
 import { TasksService } from './tasks.service.js';
-import { Request as Req } from 'express';
-
 
 @ApiTags('tasks')
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) { }
+  constructor(private readonly tasksService: TasksService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all tasks for user', description: 'Get all tasks for user in given year' })
@@ -33,12 +30,18 @@ export class TasksController {
     return this.tasksService.getAllTasks(query);
   }
 
-  @Get("/next")
+  @Get('/next')
   @ApiOperation({ summary: 'Get next task', description: 'Get next task for user' })
   @ApiResponse({ status: 200, description: "Returns description of task's part A and part B", type: GetNextTaskDTO })
   @ApiResponse({ status: 404, description: 'No tasks in that year', type: ServerErrorDTO })
   @ApiQuery({ required: true, name: 'year', type: Number, description: 'Year of task release', example: 2025 })
-  @ApiQuery({ required: true, name: 'semester', type: String, description: 'Semester of task release', example: "letni" })
+  @ApiQuery({
+    required: true,
+    name: 'semester',
+    type: String,
+    description: 'Semester of task release',
+    example: 'letni',
+  })
   async getNextTask(@Query() query: GetAllTasksQuery): Promise<GetNextTaskDTO> {
     return this.tasksService.getNextTask(query);
   }
@@ -48,9 +51,18 @@ export class TasksController {
   @ApiResponse({ status: 200, description: 'Returns list of open tasks', type: TaskDTO })
   @ApiParam({ required: true, name: 'task', type: Number, description: 'Task number', example: 1 })
   @ApiParam({ required: true, name: 'year', type: Number, description: 'Year of task release', example: 2025 })
-  @ApiParam({ required: true, name: 'semester', type: String, description: 'Semester of task release', example: "letni" })
-
-  async getTaskUser(@Param("year") year: string, @Param("semester") semester: Semester, @Param("taskNumber") taskNumber: string): Promise<TaskDTO> {
+  @ApiParam({
+    required: true,
+    name: 'semester',
+    type: String,
+    description: 'Semester of task release',
+    example: 'letni',
+  })
+  async getTaskUser(
+    @Param('year') year: string,
+    @Param('semester') semester: Semester,
+    @Param('taskNumber') taskNumber: string,
+  ): Promise<TaskDTO> {
     return this.tasksService.getTaskUser(Number(year), semester, Number(taskNumber));
   }
 
@@ -60,14 +72,19 @@ export class TasksController {
   @ApiResponse({ status: 200, description: 'Returns list of open tasks', type: GetTaskAnswersResponseDTO })
   @ApiParam({ required: true, name: 'taskNumber', type: Number, description: 'Task number', example: 1 })
   @ApiParam({ required: true, name: 'year', type: Number, description: 'Year of task release', example: 2025 })
-  @ApiParam({ required: true, name: 'semester', type: String, description: 'Semester of task release', example: "letni" })
+  @ApiParam({
+    required: true,
+    name: 'semester',
+    type: String,
+    description: 'Semester of task release',
+    example: 'letni',
+  })
   @ApiParam({ required: true, name: 'part', type: String, description: 'Task part', example: 'A' })
-
   async getTaskAnswersUser(
-    @Param("year") year: string,
-    @Param("semester") semester: Semester,
-    @Param("taskNumber") taskNumber: string,
-    @Param("part") part: string,
+    @Param('year') year: string,
+    @Param('semester') semester: Semester,
+    @Param('taskNumber') taskNumber: string,
+    @Param('part') part: string,
     @Request() { user }: Req,
   ): Promise<GetTaskAnswersResponseDTO> {
     return this.tasksService.getTaskAnswersUser(Number(year), semester, Number(taskNumber), user, part);
@@ -77,7 +94,13 @@ export class TasksController {
   @UseGuards(UserAuthGuard)
   @ApiOperation({ summary: 'Answer task', description: 'Send answer to a task' })
   @ApiParam({ required: true, name: 'year', type: Number, description: 'Year of task release', example: 2025 })
-  @ApiQuery({ required: true, name: 'semester', type: String, description: 'Semester of task release', example: "letni" })
+  @ApiQuery({
+    required: true,
+    name: 'semester',
+    type: String,
+    description: 'Semester of task release',
+    example: 'letni',
+  })
   @ApiParam({ required: true, name: 'taskNumber', type: Number, description: 'Task number', example: 1 })
   @ApiParam({ required: true, name: 'part', type: String, description: 'Task part', example: 'A' })
   @ApiBody({ type: AnswerTaskBody })
@@ -87,10 +110,10 @@ export class TasksController {
     type: SendAnswerTaskResponseDTO,
   })
   async answerTask(
-    @Param("year") year: string,
-    @Param("semester") semester: Semester,
-    @Param("taskNumber") taskNumber: string,
-    @Param("part") part: TaskParts,
+    @Param('year') year: string,
+    @Param('semester') semester: Semester,
+    @Param('taskNumber') taskNumber: string,
+    @Param('part') part: TaskParts,
     @Body() body: AnswerTaskBody,
     @Request() { user }: Req,
   ): Promise<SendAnswerTaskResponseDTO> {
