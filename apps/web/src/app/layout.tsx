@@ -14,7 +14,7 @@ export default function RootLayout({
       { href: "/about", label: "O wyzwaniu", img: "/about.svg" },
       { href: "/task/2025/letni", label: "Zadania", img: "/flaga.svg" },
       { href: "/ranking", label: "Ranking", img: "/ranking.svg" },
-      { href: "/login", label: "Login", img: "/login.svg" }
+      { href: "/account", label: "Login", img: "/login.svg" }
     ]}
     >
       <>

@@ -29,7 +29,7 @@ const formatUTCDate = (date: Date): string => {
 }
 
 export function AnswerSection({ year, semester, task, part }: Props): React.JSX.Element {
-    const { data, error, isLoading } = useGetTaskAnswers(`/tasks/${year}/${semester}/${task}/${part}`);
+    const { data, error, isLoading } = useGetTaskAnswers(`/tasks/${year}/${semester}/${task}/${part}/answer`);
     const { trigger, error: answerError } = useSendAnswerTask(`/tasks/${year}/${semester}/${task}/${part}/answer`);
     const [answerData, setAnswerData] = useState<SendAnswerTaskResponse | undefined>(data);
     const [loggedIn, setLoggedIn] = useState<boolean>(true);

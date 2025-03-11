@@ -1,24 +1,10 @@
 import CustomError from "@/utils/CustomError";
 import type { FetcherArgs } from "@/types/types";
 import type { ServerError } from "@repo/types";
+import { getApiUrl } from "@/utils/GetApiUrl";
 
 export const fetcher = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R> }): Promise<T> => {
-    let api_url: string;
-    switch (process.env.NODE_ENV) {
-        case "development":
-            api_url = process.env.NEXT_PUBLIC_INIT_API_URL || "";
-            break;
-        case "production":
-            api_url = "https://initcodingchallenge.pl/api/v1";
-            break;
-        case "test":
-            api_url = "https://initcodingchallenge.pl:5000/api/v1";
-            break;
-        default:
-            api_url = "http://localhost:8080";
-    }
-
-    const fullUrl = api_url + url;
+    const fullUrl = getApiUrl(false) + url;
     const response = await fetch(fullUrl, {
         method: arg?.method || "GET",
         headers: {
@@ -53,22 +39,7 @@ export const fetcher = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R>
 };
 
 export const fetcherICC = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R> }): Promise<T> => {
-    let api_url: string;
-    switch (process.env.NODE_ENV) {
-        case "development":
-            api_url = process.env.NEXT_PUBLIC_ICC_API_URL || "";
-            break;
-        case "production":
-            api_url = "https://initcodingchallenge.pl/backend";
-            break;
-        case "test":
-            api_url = "https://initcodingchallenge.pl:5000/backend";
-            break;
-        default:
-            api_url = "http://localhost:4000";
-    }
-
-    const fullUrl = api_url + url;
+    const fullUrl = getApiUrl(true) + url;
     const response = await fetch(fullUrl, {
         method: arg?.method || "GET",
         headers: {

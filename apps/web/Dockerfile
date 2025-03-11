@@ -12,14 +12,12 @@ WORKDIR /app
 # Re-enable corepack in builder stage
 RUN corepack enable && corepack prepare pnpm@8.15.6 --activate
 COPY --from=installer /app .
+ENV NEXT_PUBLIC_NODE_ENV=test
 RUN pnpm build:web
 
 # Stage 3: Runner (Update copy commands)
 FROM node:18-alpine AS runner
 WORKDIR /app
-
-ENV NODE_ENV=production
-ENV PORT=3000
 
 # Copy standalone server
 COPY --from=builder /app/apps/web/.next/standalone ./

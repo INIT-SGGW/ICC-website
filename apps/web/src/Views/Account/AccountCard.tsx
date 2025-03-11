@@ -28,11 +28,7 @@ export function AccountCard(): React.JSX.Element {
 
     useEffect(() => {
         const savedUserId = localStorage.getItem("userId");
-        if (!savedUserId) {
-            router.push("/login");
-        } else {
-            setUserId(savedUserId);
-        }
+        setUserId(savedUserId);
     }, [router])
 
     useEffect(() => {

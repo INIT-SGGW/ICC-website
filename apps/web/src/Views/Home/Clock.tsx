@@ -1,6 +1,7 @@
 "use client";
 
 import { jerseyFont } from "@/assets/fonts";
+import { CustomLink } from "@repo/ui";
 import { useEffect, useMemo, useState } from "react";
 
 export function Clock(): React.JSX.Element {
@@ -17,8 +18,8 @@ export function Clock(): React.JSX.Element {
         return () => { clearInterval(interval); };
     }, [now]);
 
+    const challengeStartTime = new Date("2025-03-11T18:00:00");
     const timeUntilNextTaskRelease = useMemo(() => {
-        const challengeStartTime = new Date("2025-03-10T18:00:00");
 
         if (!now) return "";
 
@@ -33,12 +34,20 @@ export function Clock(): React.JSX.Element {
         const result = `${diffDays}:${diffHours}:${diffMinutes}:${diffSeconds}`;
 
         return result;
-    }, [now]);
+    }, [now, challengeStartTime]);
+
+    //eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
+    if (now && challengeStartTime.getTime() < now?.getTime()) {
+        return <></>;
+    }
 
     return (
-        <div className="flex flex-col items-center gap-4 w-full">
-            <h2 className={`text-white text-center text-5xl ${jerseyFont.className} relative -bottom-[10px]`}>Początek wyzwania za</h2>
-            <p className={`text-cred text-7xl ${jerseyFont.className}`}>{timeUntilNextTaskRelease}</p>
-        </div>
+        <>
+            <div className="flex flex-col items-center gap-4 w-full" title="Jak to się mówi, do dwóch razy sztuka 👀">
+                <h2 className={`text-white text-center text-5xl ${jerseyFont.className} relative -bottom-[10px]`}>Początek wyzwania za</h2>
+                <p className={`text-cred text-7xl ${jerseyFont.className}`}>{timeUntilNextTaskRelease}</p>
+            </div>
+            <CustomLink href="/register" className={`${jerseyFont.className} text-white text-2xl`} >Zarejestruj się</CustomLink>
+        </>
     )
 }
