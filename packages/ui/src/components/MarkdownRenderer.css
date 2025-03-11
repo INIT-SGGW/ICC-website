@@ -14,7 +14,12 @@
 }
 
 .markdown-container code:not(pre > code) {
-  @apply not-italic bg-gray-900 py-1 px-2 rounded-md border border-gray-700 font-mono font-normal;
+  @apply not-italic bg-gray-900 py-0 px-1 rounded-md border border-gray-700 font-mono font-normal text-sm;
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .markdown-container code:not(pre > code)::before,
