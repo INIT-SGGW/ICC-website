@@ -14,7 +14,7 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:prettier/recommended', // Prettier integration
     ],
-    plugins: ['@typescript-eslint', 'prettier'],
+    plugins: ['prettier'],
     globals: {
         ...require('globals').node,
         ...require('globals').jest,
