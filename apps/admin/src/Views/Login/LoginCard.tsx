@@ -2,7 +2,7 @@
 
 import { Input, Button } from "@repo/ui"
 import type { FormEvent } from "react";
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useLogin } from "../../services/api"
 import CustomError from "../../utils/CustomError"
 import type { LoginFormDTO } from "@repo/types"
@@ -15,25 +15,14 @@ const validateData = (data: LoginFormDTO): string | undefined => {
 }
 
 export function LoginCard(): React.JSX.Element {
-    const router = useRouter();
-    const [loading, setLoading] = useState(true)
     const { trigger, isMutating } = useLogin();
+    const router = useRouter();
 
     const [formData, setFormData] = useState<LoginFormDTO>({
         email: "",
         password: ""
     })
     const [error, setError] = useState<string | undefined>(undefined)
-
-    useEffect(() => {
-        if (typeof window === "undefined") return;
-        const userId = localStorage.getItem("userId")
-        if (userId) {
-            router.push("/account")
-        } else {
-            setLoading(false)
-        }
-    }, [router])
 
     const handleLogin = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
@@ -44,18 +33,15 @@ export function LoginCard(): React.JSX.Element {
         try {
             const response = await trigger({ body: formData, method: HttpMethods.POST, credentials: true })
             const userId = response.userId.split("\"")[1]
-            localStorage.setItem("userId", userId)
-            router.push("/")
+            localStorage.setItem("adminId", userId)
+            localStorage.setItem("loginTime", new Date().toISOString())
+            router.replace("/")
         } catch (e: unknown) {
             if (e instanceof CustomError || e instanceof Error) {
                 setError(e.message); return;
             }
             setError("Wystąpił błąd podczas logowania.");
         }
-    }
-
-    if (loading) {
-        return <div> </div>;
     }
 
     return (

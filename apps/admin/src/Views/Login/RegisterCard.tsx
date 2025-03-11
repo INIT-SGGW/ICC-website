@@ -86,7 +86,7 @@ export function RegisterCard(): React.JSX.Element {
             <Input type="password" autoComplete="new-password" placeholder="Powtórz hasło*" value={repeatPassword} onChange={(e) => { setRepeatPassword(e.target.value); }} />
             <div className="flex items-start justify-start gap-2 w-full">
                 <Input className="!w-min" type="checkbox" id="terms" checked={formData.aggrement} onChange={() => { setFormData((prev: RegisterFormDTO) => ({ ...prev, aggrement: !formData.aggrement })) }} />
-                <label className="text-white w-full leading-4" htmlFor="terms">Akceptuję <Link href="/Regulamin.pdf" target="_blank" className="text-red-500">regulamin</Link> i <Link href="/Polityka prywatności.pdf" target="_blank" className="text-red-500">politykę przetwarzania danych</Link></label>
+                <label className="text-white w-full leading-4" htmlFor="terms">Akceptuję <Link href="admin/Regulamin.pdf" target="_blank" className="text-red-500">regulamin</Link> i <Link href="admin/Polityka prywatności.pdf" target="_blank" className="text-red-500">politykę przetwarzania danych</Link></label>
             </div>
             <Button type="submit" disabled={isMutating}>{isMutating ? "..." : "Zarejestruj się"}</Button>
             {error ? <p className="text-red-500 text-sm">{error}</p> : null}

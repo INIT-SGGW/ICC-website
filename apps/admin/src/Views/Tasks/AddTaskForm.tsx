@@ -1,12 +1,12 @@
 "use client";
 
-import type { CreateTaskFormDTO, ServerError } from "@repo/types";
+import type { CreateTaskFormDTO } from "@repo/types";
 import { Semester } from "@repo/types";
 import { Button, Input, Select } from "@repo/ui";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import CustomError from "../../utils/CustomError";
-import { HttpMethods } from "../../types/enums";
+import { useAddTask } from "../../services/api";
 
 const validateData = (data: CreateTaskFormDTO): string | null => {
     if (data.title.length === 0) return "Tytuł nie może być pusty";
@@ -23,7 +23,7 @@ const validateData = (data: CreateTaskFormDTO): string | null => {
 
 export function AddTaskForm(): React.JSX.Element {
     const router = useRouter();
-    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const { trigger, isMutating } = useAddTask();
     const [formData, setFormData] = useState<CreateTaskFormDTO>({
         title: "",
         semester: Semester.LETNI,
@@ -45,7 +45,6 @@ export function AddTaskForm(): React.JSX.Element {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
-        setIsFetching(true);
         setError(null);
 
         const validationError = validateData(formData);
@@ -54,55 +53,31 @@ export function AddTaskForm(): React.JSX.Element {
             return;
         }
 
+        // Release time is 18:00
         const correctTimeDate = new Date(formData.releaseDate);
-        correctTimeDate.setHours(18);
-        correctTimeDate.setMinutes(0);
-        correctTimeDate.setSeconds(0);
-        setFormData((prev) => ({ ...prev, releaseDate: correctTimeDate }));
+        correctTimeDate.setHours(18, 0, 0, 0);
 
         const partAContent = await formData.partA!.text(); //eslint-disable-line @typescript-eslint/no-non-null-assertion -- checked by validation
         const partBContent = await formData.partB!.text(); //eslint-disable-line @typescript-eslint/no-non-null-assertion -- checked by validation
         const data = new FormData();
         data.append("title", formData.title);
         data.append("taskNumber", formData.taskNumber.toString());
-        data.append("releaseDate", formData.releaseDate.toUTCString());
+        data.append("releaseDate", correctTimeDate.toUTCString());
         data.append("semester", formData.semester);
         data.append("partA", partAContent);
         data.append("partB", partBContent);
         data.append("answers", formData.answers as Blob);
+
         try {
-            const url = process.env.NEXT_PUBLIC_ICC_API_URL || "";
-            // formData type is garantued by validation check
-            const response = await fetch(`${url}/admin/tasks`, {
-                method: HttpMethods.POST,
-                body: data,
-                credentials: "include"
-            });
-
-            if (!response.ok) {
-                const res = await response.json() as ServerError;
-                let message = "Wystąpił błąd podczas komunikacji z serwerem.";
-                if (res.errors && res.errors.length > 0 && res.errors[0].message) {
-                    message = res.errors[0].message;
-                } else if (res.detail) {
-                    message = res.detail;
-                } else if (res.status) {
-                    message = res.status;
-                }
-
-                const err = new CustomError(message);
-                err.status = response.status;
-                throw err;
-            }
+            await trigger({ body: data });
             router.push("/tasks");
         } catch (er: unknown) {
             if (er instanceof Error || er instanceof CustomError) {
                 setError(er.message);
-                setIsFetching(false);
-                return;
+            } else {
+                setError("Wystąpił błąd podczas dodawania zadania");
             }
         }
-        setIsFetching(false);
     }
 
     return (
@@ -135,7 +110,7 @@ export function AddTaskForm(): React.JSX.Element {
                 <label htmlFor="answers" className="text-white">Input i odpowiedzi</label>
                 <Input id="answers" type="file" placeholder="Opis zadania" accept=".zip" onChange={(e) => { handleFileChange(e, (file: File | null) => { setFormData((prev) => ({ ...prev, answers: file })) }); }} />
             </div>
-            <Button type="submit" disabled={isFetching} className="mt-4">{isFetching ? "..." : "Dodaj zadanie"}</Button>
+            <Button type="submit" disabled={isMutating} className="mt-4">{isMutating ? "..." : "Dodaj zadanie"}</Button>
             <p className="text-red-500 text-sm text-center">{error}</p>
         </form>
     )

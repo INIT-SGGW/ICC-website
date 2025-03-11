@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
+  assetPrefix: "/admin",
+  basePath: "/admin",
   reactStrictMode: true,
   output: "standalone",
   transpilePackages: ["@repo/ui"],
   experimental: {
     serverActions: {
-      bodySizeLimit: "20mb",
+      bodySizeLimit: "100mb",
     }
   }
 };

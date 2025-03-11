@@ -1,4 +1,4 @@
-import { fetcher, fetcherICC } from "./fetcher";
+import { fetcher, fetcherICC, fetcherICCFile } from "./fetcher";
 import type { Key, SWRResponse } from "swr";
 import useSWRMutation, { type SWRMutationResponse } from "swr/mutation";
 import type { GetAllTasksResponse, GetAllUsersResponse, GetTaskAdminResponse, LoginRequest, LoginResponseBody, RegisterRequest, RegisterResponse, UserResponse, VerifyEmailRequest } from "@repo/types";
@@ -41,4 +41,12 @@ export function useGetAllTasks(url: string): SWRResponse<GetAllTasksResponse, Cu
 
 export function useDeleteTask(url: string): SWRMutationResponse<null, CustomError, Key, FetcherArgs<null> | undefined> {
     return useSWRMutation(url, () => fetcherICC<null, null>(url, { arg: { method: HttpMethods.DELETE, credentials: true } }));
+}
+
+export function useAddTask(): SWRMutationResponse<void, CustomError, Key, { body: FormData }> {
+    return useSWRMutation("/admin/tasks", fetcherICCFile);
+}
+
+export function useGetMe(): SWRResponse<UserResponse, CustomError> {
+    return useSWR("/admin/me", (url) => fetcherICC<null, UserResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
 }

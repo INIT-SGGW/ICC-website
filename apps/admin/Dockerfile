@@ -12,6 +12,7 @@ WORKDIR /app
 # Re-enable corepack in builder stage
 RUN corepack enable && corepack prepare pnpm@8.15.6 --activate
 COPY --from=installer /app .
+ENV NEXT_PUBLIC_NODE_ENV=test
 RUN pnpm build:admin
 
 # Stage 3: Runner (Update copy commands)

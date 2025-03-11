@@ -7,7 +7,7 @@ export default function Page(): JSX.Element {
             <h1 className="text-cred text-6xl">Zadania</h1>
             <div className="w-full max-w-[800px] flex flex-col align-center gap-4">
                 <div className="flex justify-end">
-                    <Link href="/tasks/add" className="w-full text-center text-xl bg-cred hover:bg-red-500 transition-colors text-white px-5 py-1">Dodaj zadanie</Link>
+                    <Link href="/tasks/add/" className="w-full text-center text-xl bg-cred hover:bg-red-500 transition-colors text-white px-5 py-1">Dodaj zadanie</Link>
                 </div>
                 <TasksTable />
             </div>
