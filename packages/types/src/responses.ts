@@ -32,8 +32,7 @@ export type RegisterResponse = {
 }
 
 export type GetTaskUserResponse = {
-    partA: string,
-    partB: string,
+    content: string,
     releaseDate: Date,
 }
 
@@ -112,4 +111,11 @@ export type Ranking = {
 export type GetRankingResponse = {
     general: Ranking,
     perTask: Ranking[],
+}
+
+export type GetUserResponse = {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
 }
