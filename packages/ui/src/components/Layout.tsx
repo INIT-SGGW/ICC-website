@@ -11,7 +11,7 @@ function TopBar({ adminPanel, navItems }: { adminPanel: boolean, navItems: { hre
   return (
     <header className="flex flex-col w-full bg-transparent z-20 ">
       <div className="flex items-center justify-between w-full px-4 py-6 bg-black text-cred">
-        <a className="flex items-center gap-4" href="/" title="Init Coding Challenge">
+        <a className="flex items-center gap-4" href={adminPanel ? "/admin" : "/"} title="Init Coding Challenge">
           <img alt="Init Coding Challenge" className="w-24 h-24" src={ICCLogo.src} />
           {
             adminPanel ? (
