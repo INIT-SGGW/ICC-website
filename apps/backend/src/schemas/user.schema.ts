@@ -20,8 +20,8 @@ export class Part {
   @Prop({ required: true })
   correct_answer: string;
 
-  @Prop({ default: 0 })
-  cooldown: number;
+  @Prop()
+  cooldown: Date;
 
   @Prop({ default: 0 })
   points: number;

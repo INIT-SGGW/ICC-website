@@ -2,15 +2,15 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Ranking, GetRankingResponse } from '@repo/types';
 import { Model } from 'mongoose';
-import { User } from '../schemas/user.schema.js';
-import { Task } from '../schemas/task.schema.js';
+import type { User } from '../schemas/user.schema.js';
+import type { Task } from '../schemas/task.schema.js';
 import type { GetRankingQuery } from '../types/queries.js';
 
 @Injectable()
 export class RankingService {
   constructor(
-    @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
-    @InjectModel(User.name, 'register') private userModel: Model<User>,
+    @InjectModel('Task', 'icc') private taskModel: Model<Task>,
+    @InjectModel('User', 'register') private userModel: Model<User>,
   ) {}
 
   async getRanking(query: GetRankingQuery): Promise<GetRankingResponse> {

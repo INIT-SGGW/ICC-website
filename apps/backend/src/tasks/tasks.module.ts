@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Task, TaskSchema } from '../schemas/task.schema.js';
-import { User, UserSchema } from '../schemas/user.schema.js';
+import { TaskSchema } from '../schemas/task.schema.js';
+import { UserSchema } from '../schemas/user.schema.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { TasksService } from './tasks.service.js';
 import { TasksController } from './tasks.controller.js';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }], 'icc'),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }], 'register'),
+    MongooseModule.forFeature([{ name: 'Task', schema: TaskSchema }], 'icc'),
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }], 'register'),
     AuthModule,
   ],
   controllers: [TasksController],

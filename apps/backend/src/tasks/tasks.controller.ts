@@ -4,7 +4,7 @@ import { Semester, TaskParts } from '@repo/types';
 import { Request as Req } from 'express';
 import { GetAllTasksQuery } from '../types/queries.js';
 import { AnswerTaskBody } from '../types/bodies.js';
-import { UserAuthGuard } from '../auth/auth.guard.js';
+import { BPartAuthGuard, UserAuthGuard } from '../auth/auth.guard.js';
 import {
   GetTaskAnswersResponseDTO,
   TasksDTO,
@@ -46,7 +46,8 @@ export class TasksController {
     return this.tasksService.getNextTask(query);
   }
 
-  @Get('/:year/:semester/:taskNumber')
+  @Get('/:year/:semester/:taskNumber/:part')
+  @UseGuards(BPartAuthGuard)
   @ApiOperation({ summary: 'Get open tasks', description: 'Get list of open tasks' })
   @ApiResponse({ status: 200, description: 'Returns list of open tasks', type: TaskDTO })
   @ApiParam({ required: true, name: 'task', type: Number, description: 'Task number', example: 1 })
@@ -62,12 +63,14 @@ export class TasksController {
     @Param('year') year: string,
     @Param('semester') semester: Semester,
     @Param('taskNumber') taskNumber: string,
+    @Param('part') part: TaskParts,
+    @Request() req: Req,
   ): Promise<TaskDTO> {
-    return this.tasksService.getTaskUser(Number(year), semester, Number(taskNumber));
+    return this.tasksService.getTaskUser(Number(year), semester, Number(taskNumber), part, req);
   }
 
-  @Get('/:year/:semester/:taskNumber/:part')
-  @UseGuards(UserAuthGuard)
+  @Get('/:year/:semester/:taskNumber/:part/answer')
+  @UseGuards(UserAuthGuard, BPartAuthGuard)
   @ApiOperation({ summary: 'Get open tasks', description: 'Get list of open tasks' })
   @ApiResponse({ status: 200, description: 'Returns list of open tasks', type: GetTaskAnswersResponseDTO })
   @ApiParam({ required: true, name: 'taskNumber', type: Number, description: 'Task number', example: 1 })
@@ -84,7 +87,7 @@ export class TasksController {
     @Param('year') year: string,
     @Param('semester') semester: Semester,
     @Param('taskNumber') taskNumber: string,
-    @Param('part') part: string,
+    @Param('part') part: TaskParts,
     @Request() { user }: Req,
   ): Promise<GetTaskAnswersResponseDTO> {
     return this.tasksService.getTaskAnswersUser(Number(year), semester, Number(taskNumber), user, part);

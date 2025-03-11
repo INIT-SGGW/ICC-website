@@ -9,6 +9,7 @@ import type {
   SendAnswerTaskResponse,
   GetUserStatsResponse,
   GetRankingResponse,
+  GetUserResponse,
 } from '@repo/types';
 import { Semester } from '@repo/types';
 import { Transform } from 'class-transformer';
@@ -62,14 +63,7 @@ export class TaskDTO implements GetTaskUserResponse {
     example: 'Some text',
     description: 'First part of task in markdown',
   })
-  partA: string;
-
-  @ApiProperty({
-    type: String,
-    example: 'Some text',
-    description: 'Second part of task in markdown',
-  })
-  partB: string;
+  content: string;
 
   @ApiProperty({
     type: Date,
@@ -347,14 +341,16 @@ export class TaskFileDTO {
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()
   @IsString()
-  part1: string;
+  part1_result: string;
 
   //eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- This is a class-transformer decorator
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()
   @IsString()
-  part2: string;
+  part2_result: string;
 
+  //eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- This is a class-transformer decorator
+  @Transform(({ value }) => value.toString())
   @IsNotEmpty()
   @IsString()
   seed: string;
@@ -402,4 +398,22 @@ export class GetRankingDTO implements GetRankingResponse {
 
   @ApiProperty({ type: [RankingDTO], description: 'Ranking per task' })
   perTask: RankingDTO[][];
+}
+
+export class GetUserDTO implements GetUserResponse {
+  @IsString()
+  @IsNotEmpty()
+  firstName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
 }

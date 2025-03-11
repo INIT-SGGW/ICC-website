@@ -3,15 +3,15 @@ import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import type { GetAllUsersResponse, GetUserStatsResponse } from '@repo/types';
 import { StatusCodes } from 'http-status-codes';
-import { User } from '../schemas/user.schema.js';
+import type { User } from '../schemas/user.schema.js';
 import type { UserTokenDataDTO } from '../types/dtos.js';
-import { Task } from '../schemas/task.schema.js';
+import type { Task } from '../schemas/task.schema.js';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name, 'register') private userModel: Model<User>,
-    @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
+    @InjectModel('User', 'register') private userModel: Model<User>,
+    @InjectModel('Task', 'icc') private taskModel: Model<Task>,
   ) {}
 
   async getAllUsers(): Promise<GetAllUsersResponse> {

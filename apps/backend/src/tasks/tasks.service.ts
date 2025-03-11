@@ -14,19 +14,20 @@ import { Model, Types } from 'mongoose';
 import { StatusCodes } from 'http-status-codes';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import type { Request } from 'express';
 import { TaskFileDTO, type UserTokenDataDTO } from '../types/dtos.js';
 import type { AnswerTaskBody } from '../types/bodies.js';
 import type { GetAllTasksQuery } from '../types/queries.js';
-import { Task } from '../schemas/task.schema.js';
-import { User } from '../schemas/user.schema.js';
+import type { Task } from '../schemas/task.schema.js';
+import type { User } from '../schemas/user.schema.js';
 import { getRandomFile } from '../utils/GetRandomFile.js';
 import { pointCounter } from '../utils/PointCounter.js';
 
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
-    @InjectModel(User.name, 'register') private userModel: Model<User>,
+    @InjectModel('Task', 'icc') private taskModel: Model<Task>,
+    @InjectModel('User', 'register') private userModel: Model<User>,
   ) {}
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
@@ -70,22 +71,16 @@ export class TasksService {
   async getNextTask(query: GetAllTasksQuery): Promise<GetNextTaskResponse> {
     try {
       const tasks = await this.taskModel
-        .find({ releaseYear: query.year, semester: query.semester })
+        .find({ releaseYear: query.year, semester: query.semester, releaseDate: { $gte: new Date() } })
         .sort({ releaseDate: 1 });
+
       if (tasks.length === 0) {
-        throw new HttpException(`Brak zadań dla roku ${query.year}`, StatusCodes.NOT_FOUND);
-      }
-
-      const today = new Date();
-
-      const nextTask = tasks.find((task) => task.releaseDate > today);
-      if (!nextTask) {
-        throw new HttpException('Brak kolejnego zadania', StatusCodes.NOT_FOUND);
+        throw new HttpException(`Brak następnych zadań`, StatusCodes.NOT_FOUND);
       }
 
       return {
-        taskId: nextTask._id.toString(),
-        releaseDate: nextTask.releaseDate,
+        taskId: tasks[0]._id.toString(),
+        releaseDate: tasks[0].releaseDate,
       };
     } catch (error: unknown) {
       if (error instanceof HttpException) {
@@ -95,19 +90,46 @@ export class TasksService {
     }
   }
 
-  async getTaskUser(year: number, semester: Semester, taskNumber: number): Promise<GetTaskUserResponse> {
+  async getTaskUser(
+    year: number,
+    semester: Semester,
+    taskNumber: number,
+    part: TaskParts,
+    req: Request,
+  ): Promise<GetTaskUserResponse> {
     const task = await this.taskModel.findOne({
       releaseYear: year,
       semester,
       taskNumber,
     });
+
     if (!task) {
       throw new HttpException('Wyszukiwane zadanie nie istnieje', StatusCodes.NOT_FOUND);
     }
 
+    if (part === TaskParts.B && req.user) {
+      const { id } = req.user;
+
+      const user = await this.userModel.findById(new Types.ObjectId(id));
+      if (!user) {
+        throw new HttpException(`Nie znaleziono użytkownika o id ${id}`, StatusCodes.NOT_FOUND);
+      }
+
+      const currentTask = user.started_tasks.find((_task) => _task.task_id.equals(task._id));
+
+      if (!currentTask) {
+        throw new HttpException('Nie rozpocząłeś tego zadania', StatusCodes.NOT_FOUND);
+      }
+
+      if (!currentTask.partA.is_correct) {
+        throw new HttpException('Nie ukończyłeś części A', StatusCodes.FORBIDDEN);
+      }
+    }
+
+    const content = part === TaskParts.A ? task.content.partA : task.content.partB;
+
     return {
-      partA: task.content.partA,
-      partB: task.content.partB,
+      content,
       releaseDate: task.releaseDate,
     };
   }
@@ -117,7 +139,7 @@ export class TasksService {
     semester: Semester,
     taskNumber: number,
     userDTO: UserTokenDataDTO | undefined,
-    part: string,
+    part: TaskParts,
   ): Promise<GetTaskAnswersResponse> {
     try {
       if (!userDTO) {
@@ -130,7 +152,7 @@ export class TasksService {
         throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
       }
 
-      const user = await this.userModel.findById(new Types.ObjectId(id));
+      const user = await this.userModel.findById(new Types.ObjectId(id)).populate('started_tasks.task_id');
       if (!user) {
         throw new HttpException(`Nie znaleziono użytkownika o id ${id}`, StatusCodes.NOT_FOUND);
       }
@@ -145,9 +167,8 @@ export class TasksService {
       }
 
       let currentTask = user.started_tasks.find((_task) => _task.task_id.equals(task._id));
-
       if (!currentTask) {
-        // initialize started task
+        // start task
         const taskFile = getRandomFile(`./uploads/${year}/${semester}/${taskNumber}`);
         if (!taskFile) {
           throw new HttpException('Problem z odczytaniem pliku', StatusCodes.UNAUTHORIZED);
@@ -156,6 +177,7 @@ export class TasksService {
         const taskContent: unknown = JSON.parse(fs.readFileSync(taskFile, 'utf8'));
         const taskContentClass = plainToInstance<TaskFileDTO, unknown>(TaskFileDTO, taskContent);
         const transformError = await validate(taskContentClass);
+
         if (transformError.length > 0) {
           throw new HttpException('Błąd podczas walidacji pliku', StatusCodes.INTERNAL_SERVER_ERROR);
         }
@@ -166,25 +188,30 @@ export class TasksService {
           seed: taskContentClass.seed,
           partA: {
             previous_answers: [],
-            correct_answer: taskContentClass.part1,
-            cooldown: 0,
+            correct_answer: taskContentClass.part1_result,
+            cooldown: new Date(),
             points: 0,
             is_correct: false,
           },
           partB: {
             previous_answers: [],
-            correct_answer: taskContentClass.part2,
-            cooldown: 0,
+            correct_answer: taskContentClass.part2_result,
+            cooldown: new Date(),
             points: 0,
             is_correct: false,
           },
         };
         user.started_tasks.push(currentTask);
-
+        user.markModified('started_tasks');
         await user.save();
       }
-      const partToCheck = part === 'A' ? 'partA' : 'partB';
+
+      const partToCheck = part === TaskParts.A ? 'partA' : 'partB';
       const currentPart = currentTask[partToCheck];
+
+      if (part === TaskParts.B && !currentTask.partA.is_correct) {
+        throw new HttpException('Skończ część A, aby odblokować część B', StatusCodes.FORBIDDEN);
+      }
 
       const input: unknown = JSON.parse(fs.readFileSync(currentTask.input_path, 'utf8'));
       const inputDTO = plainToInstance<TaskFileDTO, unknown>(TaskFileDTO, input);
@@ -269,9 +296,9 @@ export class TasksService {
         };
       }
 
-      if (currentPart.cooldown > 0) {
-        throw new HttpException('Otrzymałeś cooldown, za zaszybkie odpowiadanie', StatusCodes.FORBIDDEN);
-      }
+      // if (currentPart.cooldown > 0) {
+      //   throw new HttpException('Otrzymałeś cooldown, za zaszybkie odpowiadanie', StatusCodes.FORBIDDEN);
+      // }
       if (body.answer !== currentPart.correct_answer) {
         // if (currentPart.previous_answers.length >= 3)
         currentPart.previous_answers.push({
