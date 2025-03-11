@@ -1,3 +1,7 @@
+.markdown-container {
+  user-select: none;
+}
+
 .markdown-container p,
 .markdown-container b,
 .markdown-container a,
@@ -7,6 +11,10 @@
 .markdown-container code
 {
   @apply text-lg;
+}
+
+.markdown-container code {
+  user-select: text;
 }
 
 .markdown-container pre {
