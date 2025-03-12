@@ -8,13 +8,12 @@ export function unzipFile(zipFilePath: string, extractTo: string): void {
   try {
     const zip = new AdmZip(zipFilePath);
     const zipEntries = zip.getEntries();
+    fs.mkdirSync(extractTo, { recursive: true });
 
     zipEntries.forEach((entry) => {
       const entryPath = join(extractTo, entry.name);
 
-      if (entry.isDirectory) {
-        fs.mkdirSync(entryPath, { recursive: true });
-      } else {
+      if (!entry.isDirectory) {
         const fileData = zip.readFile(entry);
         if (fileData) {
           fs.writeFileSync(entryPath, fileData);
