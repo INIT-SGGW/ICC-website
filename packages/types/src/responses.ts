@@ -65,8 +65,8 @@ export type GetTaskAnswersResponse = {
         answer: string,
     }[]
     input: string,
+    cooldown: Date | null
     correctAnswer?: string
-    cooldown?: number
     points?: number
 }
 
@@ -90,8 +90,8 @@ export type SendAnswerTaskResponse = {
         date: Date,
         answer: string,
     }[]
+    cooldown: Date | null
     correctAnswer?: string
-    cooldown?: number
     points?: number
 }
 

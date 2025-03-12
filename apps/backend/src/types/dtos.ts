@@ -159,17 +159,22 @@ export class SendAnswerTaskResponseDTO implements SendAnswerTaskResponse {
   })
   previousAnswers: AnswerTaskResponsePreviousAnswers[];
 
-  @ApiProperty({ type: String, example: 'A', description: 'Correct answer' })
+  @ApiProperty({ type: String, example: '123', description: 'Correct answer' })
   correctAnswer?: string;
 
   @ApiProperty({
-    type: Number,
-    example: 30,
+    type: Date,
+    nullable: true,
+    example: new Date(),
     description: 'Cooldown time in seconds',
   })
-  cooldown?: number;
+  cooldown: Date | null;
 
-  @ApiProperty({ type: Number, example: 10, description: 'Points gained' })
+  @ApiProperty({
+    type: Number,
+    example: 10,
+    description: 'Points gained',
+  })
   points?: number;
 }
 
@@ -194,15 +199,16 @@ export class GetTaskAnswersResponseDTO implements GetTaskAnswersResponse {
   })
   input: string;
 
-  @ApiProperty({ type: String, example: 'A', description: 'Correct answer' })
-  correctAnswer?: string;
-
   @ApiProperty({
-    type: Number,
+    type: Date,
+    nullable: true,
     example: 30,
     description: 'Cooldown time in seconds',
   })
-  cooldown?: number;
+  cooldown: Date | null;
+
+  @ApiProperty({ type: String, example: 'A', description: 'Correct answer' })
+  correctAnswer?: string;
 
   @ApiProperty({ type: Number, example: 10, description: 'Points gained' })
   points?: number;
@@ -341,13 +347,13 @@ export class TaskFileDTO {
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()
   @IsString()
-  part1_result: string;
+  part1: string;
 
   //eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- This is a class-transformer decorator
   @Transform(({ value }) => value.toString())
   @IsNotEmpty()
   @IsString()
-  part2_result: string;
+  part2: string;
 
   //eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- This is a class-transformer decorator
   @Transform(({ value }) => value.toString())
