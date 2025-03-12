@@ -28,7 +28,7 @@ export class TasksService {
   constructor(
     @InjectModel('Task', 'icc') private taskModel: Model<Task>,
     @InjectModel('User', 'register') private userModel: Model<User>,
-  ) {}
+  ) { }
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
@@ -107,6 +107,10 @@ export class TasksService {
       throw new HttpException('Wyszukiwane zadanie nie istnieje', StatusCodes.NOT_FOUND);
     }
 
+    if (task.releaseDate > new Date()) {
+      throw new HttpException(`Nie posiadasz dostępu do tego zadania`, StatusCodes.FORBIDDEN);
+    }
+
     if (part === TaskParts.B && req.user) {
       const { id } = req.user;
 
@@ -122,7 +126,7 @@ export class TasksService {
       }
 
       if (!currentTask.partA.is_correct) {
-        throw new HttpException('Nie ukończyłeś części A', StatusCodes.FORBIDDEN);
+        throw new HttpException('Nie masz dostępu do tej części zadania', StatusCodes.FORBIDDEN);
       }
     }
 
@@ -152,7 +156,7 @@ export class TasksService {
         throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
       }
 
-      const user = await this.userModel.findById(new Types.ObjectId(id)).populate('started_tasks.task_id');
+      const user = await this.userModel.findById(new Types.ObjectId(id));
       if (!user) {
         throw new HttpException(`Nie znaleziono użytkownika o id ${id}`, StatusCodes.NOT_FOUND);
       }
@@ -162,8 +166,13 @@ export class TasksService {
         semester,
         taskNumber,
       });
+
       if (!task) {
         throw new HttpException('Wyszukiwane zadanie nie istnieje', StatusCodes.NOT_FOUND);
+      }
+
+      if (task.releaseDate > new Date()) {
+        throw new HttpException(`Zadanie otwiera się ${task.releaseDate.toLocaleString("pl-PL")}`, StatusCodes.FORBIDDEN);
       }
 
       let currentTask = user.started_tasks.find((_task) => _task.task_id.equals(task._id));
@@ -188,14 +197,14 @@ export class TasksService {
           seed: taskContentClass.seed,
           partA: {
             previous_answers: [],
-            correct_answer: taskContentClass.part1_result,
+            correct_answer: taskContentClass.part1,
             cooldown: new Date(),
             points: 0,
             is_correct: false,
           },
           partB: {
             previous_answers: [],
-            correct_answer: taskContentClass.part2_result,
+            correct_answer: taskContentClass.part2,
             cooldown: new Date(),
             points: 0,
             is_correct: false,
@@ -220,19 +229,36 @@ export class TasksService {
         throw new HttpException('Błąd podczas walidacji pliku', StatusCodes.INTERNAL_SERVER_ERROR);
       }
 
+      if (currentPart.cooldown && currentPart.cooldown < new Date()) {
+        // check if user has cooldown
+        currentPart.cooldown = null;
+        await this.userModel.updateOne(
+          { _id: user._id },
+          {
+            $set: { [`started_tasks.$[elem].${partToCheck}.cooldown`]: null },
+          },
+          {
+            arrayFilters: [{ "elem.task_id": task._id, },],
+          },
+        );
+      }
+
+      const sortedPreviousAnswers = currentPart.previous_answers.sort((a, b) => b.date.getTime() - a.date.getTime());
+
       return {
         isCorrect: currentPart.is_correct,
         input: inputDTO.input,
+        cooldown: currentPart.cooldown,
         correctAnswer: currentPart.is_correct ? currentPart.correct_answer : undefined,
         points: currentPart.is_correct ? currentPart.points : undefined,
-        previousAnswers: currentPart.previous_answers,
+        previousAnswers: sortedPreviousAnswers,
       };
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         throw error;
       }
       throw new HttpException(
-        'Wystąpił błąd podczas pobierania odpowiedzi na zadanie',
+        'Wystąpił błąd podczas pobierania poprzednich odpowiedzi',
         StatusCodes.INTERNAL_SERVER_ERROR,
       );
     }
@@ -247,20 +273,13 @@ export class TasksService {
     body: AnswerTaskBody,
   ): Promise<SendAnswerTaskResponse> {
     try {
-      if (!userDTO) {
-        throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
+      if (!userDTO || !userDTO.id || !Types.ObjectId.isValid(userDTO.id)) {
+        throw new HttpException('Nie masz dostępu do zasobu, aby wysłać odpowiedź musisz być zalogowany/a', StatusCodes.UNAUTHORIZED);
       }
-
-      const { id } = userDTO;
-
-      if (!id || !Types.ObjectId.isValid(id)) {
-        throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.UNAUTHORIZED);
-      }
-
-      const user = await this.userModel.findById(new Types.ObjectId(id));
+      const user = await this.userModel.findById(new Types.ObjectId(userDTO.id));
 
       if (!user) {
-        throw new HttpException(`Nie znaleziono użytkownika o id ${id}`, StatusCodes.NOT_FOUND);
+        throw new HttpException(`Nie znaleziono użytkownika o id ${userDTO.id}`, StatusCodes.NOT_FOUND);
       }
 
       const task = await this.taskModel.findOne({
@@ -270,89 +289,105 @@ export class TasksService {
       });
 
       if (!task) {
-        throw new HttpException('Wyszukiwane zadanie nie istnieje', StatusCodes.NOT_FOUND);
+        throw new HttpException('Zadanie, na które próbujesz odpowiedzieć, nie istnieje', StatusCodes.NOT_FOUND);
       }
 
       if (task.releaseDate > new Date()) {
-        throw new HttpException('Zadanie jeszcze nie zostało udostępnione', StatusCodes.FORBIDDEN);
+        throw new HttpException(`Zadanie, na które próbujesz odpowiedzieć, otwiera się ${task.releaseDate.toUTCString()}`, StatusCodes.FORBIDDEN);
       }
 
       const currentTask = user.started_tasks.find((_task) => _task.task_id.equals(task._id));
 
       if (!currentTask) {
-        throw new HttpException('Nie rozpocząłeś tego zadania', StatusCodes.NOT_FOUND);
+        throw new HttpException('Nie zarejestrowaliśmy rozpoczęcia przez ciebie zadania. Odśwież stronę', StatusCodes.NOT_FOUND);
       }
 
-      const partToCheck = part === TaskParts.A ? 'partA' : 'partB';
-      const currentPart = currentTask[partToCheck];
+      const partToUpdate = part === TaskParts.A ? 'partA' : 'partB';
+      const currentPart = currentTask[partToUpdate];
 
       if (currentPart.is_correct) {
+        // user already answered
         return {
           isCorrect: true,
           previousAnswers: currentPart.previous_answers,
           points: currentPart.points,
           correctAnswer: currentPart.correct_answer,
-          cooldown: 0,
+          cooldown: null,
         };
       }
 
-      // if (currentPart.cooldown > 0) {
-      //   throw new HttpException('Otrzymałeś cooldown, za zaszybkie odpowiadanie', StatusCodes.FORBIDDEN);
-      // }
+      if (currentPart.cooldown && currentPart.cooldown > new Date()) {
+        // check if user has cooldown
+        return {
+          isCorrect: false,
+          previousAnswers: currentPart.previous_answers,
+          cooldown: currentPart.cooldown,
+        }
+      }
+
       if (body.answer !== currentPart.correct_answer) {
-        // if (currentPart.previous_answers.length >= 3)
+        //user answered incorrectly
+        const thirdToLast = currentPart.previous_answers.length >= 3 ? currentPart.previous_answers[currentPart.previous_answers.length - 3] : null;
+
+        const bufforTime = 1000 * 20; // 20s
+        const penalty = 1000 * 8 * 1; // 1min
+
+        // check if user answered 3 times in 20s
+        if (thirdToLast && new Date().getTime() - thirdToLast.date.getTime() < bufforTime) {
+          // if so add cooldown
+          currentPart.cooldown = new Date(new Date().getTime() + penalty);
+        } else {
+          // if not add answer to previous answers
+          currentPart.previous_answers.push({
+            date: new Date(),
+            answer: body.answer,
+          });
+          currentPart.cooldown = null;
+        }
+      } else {
+        // user answered correctly
+        currentPart.is_correct = true;
         currentPart.previous_answers.push({
           date: new Date(),
           answer: body.answer,
         });
+        currentPart.points = pointCounter(task.usersFinished[partToUpdate].length);
 
-        user.started_tasks = user.started_tasks.map((_task) => {
-          if (_task.task_id.equals(task._id)) {
-            _task[partToCheck] = currentPart;
-          }
-          return _task;
-        });
-        user.markModified('started_tasks');
-        await user.save();
+        // add points to user; initialy users where created without property pointsGeneral
+        await this.userModel.updateOne(
+          { _id: user._id },
+          {
+            $inc: { pointsGeneral: currentPart.points },
+          },
+        );
 
-        return {
-          isCorrect: false,
-          previousAnswers: currentPart.previous_answers,
-          cooldown: 0,
-        };
-      }
-      currentPart.is_correct = true;
-      currentPart.previous_answers.push({
-        date: new Date(),
-        answer: body.answer,
-      });
-      currentPart.points = pointCounter(task.usersFinished[partToCheck].length);
-      if (user.pointsGeneral) {
-        user.pointsGeneral += currentPart.points;
-      } else {
-        user.pointsGeneral = currentPart.points;
+        task.usersFinished[partToUpdate].push({ userId: user._id, finishedAt: new Date(), points: currentPart.points });
+        task.markModified('usersFinished');
+        await task.save();
       }
 
-      task.usersFinished[partToCheck].push({ userId: user, finishedAt: new Date(), points: currentPart.points });
-      task.markModified('usersFinished');
-      await task.save();
-
-      user.started_tasks = user.started_tasks.map((_task) => {
-        ``;
-        if (_task.task_id.equals(task._id)) {
-          _task[partToCheck] = currentPart;
-        }
-        return _task;
-      });
-      user.markModified('started_tasks');
-      await user.save();
+      // save changes
+      await this.userModel.updateOne(
+        { _id: user._id },
+        {
+          $set: { [`started_tasks.$[elem].${partToUpdate}`]: currentPart, },
+        },
+        {
+          arrayFilters: [{ "elem.task_id": task._id, },],
+        },
+      );
 
       return {
-        isCorrect: true,
+        isCorrect: currentPart.is_correct,
         previousAnswers: currentPart.previous_answers,
-        points: currentPart.points,
-        correctAnswer: currentPart.correct_answer,
+        cooldown: currentPart.cooldown,
+        ...(currentPart.is_correct &&
+        {
+          points: currentPart.points,
+          correctAnswer: currentPart.correct_answer
+        }),
       };
+
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         throw error;
