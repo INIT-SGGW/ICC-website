@@ -1,6 +1,6 @@
 "use client"
 
-import type { Semester } from "@repo/types";
+import { TaskParts, type Semester } from "@repo/types";
 import Image from "next/image"
 import Link from "next/link";
 import React from "react";
@@ -20,7 +20,7 @@ export function TaskSquare({ index, semester, unlocked }: TaskSquareProps): Reac
     return (
         <Link
             key={index}
-            href={unlocked ? `${semester}/${index + 1}/A` : ""}
+            href={unlocked ? `${semester}/${index + 1}/${TaskParts.A}` : ""}
             className={`flex flex-col items-center justify-center gap-4 bg-black px-2 py-2 ${!unlocked ? "cursor-not-allowed" : "cursor-pointer"}`}
         >
             <p className={`text-[#FF0000] text-6xl ${!unlocked ? "p-4" : ""}`}>

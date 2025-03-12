@@ -12,8 +12,8 @@ export enum Faculty {
 }
 
 export enum TaskParts {
-    A = "A",
-    B = "B",
+    A = "a",
+    B = "b",
 }
 
 export enum Semester {
