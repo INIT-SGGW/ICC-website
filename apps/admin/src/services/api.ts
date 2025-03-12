@@ -43,8 +43,12 @@ export function useDeleteTask(url: string): SWRMutationResponse<null, CustomErro
     return useSWRMutation(url, () => fetcherICC<null, null>(url, { arg: { method: HttpMethods.DELETE, credentials: true } }));
 }
 
-export function useAddTask(): SWRMutationResponse<void, CustomError, Key, { body: FormData }> {
+export function useAddTask(): SWRMutationResponse<void, CustomError, Key, { body: FormData, method: HttpMethods }> {
     return useSWRMutation("/admin/tasks", fetcherICCFile);
+}
+
+export function useUpdateTask(id: string): SWRMutationResponse<void, CustomError, Key, { body: FormData, method: HttpMethods }> {
+    return useSWRMutation(`/admin/tasks/${id}`, fetcherICCFile);
 }
 
 export function useGetMe(): SWRResponse<UserResponse, CustomError> {

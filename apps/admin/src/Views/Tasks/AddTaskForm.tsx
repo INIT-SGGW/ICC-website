@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import CustomError from "../../utils/CustomError";
 import { useAddTask } from "../../services/api";
+import { HttpMethods } from "../../types/enums";
 
 const validateData = (data: CreateTaskFormDTO): string | null => {
     if (data.title.length === 0) return "Tytuł nie może być pusty";
@@ -69,7 +70,7 @@ export function AddTaskForm(): React.JSX.Element {
         data.append("answers", formData.answers as Blob);
 
         try {
-            await trigger({ body: data });
+            await trigger({ body: data, method: HttpMethods.POST });
             router.push("/tasks");
         } catch (er: unknown) {
             if (er instanceof Error || er instanceof CustomError) {

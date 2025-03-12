@@ -1,13 +1,13 @@
 "use client";
 
-import type { CreateTaskFormDTO, GetTaskUpdateResponse, ServerError } from "@repo/types";
+import type { CreateTaskFormDTO } from "@repo/types";
 import { Semester } from "@repo/types";
 import { Button, Input, Select } from "@repo/ui";
 import { useEffect, useState } from "react";
 import CustomError from "../../utils/CustomError";
 import { HttpMethods } from "../../types/enums";
 import { useRouter } from "next/navigation";
-import { useGetTask } from "../../services/api";
+import { useGetTask, useUpdateTask } from "../../services/api";
 
 type Props = {
     id: number
@@ -27,7 +27,8 @@ const validateData = (data: CreateTaskFormDTO): string | null => {
 export function UpdateTaskForm({ id }: Props): React.JSX.Element {
     const router = useRouter();
     const { data, error, isLoading } = useGetTask(`/admin/tasks/${id}`);
-    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const { trigger, isMutating } = useUpdateTask(id.toString());
+
     const [formData, setFormData] = useState<CreateTaskFormDTO>({
         title: "",
         semester: Semester.LETNI,
@@ -63,7 +64,6 @@ export function UpdateTaskForm({ id }: Props): React.JSX.Element {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
-        setIsFetching(true);
         setErrorMessage(null);
 
         const validationError = validateData(formData);
@@ -96,49 +96,15 @@ export function UpdateTaskForm({ id }: Props): React.JSX.Element {
         }
 
         try {
-            const url = process.env.NEXT_PUBLIC_ICC_API_URL || "";
-            // formData type is garantued by validation check
-            const response: Response = await fetch(`${url}/admin/tasks/${id}`, {
-                method: HttpMethods.PATCH,
-                body: updateData,
-                credentials: "include"
-            });
-
-            if (!response.ok) {
-                const res = await response.json() as ServerError;
-                let message = "Wystąpił błąd podczas komunikacji z serwerem.";
-                if (res.errors && res.errors.length > 0 && res.errors[0].message) {
-                    message = res.errors[0].message;
-                } else if (res.detail) {
-                    message = res.detail;
-                } else if (res.status) {
-                    message = res.status;
-                }
-
-                const err = new CustomError(message);
-                err.status = response.status;
-                throw err;
-            }
-
-            const res = await response.json() as GetTaskUpdateResponse;
-            setFormData((prev) => ({
-                title: res.title,
-                semester: res.semester,
-                taskNumber: res.taskNumber,
-                releaseDate: new Date(res.releaseDate),
-                partA: prev.partA,
-                partB: prev.partB,
-                answers: prev.answers
-            }))
+            await trigger({ body: updateData, method: HttpMethods.PATCH });
             router.push("/tasks");
         } catch (er: unknown) {
             if (er instanceof Error || er instanceof CustomError) {
                 setErrorMessage(er.message);
-                setIsFetching(false);
-                return;
+            } else {
+                setErrorMessage("Wystąpił błąd podczas modyfikacji zadania");
             }
         }
-        setIsFetching(false);
     }
 
     if (isLoading) return <p className="text-white text-center">{error ? `Error: ${error.message}` : "Loading..."}</p>
@@ -173,7 +139,7 @@ export function UpdateTaskForm({ id }: Props): React.JSX.Element {
                 <label htmlFor="answers" className="text-white">Input i odpowiedzi</label>
                 <Input name="answers" id="answers" type="file" placeholder="Opis zadania" accept=".zip" onChange={(e) => { handleFileChange(e, (file: File | null) => { setFormData((prev) => ({ ...prev, answers: file })) }); }} />
             </div>
-            <Button type="submit" disabled={isFetching} className="mt-4">{isFetching ? "..." : "Modyfikuj zadanie"}</Button>
+            <Button type="submit" disabled={isMutating} className="mt-4">{isMutating ? "..." : "Modyfikuj zadanie"}</Button>
             <p className="text-red-500 text-sm text-center">{errorMessage}</p>
         </form>
     )

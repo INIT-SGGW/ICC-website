@@ -3,6 +3,7 @@ import type { FetcherArgs } from "../types/types";
 import type { ServerError } from "@repo/types";
 import { getApiUrl } from "../utils/GetApiUrl";
 import { getApiKey } from "../utils/GetApiKey";
+import { HttpMethods } from "../types/enums";
 
 export const fetcher = async <R, T>(url: string, { arg }: { arg?: FetcherArgs<R> }): Promise<T> => {
     const fullUrl = getApiUrl(false) + url;
@@ -74,11 +75,11 @@ export const fetcherICC = async <R, T>(url: string, { arg }: { arg?: FetcherArgs
     return response.json() as Promise<T>;
 };
 
-export const fetcherICCFile = async (url: string, { arg }: { arg: { body: FormData } }): Promise<void> => {
+export const fetcherICCFile = async (url: string, { arg }: { arg: { body: FormData, method: HttpMethods } }): Promise<void> => {
     const fullUrl = getApiUrl(true) + url;
 
     const response = await fetch(fullUrl, {
-        method: "POST",
+        method: arg.method,
         credentials: "include",
         body: arg.body,
     })
