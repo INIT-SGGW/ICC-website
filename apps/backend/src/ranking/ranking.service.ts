@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Ranking, GetRankingResponse } from '@repo/types';
 import { Model } from 'mongoose';
+import type { Request } from 'express';
 import type { User } from '../schemas/user.schema.js';
 import type { Task } from '../schemas/task.schema.js';
 import type { GetRankingQuery } from '../types/queries.js';
@@ -13,7 +14,7 @@ export class RankingService {
     @InjectModel('User', 'register') private userModel: Model<User>,
   ) {}
 
-  async getRanking(query: GetRankingQuery): Promise<GetRankingResponse> {
+  async getRanking(query: GetRankingQuery, request: Request): Promise<GetRankingResponse> {
     try {
       let generalRanking = (await this.userModel.find().sort({ pointsGeneral: -1 }).limit(50).lean()).map((user) => ({
         firstName: user.first_name,
@@ -32,9 +33,11 @@ export class RankingService {
         generalRanking = generalRanking.filter((user) => user.year === query.year);
       }
 
+      const userLoggedIn = request.user?.id !== undefined;
+
       const finalRanking: Ranking = generalRanking.map((user) => ({
         firstName: user.firstName,
-        lastName: user.lastName,
+        lastName: userLoggedIn ? user.lastName : '',
         points: user.points,
         indexNumber: user.indexNumber,
       }));
