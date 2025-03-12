@@ -94,7 +94,50 @@ const components: Components = {
   em: createComponent('em'),
   blockquote: createComponent('blockquote'),
   code: createComponent('code'),
-  pre: createComponent('pre'),
+  pre: function ({ children, ...props }: { children?: React.ReactNode; [key: string]: any }) {
+    const preRef = React.useRef<HTMLPreElement>(null);
+    const clickCountRef = React.useRef(0);
+    const clickTimerRef = React.useRef<number | null>(null);
+    
+    const handleClick = (e: React.MouseEvent) => {
+      // Increment click count
+      clickCountRef.current += 1;
+      
+      // Clear existing timer
+      if (clickTimerRef.current) {
+        clearTimeout(clickTimerRef.current);
+      }
+      
+      // If it's a quadruple click, select all text in the pre tag
+      if (clickCountRef.current === 4) {
+        e.preventDefault();
+        
+        if (preRef.current) {
+          const range = document.createRange();
+          range.selectNodeContents(preRef.current);
+          const selection = window.getSelection();
+          if (selection) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+        }
+        
+        // Reset click count
+        clickCountRef.current = 0;
+      } else {
+        // Set timer to reset click count after 300ms (common double-click threshold)
+        clickTimerRef.current = setTimeout(() => {
+          clickCountRef.current = 0;
+        }, 300);
+      }
+    };
+    
+    return (
+      <pre ref={preRef} onClick={handleClick} title="Quadruple-click to select all code" {...props}>
+        {processNodes(children)}
+      </pre>
+    );
+  },
   a: createComponent('a'),
 };
 
