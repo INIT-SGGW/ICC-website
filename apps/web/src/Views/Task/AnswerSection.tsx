@@ -136,8 +136,8 @@ export function AnswerSection({ year, semester, task, part }: Props): React.JSX.
                                     ) :
                                         <form className="w-full flex" noValidate onSubmit={(e) => { e.preventDefault(); void handleSubmit(); }}>
                                             <Input placeholder="Odpowiedź" className="!border-r-0" value={answer} onChange={(e) => { setAnswer(e.target.value); }} />
-                                            <button type="submit" className="bg-[#FF0000]">
-                                                <Image src="/full-arrow.svg" alt="send" className="h-full" />
+                                            <button type="submit" className="bg-[#FF0000] m-0">
+                                                <Image width={48} height={48} src="/full-arrow.svg" alt="send" className="px-1" />
                                             </button>
                                         </form>
                                 }
