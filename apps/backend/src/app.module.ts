@@ -4,10 +4,10 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { TasksModule } from './tasks/tasks.module.js';
-import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
 import { AdminModule } from './admin/admin.module.js';
 import { RankingModule } from './ranking/ranking.module.js';
+import { GuardsModule } from './guards/guards.module.js';
 
 @Module({
   imports: [
@@ -22,12 +22,12 @@ import { RankingModule } from './ranking/ranking.module.js';
       connectionName: 'icc',
     }),
     TasksModule,
-    AuthModule,
     UsersModule,
     AdminModule,
     RankingModule,
+    GuardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

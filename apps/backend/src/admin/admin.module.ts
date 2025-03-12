@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Task, TaskSchema } from '../schemas/task.schema.js';
-import { AuthModule } from '../auth/auth.module.js';
 import { Admin, AdminSchema } from '../schemas/admin.schema.js';
+import { GuardsModule } from '../guards/guards.module.js';
 import { AdminController } from './admin.controller.js';
 import { AdminService } from './admin.service.js';
 
@@ -10,7 +10,7 @@ import { AdminService } from './admin.service.js';
   imports: [
     MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }], 'icc'),
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }], 'register'),
-    AuthModule,
+    GuardsModule,
   ],
   controllers: [AdminController],
   providers: [AdminService],

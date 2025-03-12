@@ -1,8 +1,9 @@
 import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request as Req } from 'express';
-import { AdminAuthGuard, UserAuthGuard } from '../auth/auth.guard.js';
 import type { GetAllUsersDTO, GetUserStatsDTO } from '../types/dtos.js';
+import { UserAuthGuard } from '../guards/user.guard.js';
+import { AdminAuthGuard } from '../guards/admin.guard.js';
 import { UsersService } from './users.service.js';
 
 @Controller('/users')

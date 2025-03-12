@@ -4,7 +4,6 @@ import { Semester, TaskParts } from '@repo/types';
 import { Request as Req } from 'express';
 import { GetAllTasksQuery } from '../types/queries.js';
 import { AnswerTaskBody } from '../types/bodies.js';
-import { BPartAuthGuard, UserAuthGuard } from '../auth/auth.guard.js';
 import {
   GetTaskAnswersResponseDTO,
   TasksDTO,
@@ -13,6 +12,8 @@ import {
   GetNextTaskDTO,
   SendAnswerTaskResponseDTO,
 } from '../types/dtos.js';
+import { BPartAuthGuard } from '../guards/auth.guard.js';
+import { UserAuthGuard } from '../guards/user.guard.js';
 import { TasksService } from './tasks.service.js';
 
 @ApiTags('tasks')
@@ -60,13 +61,13 @@ export class TasksController {
     example: 'letni',
   })
   async getTaskUser(
-    @Param('year') year: string,
+    @Param('year') year: number,
     @Param('semester') semester: Semester,
-    @Param('taskNumber') taskNumber: string,
+    @Param('taskNumber') taskNumber: number,
     @Param('part') part: TaskParts,
     @Request() req: Req,
   ): Promise<TaskDTO> {
-    return this.tasksService.getTaskUser(Number(year), semester, Number(taskNumber), part, req);
+    return this.tasksService.getTaskUser(year, semester, taskNumber, part, req);
   }
 
   @Get('/:year/:semester/:taskNumber/:part/answer')

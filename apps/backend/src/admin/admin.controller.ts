@@ -19,7 +19,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Request as Req } from 'express';
 import { CreateTaskDTO, ServerErrorDTO, TaskAdminDTO, UpdateTaskDTO, TasksDTO, GetUserDTO } from '../types/dtos.js';
 import { GetAllTasksQuery } from '../types/queries.js';
-import { AdminAuthGuard } from '../auth/auth.guard.js';
+import { AdminAuthGuard } from '../guards/admin.guard.js';
 import { AdminService } from './admin.service.js';
 
 @Controller('/admin')
