@@ -28,7 +28,7 @@ export class TasksService {
   constructor(
     @InjectModel('Task', 'icc') private taskModel: Model<Task>,
     @InjectModel('User', 'register') private userModel: Model<User>,
-  ) { }
+  ) {}
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
@@ -172,7 +172,10 @@ export class TasksService {
       }
 
       if (task.releaseDate > new Date()) {
-        throw new HttpException(`Zadanie otwiera się ${task.releaseDate.toLocaleString("pl-PL")}`, StatusCodes.FORBIDDEN);
+        throw new HttpException(
+          `Zadanie otwiera się ${task.releaseDate.toLocaleString('pl-PL')}`,
+          StatusCodes.FORBIDDEN,
+        );
       }
 
       let currentTask = user.started_tasks.find((_task) => _task.task_id.equals(task._id));
@@ -238,7 +241,7 @@ export class TasksService {
             $set: { [`started_tasks.$[elem].${partToCheck}.cooldown`]: null },
           },
           {
-            arrayFilters: [{ "elem.task_id": task._id, },],
+            arrayFilters: [{ 'elem.task_id': task._id }],
           },
         );
       }
@@ -273,8 +276,11 @@ export class TasksService {
     body: AnswerTaskBody,
   ): Promise<SendAnswerTaskResponse> {
     try {
-      if (!userDTO || !userDTO.id || !Types.ObjectId.isValid(userDTO.id)) {
-        throw new HttpException('Nie masz dostępu do zasobu, aby wysłać odpowiedź musisz być zalogowany/a', StatusCodes.UNAUTHORIZED);
+      if (!userDTO?.id || !Types.ObjectId.isValid(userDTO.id)) {
+        throw new HttpException(
+          'Nie masz dostępu do zasobu, aby wysłać odpowiedź musisz być zalogowany/a',
+          StatusCodes.UNAUTHORIZED,
+        );
       }
       const user = await this.userModel.findById(new Types.ObjectId(userDTO.id));
 
@@ -293,13 +299,19 @@ export class TasksService {
       }
 
       if (task.releaseDate > new Date()) {
-        throw new HttpException(`Zadanie, na które próbujesz odpowiedzieć, otwiera się ${task.releaseDate.toUTCString()}`, StatusCodes.FORBIDDEN);
+        throw new HttpException(
+          `Zadanie, na które próbujesz odpowiedzieć, otwiera się ${task.releaseDate.toUTCString()}`,
+          StatusCodes.FORBIDDEN,
+        );
       }
 
       const currentTask = user.started_tasks.find((_task) => _task.task_id.equals(task._id));
 
       if (!currentTask) {
-        throw new HttpException('Nie zarejestrowaliśmy rozpoczęcia przez ciebie zadania. Odśwież stronę', StatusCodes.NOT_FOUND);
+        throw new HttpException(
+          'Nie zarejestrowaliśmy rozpoczęcia przez ciebie zadania. Odśwież stronę',
+          StatusCodes.NOT_FOUND,
+        );
       }
 
       const partToUpdate = part === TaskParts.A ? 'partA' : 'partB';
@@ -322,12 +334,15 @@ export class TasksService {
           isCorrect: false,
           previousAnswers: currentPart.previous_answers,
           cooldown: currentPart.cooldown,
-        }
+        };
       }
 
       if (body.answer !== currentPart.correct_answer) {
         //user answered incorrectly
-        const thirdToLast = currentPart.previous_answers.length >= 3 ? currentPart.previous_answers[currentPart.previous_answers.length - 3] : null;
+        const thirdToLast =
+          currentPart.previous_answers.length >= 3
+            ? currentPart.previous_answers[currentPart.previous_answers.length - 3]
+            : null;
 
         const bufforTime = 1000 * 20; // 20s
         const penalty = 1000 * 8 * 1; // 1min
@@ -370,10 +385,10 @@ export class TasksService {
       await this.userModel.updateOne(
         { _id: user._id },
         {
-          $set: { [`started_tasks.$[elem].${partToUpdate}`]: currentPart, },
+          $set: { [`started_tasks.$[elem].${partToUpdate}`]: currentPart },
         },
         {
-          arrayFilters: [{ "elem.task_id": task._id, },],
+          arrayFilters: [{ 'elem.task_id': task._id }],
         },
       );
 
@@ -381,13 +396,11 @@ export class TasksService {
         isCorrect: currentPart.is_correct,
         previousAnswers: currentPart.previous_answers,
         cooldown: currentPart.cooldown,
-        ...(currentPart.is_correct &&
-        {
+        ...(currentPart.is_correct && {
           points: currentPart.points,
-          correctAnswer: currentPart.correct_answer
+          correctAnswer: currentPart.correct_answer,
         }),
       };
-
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         throw error;

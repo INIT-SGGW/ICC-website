@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Semester } from '@repo/types';
 import type { HydratedDocument } from 'mongoose';
 import { Types } from 'mongoose';
-import { User } from './user.schema.js';
 
 export type TaskDocument = HydratedDocument<Task>;
 
@@ -17,7 +16,7 @@ export class Content {
 
 @Schema({ _id: false })
 export class UserFinishedPart {
-  @Prop({ type: Types.ObjectId, required: true, ref: "User" })
+  @Prop({ type: Types.ObjectId, required: true, ref: 'User' })
   userId: Types.ObjectId;
 
   @Prop({ type: Date, required: true })

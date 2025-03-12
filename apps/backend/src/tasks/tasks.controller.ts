@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Semester, TaskParts } from '@repo/types';
 import { Request as Req } from 'express';
@@ -104,6 +104,7 @@ export class TasksController {
     description: 'Semester of task release',
     example: 'letni',
   })
+  @HttpCode(200)
   @ApiParam({ required: true, name: 'taskNumber', type: Number, description: 'Task number', example: 1 })
   @ApiParam({ required: true, name: 'part', type: String, description: 'Task part', example: 'A' })
   @ApiBody({ type: AnswerTaskBody })

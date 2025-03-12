@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import type { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface.js';
 import { AllExceptionsFilter } from './all-exceptions-filter/all-exceptions-filter.filter.js';
 import { AppModule } from './app.module.js';
-import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface.js';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -35,7 +35,7 @@ async function bootstrap(): Promise<void> {
     const allowedOrigins: string[] = ['http://localhost:3000', 'http://localhost:3001'];
 
     const corsOptions: CorsOptions = {
-      origin: function (origin: string, callback) {
+      origin(origin: string, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
           callback(null, true);
         } else {
@@ -46,7 +46,7 @@ async function bootstrap(): Promise<void> {
       preflightContinue: false,
       credentials: true,
       optionsSuccessStatus: 204,
-    }
+    };
 
     app.enableCors(corsOptions);
   }
