@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface.js';
-import { AllExceptionsFilter } from './all-exceptions-filter/all-exceptions-filter.filter.js';
+import { AllExceptionsFilter } from './filters/all-exception-filter.filter.js';
 import { AppModule } from './app.module.js';
 
 async function bootstrap(): Promise<void> {
