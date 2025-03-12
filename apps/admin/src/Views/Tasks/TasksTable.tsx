@@ -37,7 +37,7 @@ export function TasksTable(): JSX.Element {
                         <tbody>
                             {
                                 data.tasks.sort((a, b) => a.taskNumber - b.taskNumber).map((task) => (
-                                    <tr key={task.taskId} onClick={() => { window.location.href = `/tasks/details/${task.taskId}` }} className="border-b-2 border-gray-700 bg-black text-white sm:hover:bg-gray-800 transition-colors cursor-pointer">
+                                    <tr key={task.taskId} onClick={() => { window.location.href = `/admin/tasks/details/${task.taskId}` }} className="border-b-2 border-gray-700 bg-black text-white sm:hover:bg-gray-800 transition-colors cursor-pointer">
                                         <td className="text-center">{task.taskNumber}</td>
                                         <td className="truncate w-full max-w-[400px]">{task.title}</td>
                                         <td className="text-nowrap hidden md:table-cell">{new Date(task.releaseDate).toLocaleDateString()}</td>
