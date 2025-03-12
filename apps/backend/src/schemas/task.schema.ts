@@ -8,22 +8,22 @@ export type TaskDocument = HydratedDocument<Task>;
 
 @Schema({ _id: false })
 export class Content {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   partA: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   partB: string;
 }
 
 @Schema({ _id: false })
 export class UserFinishedPart {
-  @Prop({ required: true, type: Types.ObjectId, ref: User.name })
-  userId: User;
+  @Prop({ type: Types.ObjectId, required: true, ref: "User" })
+  userId: Types.ObjectId;
 
-  @Prop({ required: true, type: Date })
+  @Prop({ type: Date, required: true })
   finishedAt: Date;
 
-  @Prop({ required: true, type: Number })
+  @Prop({ type: Number, required: true })
   points: number;
 }
 
@@ -41,22 +41,22 @@ export class UsersFinished {
   _id: true,
 })
 export class Task {
-  @Prop({ required: true, type: String })
+  @Prop({ type: String, required: true })
   title: string;
 
-  @Prop({ required: true, type: Content })
+  @Prop({ type: Content, required: true })
   content: Content;
 
-  @Prop({ required: true, type: String })
+  @Prop({ type: String, required: true })
   filePath: string;
 
-  @Prop({ required: true, type: Date })
+  @Prop({ type: Date, required: true })
   releaseDate: Date;
 
-  @Prop({ required: true, enum: Semester })
+  @Prop({ type: String, enum: Semester, required: true })
   semester: Semester;
 
-  @Prop({ required: true, type: Number })
+  @Prop({ type: Number, required: true })
   taskNumber: number;
 
   @Prop({ type: UsersFinished, default: { partA: [], partB: [] } })

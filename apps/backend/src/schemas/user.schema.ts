@@ -1,77 +1,78 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type HydratedDocument, Types } from 'mongoose';
 import { Faculty } from '@repo/types';
+import { Task } from './task.schema.js';
 
 export type UserDocument = HydratedDocument<User>;
-@Schema()
+@Schema({ _id: false })
 export class PreviousAnswers {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   answer: string;
 
-  @Prop({ required: true, default: Date.now })
+  @Prop({ type: Date, required: true, default: Date.now })
   date: Date;
 }
 
-@Schema()
+@Schema({ _id: false })
 export class Part {
-  @Prop()
+  @Prop({ type: [PreviousAnswers], default: [] })
   previous_answers: PreviousAnswers[];
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   correct_answer: string;
 
-  @Prop()
-  cooldown: Date;
+  @Prop({ type: Date, default: null })
+  cooldown: Date | null;
 
-  @Prop({ default: 0 })
+  @Prop({ type: Number, default: 0 })
   points: number;
 
-  @Prop({ default: false })
+  @Prop({ type: Boolean, default: false })
   is_correct: boolean;
 }
 
 @Schema({ _id: false })
-export class Answers {
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Task' })
+export class StartedTasks {
+  @Prop({ type: Types.ObjectId, required: true, ref: "Task" })
   task_id: Types.ObjectId;
 
-  @Prop({ required: true, type: String })
+  @Prop({ type: String, required: true })
   input_path: string;
 
-  @Prop({ required: true, type: String })
+  @Prop({ type: String, required: true })
   seed: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Part, required: true })
   partA: Part;
 
-  @Prop({ required: true })
+  @Prop({ type: Part, required: true })
   partB: Part;
 }
 
 @Schema()
 export class User {
-  @Prop({ required: true })
+  @Prop({ type: String })
   first_name: string;
 
-  @Prop()
+  @Prop({ type: String })
   last_name: string;
 
-  @Prop()
+  @Prop({ type: [String] })
   emails: string[];
 
-  @Prop({ default: [] })
-  started_tasks: Answers[];
+  @Prop({ type: [StartedTasks], default: [] })
+  started_tasks: StartedTasks[];
 
-  @Prop({ default: 0 })
+  @Prop({ type: Number, default: 0 })
   pointsGeneral: number;
 
-  @Prop()
+  @Prop({ type: Number })
   student_index: number;
 
-  @Prop()
+  @Prop({ type: String, enum: Faculty })
   faculity: Faculty;
 
-  @Prop()
+  @Prop({ type: Number })
   academic_year: number;
 }
 
