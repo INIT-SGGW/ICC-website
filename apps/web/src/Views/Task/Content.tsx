@@ -15,7 +15,7 @@ export function Content({ year, semester, task, part }: Props): React.JSX.Elemen
     const { data, error, isLoading } = useGetTask(`/tasks/${year}/${semester}/${task}/${part}`);
 
     return (
-        <div className="bg-black p-4 w-full">
+        <div className="bg-black p-4 w-full h-min">
             {
                 isLoading && !error ? <div>Ładowanie...</div> : null
             }
