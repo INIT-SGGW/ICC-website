@@ -18,14 +18,17 @@ export default function Page({ params }: Props): React.JSX.Element {
     const { year, semester, task, part } = use(params);
 
     return (
-        <div className="w-full m-auto max-w-[800px] flex flex-col md:flex-row items-center md:items-start justify-center md:py-8 text-white gap-8 ">
+        <div className="w-full m-auto max-w-[1150px] md:py-8 text-white gap-8 ">
             <div className="flex flex-col items-center justify-center gap-4 w-full">
                 <Header year={Number(year)} semester={semester} task={Number(task)} />
 
-                <Content year={Number(year)} semester={semester} task={Number(task)} part={part} />
+                <div className="flex flex-col lg:!flex-row gap-10 w-full">
+                    <Content year={Number(year)} semester={semester} task={Number(task)} part={part} />
+                    <div className="sticky top-8 lg:min-w-[320px] h-full">
+                        <AnswerSection year={Number(year)} semester={semester} task={Number(task)} part={part} />
+                    </div>
+                </div>
             </div>
-
-            <AnswerSection year={Number(year)} semester={semester} task={Number(task)} part={part} />
         </div>
     )
 }
