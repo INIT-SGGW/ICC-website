@@ -7,7 +7,7 @@ type AuthWrapperProps = {
     children: React.ReactNode;
 }
 
-const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
+function AuthWrapper({ children }: AuthWrapperProps): React.JSX.Element | null {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
