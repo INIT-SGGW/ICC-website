@@ -20,7 +20,7 @@ export function Header({ year, semester, task }: Props): React.JSX.Element {
 
     return (
         <div className="self-start flex flex-row items-center justify-center gap-4">
-            <p className="text-white text-4xl bg-[#FF0000] px-4">Zadanie {ROMAN_NUMBERS[Number(task) - 1]}</p>
+            <p className="text-white text-4xl bg-[#FF0000] border-2 border-[#FF0000] px-4">Zadanie {ROMAN_NUMBERS[Number(task) - 1]}</p>
 
             <Link
                 href={`/task/${year}/${semester}/${task}/A`}
