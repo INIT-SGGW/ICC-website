@@ -1,11 +1,11 @@
 "use client"
 
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react"
+import { type Dispatch, type SetStateAction, useEffect, useRef, useState } from "react"
 import { Input } from "@repo/ui"
 import Image from "next/image"
 import Link from "next/link"
 import { useGetTaskAnswers, useSendAnswerTask } from "@/services/api"
-import type { Semester } from "@repo/types"
+import type { GetTaskAdminResponse, GetTaskAnswersResponse, GetTaskUserResponse, Semester } from "@repo/types"
 import { HttpMethods } from "@/types/enums"
 import { jerseyFont } from "@/assets/fonts"
 
@@ -47,6 +47,46 @@ function Timer({ cooldown, setCooldown }: { cooldown: Date, setCooldown: Dispatc
     return (
         <p className={`text-cred text-4xl ${jerseyFont.className} border-2 border-cred w-full text-center`}>{new Date(time).toISOString().match(/\d{2}:\d{2}:\d{2}/g)?.[0]}</p>
     )
+}
+
+function AnswerItem({ data, prev }: { data: GetTaskAnswersResponse, prev: { date: Date, answer: string } }) {
+    // Item created so that it can dinamically check if the text is overflowing
+    const pRef = useRef<HTMLParagraphElement | null>(null);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+
+    useEffect(() => {
+        if (pRef.current) {
+            console.log(pRef.current.scrollWidth, pRef.current.clientWidth);
+            setIsOverflowing(pRef.current.scrollWidth > pRef.current.clientWidth);
+        }
+    }, [prev.answer, pRef.current]); // Run effect when answer changes
+
+    return (
+        <div key={`${new Date(prev.date).getTime()}-${prev.answer}`} className="flex flex-row items-center justify-start gap-4 w-full pr-3">
+            <p className="text-gray-500 text-sm text-nowrap">
+                {formatUTCDate(new Date(prev.date))}
+            </p>
+            <p
+                ref={pRef} // Attach the ref
+                title={prev.answer}
+                className={`text-sm ${data.isCorrect && data.correctAnswer === prev.answer ? "text-cred" : "text-white"} text-ellipsis overflow-hidden`}
+            >
+                {prev.answer}
+            </p>
+            {isOverflowing && (
+                <button
+                    className="w-min self-end"
+                    type="button"
+                    title="Skopiuj input"
+                    onClick={() => {
+                        navigator.clipboard.writeText(prev.answer);
+                    }}
+                >
+                    <img src="/copy.svg" alt="copy" height="10px" width="10px" className="min-w-[20px] h-[20px]" />
+                </button>
+            )}
+        </div>
+    );
 }
 
 export function AnswerSection({ year, semester, task, part }: Props): React.JSX.Element {
@@ -154,17 +194,11 @@ export function AnswerSection({ year, semester, task, part }: Props): React.JSX.
                                             <p className="text-cred text-sm">Brak poprzednich odpowiedzi</p>
                                         ) : (
                                             <>
-                                                {data.previousAnswers.map((prev) => (
-                                                    <div key={`${new Date(prev.date).getTime()}-${prev.answer}`} className="flex flex-row items-center justify-start gap-4 w-full">
-                                                        {/* Use consistent date formatting */}
-                                                        <p className="text-gray-500 text-sm">
-                                                            {formatUTCDate(new Date(prev.date))}
-                                                        </p>
-                                                        <p className={`text-sm ${(data.isCorrect && data.correctAnswer === prev.answer) ? "text-cred" : "text-white"}`}>
-                                                            {prev.answer}
-                                                        </p>
-                                                    </div>
-                                                ))}
+                                                {data.previousAnswers.map((prev) => {
+                                                    return (
+                                                        <AnswerItem key={`${new Date(prev.date).getTime()}-${prev.answer}`} data={data} prev={prev} />
+                                                    )
+                                                })}
                                             </>
                                         )
                                     }
