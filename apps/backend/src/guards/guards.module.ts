@@ -13,4 +13,4 @@ import { SoftUserAuthGuard, UserAuthGuard } from './user.guard.js';
   providers: [UserAuthGuard, AdminAuthGuard, SoftUserAuthGuard],
   exports: [UserAuthGuard, AdminAuthGuard, SoftUserAuthGuard, JwtModule],
 })
-export class GuardsModule { }
+export class GuardsModule {}

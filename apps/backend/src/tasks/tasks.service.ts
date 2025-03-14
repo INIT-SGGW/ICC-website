@@ -28,7 +28,7 @@ export class TasksService {
   constructor(
     @InjectModel('Task', 'icc') private taskModel: Model<Task>,
     @InjectModel('User', 'register') private userModel: Model<User>,
-  ) { }
+  ) {}
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
@@ -97,10 +97,6 @@ export class TasksService {
     part: TaskParts,
     req: Request,
   ): Promise<GetTaskUserResponse> {
-    if (part !== TaskParts.A && part !== TaskParts.B) {
-      throw new HttpException('Wyszukiwane zadanie nie istnieje', StatusCodes.BAD_REQUEST);
-    }
-
     const task = await this.taskModel.findOne({
       releaseYear: year,
       semester,
@@ -320,6 +316,10 @@ export class TasksService {
 
       const partToUpdate = part === TaskParts.A ? 'partA' : 'partB';
       const currentPart = currentTask[partToUpdate];
+
+      if (part === TaskParts.B && !currentTask.partA.is_correct) {
+        throw new HttpException('Skończ część A, aby odblokować część B', StatusCodes.FORBIDDEN);
+      }
 
       if (currentPart.is_correct) {
         // user already answered

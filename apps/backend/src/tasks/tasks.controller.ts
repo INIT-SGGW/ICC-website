@@ -1,4 +1,16 @@
-import { Body, Controller, Get, HttpCode, Param, ParseEnumPipe, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  ParseEnumPipe,
+  ParseIntPipe,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Semester, TaskParts } from '@repo/types';
 import { Request as Req } from 'express';
@@ -12,14 +24,13 @@ import {
   GetNextTaskDTO,
   SendAnswerTaskResponseDTO,
 } from '../types/dtos.js';
-import { BPartAuthGuard } from '../guards/auth.guard.js';
-import { UserAuthGuard } from '../guards/user.guard.js';
+import { SoftUserAuthGuard, UserAuthGuard } from '../guards/user.guard.js';
 import { TasksService } from './tasks.service.js';
 
 @ApiTags('tasks')
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) { }
+  constructor(private readonly tasksService: TasksService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all tasks for user', description: 'Get all tasks for user in given year' })
@@ -48,7 +59,7 @@ export class TasksController {
   }
 
   @Get('/:year/:semester/:taskNumber/:part')
-  @UseGuards(BPartAuthGuard)
+  @UseGuards(SoftUserAuthGuard)
   @ApiOperation({ summary: 'Get open tasks', description: 'Get list of open tasks' })
   @ApiResponse({ status: 200, description: 'Returns list of open tasks', type: TaskDTO })
   @ApiParam({ required: true, name: 'task', type: Number, description: 'Task number', example: 1 })
@@ -71,7 +82,7 @@ export class TasksController {
   }
 
   @Get('/:year/:semester/:taskNumber/:part/answer')
-  @UseGuards(UserAuthGuard, BPartAuthGuard)
+  @UseGuards(UserAuthGuard)
   @ApiOperation({ summary: 'Get open tasks', description: 'Get list of open tasks' })
   @ApiResponse({ status: 200, description: 'Returns list of open tasks', type: GetTaskAnswersResponseDTO })
   @ApiParam({ required: true, name: 'taskNumber', type: Number, description: 'Task number', example: 1 })
