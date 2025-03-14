@@ -28,7 +28,7 @@ export class TasksService {
   constructor(
     @InjectModel('Task', 'icc') private taskModel: Model<Task>,
     @InjectModel('User', 'register') private userModel: Model<User>,
-  ) {}
+  ) { }
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
@@ -203,6 +203,7 @@ export class TasksService {
             correct_answer: taskContentClass.part1,
             cooldown: new Date(),
             points: 0,
+            cooldowns_counter: 0,
             is_correct: false,
           },
           partB: {
@@ -210,6 +211,7 @@ export class TasksService {
             correct_answer: taskContentClass.part2,
             cooldown: new Date(),
             points: 0,
+            cooldowns_counter: 0,
             is_correct: false,
           },
         };
@@ -349,12 +351,13 @@ export class TasksService {
             : null;
 
         const bufforTime = 1000 * 20; // 20s
-        const penalty = 1000 * 8 * 1; // 1min
 
         // check if user answered 3 times in 20s
         if (thirdToLast && new Date().getTime() - thirdToLast.date.getTime() < bufforTime) {
           // if so add cooldown
+          const penalty = (currentPart.cooldowns_counter + 1) ** 2 / 2 * 60 * 1000; // 1/2 * n^2 * 60s * 1000ms
           currentPart.cooldown = new Date(new Date().getTime() + penalty);
+          currentPart.cooldowns_counter += 1;
         } else {
           // if not add answer to previous answers
           currentPart.previous_answers.push({

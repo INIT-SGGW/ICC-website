@@ -23,6 +23,10 @@ export class Part {
   @Prop({ type: Date, default: null })
   cooldown: Date | null;
 
+  //number of cooldowns
+  @Prop({ type: Number, default: 0 })
+  cooldowns_counter: number;
+
   @Prop({ type: Number, default: 0 })
   points: number;
 
