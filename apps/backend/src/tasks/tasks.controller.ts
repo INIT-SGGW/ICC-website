@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, ParseEnumPipe, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Semester, TaskParts } from '@repo/types';
 import { Request as Req } from 'express';
@@ -19,7 +19,7 @@ import { TasksService } from './tasks.service.js';
 @ApiTags('tasks')
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(private readonly tasksService: TasksService) { }
 
   @Get()
   @ApiOperation({ summary: 'Get all tasks for user', description: 'Get all tasks for user in given year' })
@@ -61,10 +61,10 @@ export class TasksController {
     example: 'letni',
   })
   async getTaskUser(
-    @Param('year') year: number,
-    @Param('semester') semester: Semester,
-    @Param('taskNumber') taskNumber: number,
-    @Param('part') part: TaskParts,
+    @Param('year', ParseIntPipe) year: number,
+    @Param('semester', new ParseEnumPipe(Semester)) semester: Semester,
+    @Param('taskNumber', ParseIntPipe) taskNumber: number,
+    @Param('part', new ParseEnumPipe(TaskParts)) part: TaskParts,
     @Request() req: Req,
   ): Promise<TaskDTO> {
     return this.tasksService.getTaskUser(year, semester, taskNumber, part, req);
@@ -85,10 +85,10 @@ export class TasksController {
   })
   @ApiParam({ required: true, name: 'part', type: String, description: 'Task part', example: 'A' })
   async getTaskAnswersUser(
-    @Param('year') year: string,
-    @Param('semester') semester: Semester,
-    @Param('taskNumber') taskNumber: string,
-    @Param('part') part: TaskParts,
+    @Param('year', ParseIntPipe) year: number,
+    @Param('semester', new ParseEnumPipe(Semester)) semester: Semester,
+    @Param('taskNumber', ParseIntPipe) taskNumber: number,
+    @Param('part', new ParseEnumPipe(TaskParts)) part: TaskParts,
     @Request() { user }: Req,
   ): Promise<GetTaskAnswersResponseDTO> {
     return this.tasksService.getTaskAnswersUser(Number(year), semester, Number(taskNumber), user, part);
@@ -115,10 +115,10 @@ export class TasksController {
     type: SendAnswerTaskResponseDTO,
   })
   async answerTask(
-    @Param('year') year: string,
-    @Param('semester') semester: Semester,
-    @Param('taskNumber') taskNumber: string,
-    @Param('part') part: TaskParts,
+    @Param('year', ParseIntPipe) year: number,
+    @Param('semester', new ParseEnumPipe(Semester)) semester: Semester,
+    @Param('taskNumber', ParseIntPipe) taskNumber: number,
+    @Param('part', new ParseEnumPipe(TaskParts)) part: TaskParts,
     @Body() body: AnswerTaskBody,
     @Request() { user }: Req,
   ): Promise<SendAnswerTaskResponseDTO> {

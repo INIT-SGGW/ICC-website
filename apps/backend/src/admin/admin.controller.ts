@@ -26,7 +26,7 @@ import { AdminService } from './admin.service.js';
 @ApiTags('admin')
 @UseGuards(AdminAuthGuard)
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   @Get('/me')
   @ApiOperation({ summary: 'Get user', description: 'Get user by id' })
@@ -49,7 +49,7 @@ export class AdminController {
   @ApiOperation({ summary: 'Get open tasks', description: 'Get list of open tasks' })
   @ApiResponse({ status: 200, description: 'Returns list of open tasks', type: TaskAdminDTO })
   @ApiQuery({ required: true, name: 'id', type: String, description: 'Task id', example: 'as64c32647c1234c3421' })
-  async getTaskAdmin(@Param() id: string): Promise<TaskAdminDTO> {
+  async getTaskAdmin(@Param("id") id: string): Promise<TaskAdminDTO> {
     return this.adminService.getTask(id);
   }
 
