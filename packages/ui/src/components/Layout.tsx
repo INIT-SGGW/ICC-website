@@ -6,6 +6,7 @@ import LinkedinLogo from "../assets/linkedin-icon.svg";
 import InitLogo from "../assets/init-logo.svg";
 import SGGWLogo from "../assets/sggw-logo.svg";
 import MevspaceLogo from "../assets/mevspace.svg";
+import { GoogleAnalyticsWrapper } from "./GoogleAnalyticsWrapper";
 
 function TopBar({ adminPanel, navItems }: { adminPanel: boolean, navItems: { href: string, label: string; img?: string }[] }): JSX.Element {
   return (
@@ -93,17 +94,20 @@ function Footer({ adminPanel }: { adminPanel: boolean }): JSX.Element {
 export function RootLayout({
   font,
   navItems,
+  gaid,
   adminPanel = false,
   children,
 }: {
   font: { className: string };
   navItems: { href: string; label: string; img?: string }[];
+  gaid?: string;
   adminPanel?: boolean;
   children: React.ReactNode;
 }): JSX.Element {
   return (
     <html className={font.className} lang="pl" >
       <body className="flex flex-col min-h-screen">
+        {gaid && <GoogleAnalyticsWrapper gaid={gaid} />}
         <TopBar adminPanel={adminPanel} navItems={navItems} />
         <div className="flex-1 main-content p-8 py-16">
           {children}

@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.16",
+    "nextjs-google-analytics": "^2.3.7",
     "react-markdown": "9.0.3",
     "remark-gfm": "^4.0.0"
   },

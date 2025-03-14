@@ -1,6 +1,5 @@
 import "./globals.css";
 import { Layout } from "@repo/ui";
-
 import { jerseyFont } from "@/assets/fonts";
 
 export default function RootLayout({
@@ -16,6 +15,7 @@ export default function RootLayout({
       { href: "/ranking", label: "Ranking", img: "/ranking.svg" },
       { href: "/account", label: "Login", img: "/login.svg" }
     ]}
+      gaid="G-YLVC1T6SQR"
     >
       <>
         {children}
