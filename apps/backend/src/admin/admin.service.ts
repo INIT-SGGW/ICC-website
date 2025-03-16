@@ -3,7 +3,7 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import type { GetAllTasksResponse, GetTaskAdminResponse } from '@repo/types';
+import type { GetAllAdminsResponse, GetAllTasksResponse, GetAllUsersResponse, GetSingleAdminResponse, GetTaskAdminResponse, UpdateAdminRequest } from '@repo/types';
 import { Task } from '../schemas/task.schema.js';
 import type { CreateTaskDTO, GetUserDTO, TaskAdminDTO, UpdateTaskDTO, UserTokenDataDTO } from '../types/dtos.js';
 import { unzipFile } from '../utils/UnzipFile.js';
@@ -15,7 +15,7 @@ export class AdminService {
   constructor(
     @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
     @InjectModel(Admin.name, 'register') private adminModel: Model<Admin>,
-  ) {}
+  ) { }
 
   async getUser(user: UserTokenDataDTO | undefined): Promise<GetUserDTO> {
     try {
@@ -46,6 +46,65 @@ export class AdminService {
         throw error;
       }
       throw new HttpException('Wystąpił błąd podczas pobierania użytkownika', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getAllAdmins(): Promise<GetAllAdminsResponse> {
+    try {
+      const admins = await this.adminModel.find().lean();
+
+      return {
+        admins: admins.map((admin) => ({
+          userId: admin._id.toString(),
+          email: admin.email,
+          firstName: admin.first_name,
+          lastName: admin.last_name,
+          discordUsername: admin.discord_username,
+        })),
+      };
+    } catch (error: unknown) {
+      throw new HttpException('Wystąpił błąd podczas pobierania administratorów', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getSingleAdmin(id: string): Promise<GetSingleAdminResponse> {
+    try {
+      const admin = await this.adminModel.findById(new Types.ObjectId(id)).lean();
+
+      if (!admin) {
+        throw new HttpException('Wyszukiwany administrator nie istnieje', StatusCodes.NOT_FOUND);
+      }
+
+      return {
+        userId: admin._id.toString(),
+        email: admin.email,
+        firstName: admin.first_name,
+        lastName: admin.last_name,
+        discordUsername: admin.discord_username,
+      };
+    } catch (error: unknown) {
+      throw new HttpException('Wystąpił błąd podczas pobierania administratorów', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async updateAdmin(id: string, body: UpdateAdminRequest): Promise<void> {
+    try {
+      await this.adminModel.updateOne({ _id: new Types.ObjectId(id) }, {
+        email: body.email,
+        first_name: body.firstName,
+        last_name: body.lastName,
+        discord_username: body.discordUsername,
+      });
+    } catch (error: unknown) {
+      throw new HttpException('Wystąpił błąd podczas aktualizacji administratora', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteAdmin(id: string): Promise<void> {
+    try {
+      await this.adminModel.deleteOne({ _id: new Types.ObjectId(id) });
+    } catch (error: unknown) {
+      throw new HttpException('Wystąpił błąd podczas usuwania administratora', StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }
 

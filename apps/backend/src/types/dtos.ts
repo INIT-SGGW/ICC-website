@@ -10,6 +10,8 @@ import type {
   GetUserStatsResponse,
   GetRankingResponse,
   GetUserResponse,
+  GetAllAdminsResponse,
+  GetSingleAdminResponse,
 } from '@repo/types';
 import { Semester } from '@repo/types';
 import { Transform } from 'class-transformer';
@@ -214,9 +216,9 @@ export class GetTaskAnswersResponseDTO implements GetTaskAnswersResponse {
   points?: number;
 }
 
-export class CreateUserDTO {}
+export class CreateUserDTO { }
 
-export class UpdateUserDTO {}
+export class UpdateUserDTO { }
 
 export class CreateTaskDTO {
   @IsNotEmpty()
@@ -422,4 +424,32 @@ export class GetUserDTO implements GetUserResponse {
   @IsString()
   @IsNotEmpty()
   userId: string;
+}
+
+
+export class AdminPayloadDTO implements GetSingleAdminResponse {
+  @IsString()
+  @IsNotEmpty()
+  firstName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  discordUsername: string;
+
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+}
+
+export class GetAllAdminsDTO implements GetAllAdminsResponse {
+  @ApiProperty({ type: [AdminPayloadDTO], description: 'List of admins' })
+  admins: AdminPayloadDTO[];
 }

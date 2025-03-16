@@ -12,28 +12,62 @@ import {
   HttpCode,
   Request,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiQuery, ApiTags, ApiParam } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { StatusCodes } from 'http-status-codes';
 import { Request as Req } from 'express';
-import { CreateTaskDTO, ServerErrorDTO, TaskAdminDTO, UpdateTaskDTO, TasksDTO, GetUserDTO } from '../types/dtos.js';
+import { CreateTaskDTO, ServerErrorDTO, TaskAdminDTO, UpdateTaskDTO, TasksDTO, GetUserDTO, GetAllAdminsDTO, AdminPayloadDTO } from '../types/dtos.js';
 import { GetAllTasksQuery } from '../types/queries.js';
 import { AdminAuthGuard } from '../guards/admin.guard.js';
 import { AdminService } from './admin.service.js';
+import { UpdateAdminRequest } from '@repo/types';
 
 @Controller('/admin')
 @ApiTags('admin')
 @UseGuards(AdminAuthGuard)
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   @Get('/me')
-  @ApiOperation({ summary: 'Get user', description: 'Get user by id' })
-  @ApiResponse({ status: 200, description: 'Returns user', type: GetUserDTO })
-  @ApiQuery({ required: true, name: 'id', type: String, description: 'User id', example: 'as64c32647c1234c3421' })
+  @ApiOperation({ summary: 'Get current admin', description: 'Get currently logged in admin' })
+  @ApiResponse({ status: 200, description: 'Returns admin', type: GetUserDTO })
+  @ApiQuery({ required: true, name: 'id', type: String, description: 'Admin id', example: 'as64c32647c1234c3421' })
   async getUserAdmin(@Request() { user }: Req): Promise<GetUserDTO> {
     return this.adminService.getUser(user);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all admins', description: 'Get all registered admins' })
+  @ApiResponse({ status: 200, description: 'Returns admin', type: GetAllAdminsDTO })
+  async getAllAdmins(): Promise<GetAllAdminsDTO> {
+    return this.adminService.getAllAdmins();
+  }
+
+  @Get("/:id")
+  @ApiOperation({ summary: 'Get single admin', description: 'Get admin data by id' })
+  @ApiResponse({ status: 200, description: 'Returns admin', type: AdminPayloadDTO })
+  @ApiParam({ required: true, name: 'id', type: String, description: 'Admin id', example: 'as64c32647c1234c3421' })
+  async getSingleAdmin(@Param("id") id: string): Promise<AdminPayloadDTO> {
+    return this.adminService.getSingleAdmin(id);
+  }
+
+  @Patch("/:id")
+  @HttpCode(StatusCodes.NO_CONTENT)
+  @ApiOperation({ summary: 'Get single admin', description: 'Update admin by id' })
+  @ApiResponse({ status: 204, description: 'No content' })
+  @ApiParam({ required: true, name: 'id', type: String, description: 'Admin id', example: 'as64c32647c1234c3421' })
+  async updateAdmin(@Param("id") id: string, @Body() body: UpdateAdminRequest): Promise<void> {
+    return this.adminService.updateAdmin(id, body);
+  }
+
+  @Delete("/:id")
+  @HttpCode(StatusCodes.NO_CONTENT)
+  @ApiOperation({ summary: 'Get user', description: 'Get user by id' })
+  @ApiResponse({ status: StatusCodes.NO_CONTENT, description: 'No content' })
+  @ApiParam({ required: true, name: 'id', type: String, description: 'Admin id', example: 'as64c32647c1234c3421' })
+  async deleteAdmin(@Param("id") id: string): Promise<void> {
+    return this.adminService.deleteAdmin(id);
   }
 
   @Get('/tasks')

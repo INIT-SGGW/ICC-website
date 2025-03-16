@@ -8,13 +8,16 @@ export class Admin {
   @Prop({ type: Types.ObjectId })
   _id: Types.ObjectId;
 
-  @Prop()
+  @Prop({ type: String })
   first_name: string;
 
-  @Prop()
+  @Prop({ type: String })
   last_name: string;
 
-  @Prop()
+  @Prop({ type: String })
+  discord_username: string;
+
+  @Prop({ type: String, unique: true })
   email: string;
 }
 

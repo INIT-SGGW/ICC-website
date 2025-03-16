@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useGetAllUsers } from "../../services/api";
+import { useGetAllAdmins, useGetAllUsers } from "../../services/api";
 import type { GetAllUsersResponse } from "@repo/types";
 import type CustomError from "../../utils/CustomError";
 
@@ -39,7 +39,7 @@ function Table({ data, isLoading, error }: Props): JSX.Element {
                         <tbody>
                             {
                                 data.map((user, index) => (
-                                    <tr onClick={() => { window.location.href = `users/details/${user.userId}` }} className="border-b-2 border-gray-700 bg-black text-white sm:hover:bg-gray-800 transition-colors cursor-pointer" key={user.userId}>
+                                    <tr onClick={() => { window.location.href = `admin/details/${user.userId}` }} className="border-b-2 border-gray-700 bg-black text-white sm:hover:bg-gray-800 transition-colors cursor-pointer" key={user.userId}>
                                         <td className="text-center">{index + 1}</td>
                                         <td className="text-left">{user.firstName || "-"}</td>
                                         <td className="text-left">{user.lastName || "-"}</td>
@@ -58,9 +58,9 @@ function Table({ data, isLoading, error }: Props): JSX.Element {
     )
 }
 
-export function UsersTable(): JSX.Element {
+export function AdminsTable(): JSX.Element {
     const [search, setSearch] = useState<string>("");
-    const { data, error, isLoading } = useGetAllUsers();
+    const { data, error, isLoading } = useGetAllAdmins();
 
     if (isLoading) {
         return <div>Loading...</div>
@@ -75,7 +75,7 @@ export function UsersTable(): JSX.Element {
                 value={search}
                 className="w-full p-2 mb-4"
             />
-            <Table error={error} isLoading={isLoading} data={data?.users.filter((user) => user.firstName.includes(search) || user.lastName.includes(search) || user.email.includes(search))} />
+            <Table error={error} isLoading={isLoading} data={data?.admins.filter((user) => user.firstName.includes(search) || user.lastName.includes(search) || user.email.includes(search))} />
         </div>
     )
 }

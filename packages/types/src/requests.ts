@@ -22,6 +22,26 @@ export type RegisterRequest = {
     aggrement: boolean
 }
 
+export type RegisterAdminRequest = {
+    email: string;
+}
+
+export type VerifyAdminRequest = {
+    discordUsername: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    password: string,
+    verificationToken: string
+}
+
+export type UpdateAdminRequest = {
+    firstName: string,
+    lastName: string,
+    email: string
+    discordUsername: string
+}
+
 export type CreateTaskRequest = {
     title: string
     releaseDate: Date

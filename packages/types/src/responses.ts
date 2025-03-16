@@ -79,6 +79,23 @@ export type GetAllUsersResponse = {
     }[]
 }
 
+
+export type GetAllAdminsResponse = {
+    admins: {
+        userId: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+    }[]
+}
+
+export type GetSingleAdminResponse = {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+
 export type GetNextTaskResponse = {
     taskId: string;
     releaseDate: Date;

@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <Layout adminPanel font={jerseyFont} navItems={[{ href: "/admin/tasks", label: "Zadania" }, { href: "/admin/users", label: "Użytkownicy" }, { href: "/admin/markdown-test", label: "Markdown Test" }]} >
+    <Layout adminPanel font={jerseyFont} navItems={[{ href: "/admin/admin", label: "Admin" }, { href: "/admin/tasks", label: "Zadania" }, { href: "/admin/users", label: "Użytkownicy" }, { href: "/admin/markdown-test", label: "Markdown Test" }]} >
       <AuthWrapper>
         {children}
       </AuthWrapper>
