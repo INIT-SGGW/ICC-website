@@ -29,14 +29,14 @@ import { UpdateAdminRequest } from '@repo/types';
 export class AdminController {
   constructor(private readonly adminService: AdminService) { }
 
-  @Get()
+  @Get("admin/")
   @ApiOperation({ summary: 'Get all admins', description: 'Get all registered admins' })
   @ApiResponse({ status: 200, description: 'Returns admin', type: GetAllAdminsDTO })
   async getAllAdmins(): Promise<GetAllAdminsDTO> {
     return this.adminService.getAllAdmins();
   }
 
-  @Get("/:id")
+  @Get("/admin/:id")
   @ApiOperation({ summary: 'Get single admin', description: 'Get admin data by id' })
   @ApiResponse({ status: 200, description: 'Returns admin', type: AdminPayloadDTO })
   @ApiParam({ required: true, name: 'id', type: String, description: 'Admin id', example: 'as64c32647c1234c3421' })
@@ -44,7 +44,7 @@ export class AdminController {
     return this.adminService.getSingleAdmin(id);
   }
 
-  @Patch("/:id")
+  @Patch("/admin/:id")
   @HttpCode(StatusCodes.NO_CONTENT)
   @ApiOperation({ summary: 'Get single admin', description: 'Update admin by id' })
   @ApiResponse({ status: 204, description: 'No content' })
@@ -53,7 +53,7 @@ export class AdminController {
     return this.adminService.updateAdmin(id, body);
   }
 
-  @Delete("/:id")
+  @Delete("/admin/:id")
   @HttpCode(StatusCodes.NO_CONTENT)
   @ApiOperation({ summary: 'Get user', description: 'Get user by id' })
   @ApiResponse({ status: StatusCodes.NO_CONTENT, description: 'No content' })
