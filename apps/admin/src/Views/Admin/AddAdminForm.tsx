@@ -4,6 +4,7 @@ import { Button, Input } from "@repo/ui";
 import { useState } from "react";
 import { useCreateAdmin } from "../../services/api";
 import { HttpMethods } from "../../types/enums";
+import { useRouter } from "next/navigation";
 
 function validate(email: string): string | null {
     const re = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -11,6 +12,8 @@ function validate(email: string): string | null {
 }
 
 export function AddAdminForm(): React.JSX.Element {
+    const router = useRouter();
+
     const [email, setEmail] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
 
@@ -29,6 +32,7 @@ export function AddAdminForm(): React.JSX.Element {
         try {
             await trigger({ body: { email }, method: HttpMethods.POST, credentials: true });
             setError(null);
+            router.push("/admin");
         } catch (e: unknown) {
             setError("Nie udało się dodać admina");
         }

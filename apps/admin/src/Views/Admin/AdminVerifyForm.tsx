@@ -4,7 +4,7 @@ import { Button, Input } from "@repo/ui";
 import { useState } from "react";
 import { useCreateAdmin, useVerifyAdmin } from "../../services/api";
 import { HttpMethods } from "../../types/enums";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { VerifyAdminRequest } from "@repo/types";
 
 function validate(formData: VerifyAdminRequest, repeatPassword: string): string | null {
@@ -20,6 +20,8 @@ function validate(formData: VerifyAdminRequest, repeatPassword: string): string 
 }
 
 export function AdminVerifyForm(): React.JSX.Element {
+    const router = useRouter();
+
     const serarchParams = useSearchParams();
 
     const [repeatPassword, setRepeatPassword] = useState<string>("");
@@ -52,6 +54,7 @@ export function AdminVerifyForm(): React.JSX.Element {
         try {
             await trigger({ body: formData, method: HttpMethods.POST, credentials: true });
             setError(null);
+            router.push("/");
         } catch (e: unknown) {
             setError("Nie udało się dodać admina");
         }
