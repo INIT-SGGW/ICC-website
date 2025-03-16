@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useGetAllAdmins, useGetAllUsers } from "../../services/api";
-import type { GetAllUsersResponse } from "@repo/types";
+import type { GetAllAdminsResponse, GetAllUsersResponse } from "@repo/types";
 import type CustomError from "../../utils/CustomError";
 
 type Props = {
-    data: GetAllUsersResponse["users"] | undefined;
+    data: GetAllAdminsResponse["admins"] | undefined;
     error: CustomError | undefined;
     isLoading: boolean;
 }
@@ -20,6 +20,7 @@ function Table({ data, isLoading, error }: Props): JSX.Element {
                         <th className="w-[0%]">Nr.</th>
                         <th className="text-left">Imię</th>
                         <th className="text-left">Nazwisko</th>
+                        <th className="text-left">Discord</th>
                         <th className="text-left">Email</th>
                         <th className="w-[0%] hidden md:table-cell">Opcje</th>
                     </tr>
@@ -43,6 +44,7 @@ function Table({ data, isLoading, error }: Props): JSX.Element {
                                         <td className="text-center">{index + 1}</td>
                                         <td className="text-left">{user.firstName || "-"}</td>
                                         <td className="text-left">{user.lastName || "-"}</td>
+                                        <td className="text-left">{user.discordUsername || "-"}</td>
                                         <td className="text-left">{user.email}</td>
                                         <td className="hidden md:table-cell">
                                             <button type="button" className="">Edytuj</button>
