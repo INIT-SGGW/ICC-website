@@ -64,7 +64,7 @@ export function AdminVerifyForm(): React.JSX.Element {
             <Input required type="text" placeholder="Discord nickname*" value={formData.discordUsername} onChange={(e) => { setFormData((prev) => ({ ...prev, discordUsername: e.target.value })) }} />
             <Input required type="password" placeholder="Hasło*" value={formData.password} onChange={(e) => { setFormData((prev) => ({ ...prev, password: e.target.value })) }} />
             <Input required type="password" placeholder="Powtórz hasło*" value={repeatPassword} onChange={(e) => { setRepeatPassword(e.target.value) }} />
-            <Button type="submit" disabled={isMutating}>{isMutating ? "..." : "Dodaj admina"}</Button>
+            <Button type="submit" disabled={isMutating}>{isMutating ? "..." : "Zarejestruj się"}</Button>
             <p className="text-red-500 text-sm text-center">{error}</p>
         </form>
     )
