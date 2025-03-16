@@ -66,7 +66,7 @@ export function StatsCard(): React.JSX.Element {
             </div>
             <div className="flex flex-col w-full gap-2">
                 <CustomLink href="/ranking" className="mt-4">Ranking</CustomLink>
-                <p className="text-red-500 text-center text-sm"></p>
+                <p className="text-red-500 text-center text-sm" />
             </div>
         </div>
     )

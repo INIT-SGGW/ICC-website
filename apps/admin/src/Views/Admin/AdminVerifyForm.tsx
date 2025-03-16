@@ -2,10 +2,10 @@
 
 import { Button, Input } from "@repo/ui";
 import { useState } from "react";
-import { useCreateAdmin, useVerifyAdmin } from "../../services/api";
+import { useVerifyAdmin } from "../../services/api";
 import { HttpMethods } from "../../types/enums";
 import { useRouter, useSearchParams } from "next/navigation";
-import { VerifyAdminRequest } from "@repo/types";
+import type { VerifyAdminRequest } from "@repo/types";
 
 function validate(formData: VerifyAdminRequest, repeatPassword: string): string | null {
     if (!formData.email) return "Brak adresu email w linku weryfikacyjnym";
@@ -55,13 +55,13 @@ export function AdminVerifyForm(): React.JSX.Element {
             await trigger({ body: formData, method: HttpMethods.POST, credentials: true });
             setError(null);
             router.push("/");
-        } catch (e: unknown) {
+        } catch (err: unknown) {
             setError("Nie udało się dodać admina");
         }
     }
 
     return (
-        <form className="w-full max-w-[600px] flex flex-col gap-2" noValidate onSubmit={(e) => { handleSubmit(e) }}>
+        <form className="w-full max-w-[600px] flex flex-col gap-2" noValidate onSubmit={(e) => { void handleSubmit(e) }}>
             <Input required type="text" placeholder="Imię*" value={formData.firstName} onChange={(e) => { setFormData((prev) => ({ ...prev, firstName: e.target.value })) }} />
             <Input required type="text" placeholder="Nazwisko*" value={formData.lastName} onChange={(e) => { setFormData((prev) => ({ ...prev, lastName: e.target.value })) }} />
             <Input required type="text" placeholder="Discord nickname*" value={formData.discordUsername} onChange={(e) => { setFormData((prev) => ({ ...prev, discordUsername: e.target.value })) }} />

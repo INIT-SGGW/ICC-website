@@ -14,7 +14,6 @@ function AuthWrapper({ children }: AuthWrapperProps): React.JSX.Element | null {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const path = window.location.pathname;
-            console.log(path)
 
             if (path === "/admin/admin/verification") {
                 setIsAuthenticated(true);

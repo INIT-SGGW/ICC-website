@@ -17,7 +17,7 @@ export function UserDetails({ id }: Props): React.JSX.Element {
         try {
             await trigger();
             router.push("/users");
-        } catch (error: unknown) { }
+        } catch (e) { } // eslint-disable-line no-empty -- errors are handled by SWR
     }
 
     if (error) {

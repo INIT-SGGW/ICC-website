@@ -1,5 +1,4 @@
 import { UsersTable } from "../../Views/Users/UsersTable";
-import Link from "next/link";
 
 export default function Page(): JSX.Element {
     return (

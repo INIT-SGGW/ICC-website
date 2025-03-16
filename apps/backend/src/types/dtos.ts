@@ -14,8 +14,7 @@ import type {
   UpdateUserRequest,
   GetSingleUserResponse,
 } from '@repo/types';
-import { Faculty, Degree } from '@repo/types';
-import { Semester } from '@repo/types';
+import { Faculty, Degree, Semester } from '@repo/types';
 import { Transform } from 'class-transformer';
 import { IsArray, IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
@@ -218,7 +217,7 @@ export class GetTaskAnswersResponseDTO implements GetTaskAnswersResponse {
   points?: number;
 }
 
-export class CreateUserDTO { }
+export class CreateUserDTO {}
 
 export class UpdateUserDTO implements UpdateUserRequest {
   @ApiProperty({ type: String, example: 'John', description: 'User first name' })
@@ -478,7 +477,7 @@ export class GetSingleUserDTO implements GetSingleUserResponse {
   @IsString()
   lastName: string;
 
-  @ApiProperty({ type: Array<String>, example: '["example@email.com"]', description: 'User email' })
+  @ApiProperty({ type: Array<string>, example: '["example@email.com"]', description: 'User email' })
   @IsNotEmpty()
   @IsEmail()
   emails: string[];

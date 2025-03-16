@@ -67,8 +67,8 @@ export function useGetAllAdmins(): SWRResponse<GetAllAdminsResponse, CustomError
     return useSWR("/admin/admin", (url) => fetcherICC<null, GetAllAdminsResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
 }
 
-export function useDeleteAdmin(id: string): SWRMutationResponse<void, CustomError, Key, FetcherArgs<null> | undefined> {
-    return useSWRMutation(`/admin/admin/${id}`, (url) => fetcherICC<null, void>(url, { arg: { method: HttpMethods.DELETE, credentials: true } }));
+export function useDeleteAdmin(id: string): SWRMutationResponse<null, CustomError, Key, FetcherArgs<null> | undefined> {
+    return useSWRMutation(`/admin/admin/${id}`, (url) => fetcherICC<null, null>(url, { arg: { method: HttpMethods.DELETE, credentials: true } }));
 }
 
 export function useGetSingleAdmin(id: string): SWRResponse<GetSingleAdminResponse, CustomError> {
@@ -83,8 +83,8 @@ export function useGetSingleUser(id: string): SWRResponse<GetSingleUserResponse,
     return useSWR(`/users/${id}`, (url) => fetcherICC<null, GetSingleUserResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
 }
 
-export function useDeleteUser(id: string): SWRMutationResponse<void, CustomError, Key, FetcherArgs<null> | undefined> {
-    return useSWRMutation(`/users/${id}`, (url) => fetcherICC<null, void>(url, { arg: { method: HttpMethods.DELETE, credentials: true } }));
+export function useDeleteUser(id: string): SWRMutationResponse<null, CustomError, Key, FetcherArgs<null> | undefined> {
+    return useSWRMutation(`/users/${id}`, (url) => fetcherICC<null, null>(url, { arg: { method: HttpMethods.DELETE, credentials: true } }));
 }
 
 export function useUpdateUser(id: string): SWRMutationResponse<void, CustomError, Key, FetcherArgs<UpdateUserRequest> | undefined> {

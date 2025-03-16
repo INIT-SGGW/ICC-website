@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useGetAllAdmins, useGetAllUsers } from "../../services/api";
-import type { GetAllAdminsResponse, GetAllUsersResponse } from "@repo/types";
+import { useGetAllAdmins } from "../../services/api";
+import type { GetAllAdminsResponse } from "@repo/types";
 import type CustomError from "../../utils/CustomError";
 
 type Props = {

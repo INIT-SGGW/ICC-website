@@ -1,18 +1,12 @@
 "use client";
 
-import { Degree, Faculty, UpdateUserRequest } from "@repo/types";
+import type { UpdateUserRequest } from "@repo/types";
+import { Degree, Faculty } from "@repo/types";
 import { Button, Input, Select } from "@repo/ui";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useGetSingleUser, useUpdateUser } from "../../services/api";
 import { HttpMethods } from "../../types/enums";
-
-const fakeData = {
-    id: 1,
-    email: "asd@sggw.edu.pl",
-    firstName: "Jan",
-    lastName: "Kowalski",
-}
 
 type Props = {
     id: string;
@@ -68,11 +62,10 @@ export function UpdateUserForm({ id }: Props): React.JSX.Element {
         }
 
         try {
-            console.log(formData)
             await trigger({ method: HttpMethods.PATCH, body: formData, credentials: true });
             setError(null);
             router.push("/users");
-        } catch (e: unknown) {
+        } catch (err: unknown) {
             setError("Nie udało się zaktualizować danych");
         }
     }
@@ -89,7 +82,7 @@ export function UpdateUserForm({ id }: Props): React.JSX.Element {
     const handleSetEmails = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = e.target.value.split(",");
         const emails = value.map((elem) => elem.trim());
-        setFormData((prev) => ({ ...prev, emails: emails }));
+        setFormData((prev) => ({ ...prev, emails }));
     }
 
     if (getError) {
@@ -100,7 +93,7 @@ export function UpdateUserForm({ id }: Props): React.JSX.Element {
     }
 
     return (
-        <form className="w-full max-w-[600px] flex flex-col gap-2" noValidate onSubmit={(e) => { handleSubmit(e) }}>
+        <form className="w-full max-w-[600px] flex flex-col gap-2" noValidate onSubmit={(e) => { void handleSubmit(e) }}>
             <Input required type="email" placeholder="Email*" value={formData.emails} onChange={handleSetEmails} />
             <Input required type="text" placeholder="Imię" value={formData.firstName} onChange={(e) => { setFormData((prev) => ({ ...prev, firstName: e.target.value })) }} />
             <Input required type="text" placeholder="Nazwisko" value={formData.lastName} onChange={(e) => { setFormData((prev) => ({ ...prev, lastName: e.target.value })) }} />

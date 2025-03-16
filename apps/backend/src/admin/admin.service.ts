@@ -3,9 +3,15 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import type { GetAllAdminsResponse, GetAllTasksResponse, GetAllUsersResponse, GetSingleAdminResponse, GetTaskAdminResponse, UpdateAdminRequest } from '@repo/types';
+import type {
+  GetAllAdminsResponse,
+  GetAllTasksResponse,
+  GetSingleAdminResponse,
+  GetTaskAdminResponse,
+  UpdateAdminRequest,
+} from '@repo/types';
 import { Task } from '../schemas/task.schema.js';
-import type { CreateTaskDTO, TaskAdminDTO, UpdateTaskDTO, UserTokenDataDTO } from '../types/dtos.js';
+import type { CreateTaskDTO, TaskAdminDTO, UpdateTaskDTO } from '../types/dtos.js';
 import { unzipFile } from '../utils/UnzipFile.js';
 import type { GetAllTasksQuery } from '../types/queries.js';
 import { Admin } from '../schemas/admin.schema.js';
@@ -15,7 +21,7 @@ export class AdminService {
   constructor(
     @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
     @InjectModel(Admin.name, 'register') private adminModel: Model<Admin>,
-  ) { }
+  ) {}
 
   async getAllAdmins(): Promise<GetAllAdminsResponse> {
     try {
@@ -57,12 +63,15 @@ export class AdminService {
 
   async updateAdmin(id: string, body: UpdateAdminRequest): Promise<void> {
     try {
-      await this.adminModel.updateOne({ _id: new Types.ObjectId(id) }, {
-        email: body.email,
-        first_name: body.firstName,
-        last_name: body.lastName,
-        discord_username: body.discordUsername,
-      });
+      await this.adminModel.updateOne(
+        { _id: new Types.ObjectId(id) },
+        {
+          email: body.email,
+          first_name: body.firstName,
+          last_name: body.lastName,
+          discord_username: body.discordUsername,
+        },
+      );
     } catch (error: unknown) {
       throw new HttpException('Wystąpił błąd podczas aktualizacji administratora', StatusCodes.INTERNAL_SERVER_ERROR);
     }

@@ -12,7 +12,7 @@ export class UsersService {
   constructor(
     @InjectModel('User', 'register') private userModel: Model<User>,
     @InjectModel('Task', 'icc') private taskModel: Model<Task>,
-  ) { }
+  ) {}
 
   async getAllUsers(): Promise<GetAllUsersResponse> {
     try {
@@ -57,7 +57,7 @@ export class UsersService {
         emails: user.emails,
         academicYear: user.academic_year,
         faculty: user.faculity,
-        degree: user.degree
+        degree: user.degree,
       };
     } catch (error: unknown) {
       if (error instanceof HttpException) {
@@ -69,14 +69,17 @@ export class UsersService {
 
   async updateAdmin(id: string, body: UpdateUserDTO): Promise<void> {
     try {
-      await this.userModel.updateOne({ _id: id }, {
-        first_name: body.firstName,
-        last_name: body.lastName,
-        emails: body.emails,
-        academic_year: body.academicYear,
-        faculity: body.faculty,
-        degree: body.degree,
-      });
+      await this.userModel.updateOne(
+        { _id: id },
+        {
+          first_name: body.firstName,
+          last_name: body.lastName,
+          emails: body.emails,
+          academic_year: body.academicYear,
+          faculity: body.faculty,
+          degree: body.degree,
+        },
+      );
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         throw error;

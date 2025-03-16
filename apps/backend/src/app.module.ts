@@ -30,4 +30,4 @@ import { GuardsModule } from './guards/guards.module.js';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

@@ -4,13 +4,6 @@ import { Button, CustomLink } from "@repo/ui";
 import { useDeleteAdmin, useGetSingleAdmin } from "../../services/api";
 import { useRouter } from "next/navigation";
 
-const fakeData = {
-    id: 1,
-    email: "asf@sggw.edu.pl",
-    firstName: "",
-    lastName: "",
-}
-
 type Props = {
     id: string
 }
@@ -24,7 +17,7 @@ export function AdminDetails({ id }: Props): React.JSX.Element {
         try {
             await trigger();
             router.push("/admin");
-        } catch (error: unknown) { }
+        } catch (err: unknown) { } // eslint-disable-line no-empty -- errors are handled by SWR
     }
 
     if (getError) {

@@ -7,7 +7,7 @@ import { HttpMethods } from "../../types/enums";
 import { useRouter } from "next/navigation";
 
 function validate(email: string): string | null {
-    const re = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    const re = /^[\w.-]+@(?:[\w-]+\.)+[\w-]{2,4}$/;
     return re.test(email) ? null : "Niepoprawny format adresu email";
 }
 
@@ -33,13 +33,13 @@ export function AddAdminForm(): React.JSX.Element {
             await trigger({ body: { email }, method: HttpMethods.POST, credentials: true });
             setError(null);
             router.push("/admin");
-        } catch (e: unknown) {
+        } catch (err: unknown) {
             setError("Nie udało się dodać admina");
         }
     }
 
     return (
-        <form className="w-full max-w-[600px] flex flex-col gap-2" noValidate onSubmit={(e) => { handleSubmit(e) }}>
+        <form className="w-full max-w-[600px] flex flex-col gap-2" noValidate onSubmit={(e) => { void handleSubmit(e) }}>
             <Input required type="email" placeholder="Email*" value={email} onChange={(e) => { setEmail(e.target.value); }} />
             <Button type="submit" disabled={isMutating}>{isMutating ? "..." : "Dodaj admina"}</Button>
             <p className="text-red-500 text-sm text-center">{error}</p>

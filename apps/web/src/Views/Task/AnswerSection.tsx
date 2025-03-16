@@ -5,7 +5,7 @@ import { Input } from "@repo/ui"
 import Image from "next/image"
 import Link from "next/link"
 import { useGetTaskAnswers, useSendAnswerTask } from "@/services/api"
-import type { GetTaskAdminResponse, GetTaskAnswersResponse, GetTaskUserResponse, Semester } from "@repo/types"
+import type { GetTaskAnswersResponse, Semester } from "@repo/types"
 import { HttpMethods } from "@/types/enums"
 import { jerseyFont } from "@/assets/fonts"
 
@@ -56,7 +56,6 @@ function AnswerItem({ data, prev }: { data: GetTaskAnswersResponse, prev: { date
 
     useEffect(() => {
         if (pRef.current) {
-            console.log(pRef.current.scrollWidth, pRef.current.clientWidth);
             setIsOverflowing(pRef.current.scrollWidth > pRef.current.clientWidth);
         }
     }, [prev.answer, pRef.current]); // Run effect when answer changes
@@ -73,18 +72,16 @@ function AnswerItem({ data, prev }: { data: GetTaskAnswersResponse, prev: { date
             >
                 {prev.answer}
             </p>
-            {isOverflowing && (
-                <button
-                    className="w-min self-end"
-                    type="button"
-                    title="Skopiuj input"
-                    onClick={() => {
-                        navigator.clipboard.writeText(prev.answer);
-                    }}
-                >
-                    <img src="/copy.svg" alt="copy" height="10px" width="10px" className="min-w-[20px] h-[20px]" />
-                </button>
-            )}
+            {isOverflowing ? <button
+                className="w-min self-end"
+                type="button"
+                title="Skopiuj input"
+                onClick={() => {
+                    void navigator.clipboard.writeText(prev.answer);
+                }}
+            >
+                <img src="/copy.svg" alt="copy" height="10px" width="10px" className="min-w-[20px] h-[20px]" />
+            </button> : null}
         </div>
     );
 }

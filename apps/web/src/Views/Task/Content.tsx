@@ -23,14 +23,12 @@ export function Content({ year, semester, task, part }: Props): React.JSX.Elemen
                 error ? <div className="text-center text-xl">Nie masz dostępu do tej części zadania</div> : null
             }
             {
-                data && (
-                    <>
+                data ? <>
                         <p className="text-[#FF0000] text-lg">{new Date(data.releaseDate).toLocaleDateString("pl-PL")}</p>
                         <div className="prose prose-invert max-w-none">
                             <MarkdownRenderer markdown={data.content} />
                         </div>
-                    </>
-                )
+                    </> : null
             }
         </div>
     )

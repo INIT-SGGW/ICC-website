@@ -11,7 +11,7 @@ import './MarkdownRenderer.css'
 // Reusable function to process text for Easter Egg syntax
 const processEasterEggs = (text: string): ReactNode[] => {
   // Match pattern like [!egg]{text="Easter Egg" tooltip="Jajko niespodzianka"}
-  const regex = /\[!egg\]\{text="([^"]+)" tooltip="([^"]+)"\}/g;
+  const regex = /\[!egg\]\{text="(?:[^"]+)" tooltip="(?:[^"]+)"\}/g;
 
   const parts: ReactNode[] = [];
   let lastIndex = 0;
@@ -94,24 +94,24 @@ const components: Components = {
   em: createComponent('em'),
   blockquote: createComponent('blockquote'),
   code: createComponent('code'),
-  pre: function ({ children, ...props }: { children?: React.ReactNode; [key: string]: any }) {
+  pre: function ({ children, ...props }: { children?: React.ReactNode;[key: string]: any }) {
     const preRef = React.useRef<HTMLPreElement>(null);
     const clickCountRef = React.useRef(0);
     const clickTimerRef = React.useRef<number | null>(null);
-    
+
     const handleClick = (e: React.MouseEvent) => {
       // Increment click count
       clickCountRef.current += 1;
-      
+
       // Clear existing timer
       if (clickTimerRef.current) {
         clearTimeout(clickTimerRef.current);
       }
-      
+
       // If it's a quadruple click, select all text in the pre tag
       if (clickCountRef.current === 4) {
         e.preventDefault();
-        
+
         if (preRef.current) {
           const range = document.createRange();
           range.selectNodeContents(preRef.current);
@@ -121,7 +121,7 @@ const components: Components = {
             selection.addRange(range);
           }
         }
-        
+
         // Reset click count
         clickCountRef.current = 0;
       } else {
@@ -131,7 +131,7 @@ const components: Components = {
         }, 300);
       }
     };
-    
+
     return (
       <pre ref={preRef} onClick={handleClick} title="Quadruple-click to select all code" {...props}>
         {processNodes(children)}
