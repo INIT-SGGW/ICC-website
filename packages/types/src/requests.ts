@@ -1,3 +1,4 @@
+import { Degree, Faculty } from "./enums.js"
 
 export type LoginRequest = {
     email: string
@@ -52,4 +53,13 @@ export type CreateTaskRequest = {
 
 export type SendAnswerTaskRequest = {
     answer: string
+}
+
+export type UpdateUserRequest = {
+    firstName: string
+    lastName: string
+    emails: string[]
+    academicYear: number
+    faculty: Faculty
+    degree: Degree
 }

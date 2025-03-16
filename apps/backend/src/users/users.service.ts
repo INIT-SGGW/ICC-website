@@ -1,10 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import type { GetAllUsersResponse, GetUserStatsResponse } from '@repo/types';
+import type { GetAllUsersResponse, GetSingleUserResponse, GetUserStatsResponse } from '@repo/types';
 import { StatusCodes } from 'http-status-codes';
 import type { User } from '../schemas/user.schema.js';
-import type { UserTokenDataDTO } from '../types/dtos.js';
+import type { UpdateUserDTO, UserTokenDataDTO } from '../types/dtos.js';
 import type { Task } from '../schemas/task.schema.js';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class UsersService {
   constructor(
     @InjectModel('User', 'register') private userModel: Model<User>,
     @InjectModel('Task', 'icc') private taskModel: Model<Task>,
-  ) {}
+  ) { }
 
   async getAllUsers(): Promise<GetAllUsersResponse> {
     try {
@@ -35,6 +35,64 @@ export class UsersService {
         throw error;
       }
       throw new HttpException('Wystąpił błąd podczas pobierania użytkowników', 500);
+    }
+  }
+
+  async getSingleUser(id: string): Promise<GetSingleUserResponse> {
+    try {
+      if (!Types.ObjectId.isValid(id)) {
+        throw new HttpException('Nie znaleziono użytkownika', StatusCodes.NOT_FOUND);
+      }
+
+      const user = await this.userModel.findById(id);
+
+      if (!user) {
+        throw new HttpException('Nie znaleziono użytkownika', StatusCodes.NOT_FOUND);
+      }
+
+      return {
+        userId: user._id.toString(),
+        firstName: user.first_name,
+        lastName: user.last_name,
+        emails: user.emails,
+        academicYear: user.academic_year,
+        faculty: user.faculity,
+        degree: user.degree
+      };
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Wystąpił błąd podczas pobierania użytkownika', 500);
+    }
+  }
+
+  async updateAdmin(id: string, body: UpdateUserDTO): Promise<void> {
+    try {
+      await this.userModel.updateOne({ _id: id }, {
+        first_name: body.firstName,
+        last_name: body.lastName,
+        emails: body.emails,
+        academic_year: body.academicYear,
+        faculity: body.faculty,
+        degree: body.degree,
+      });
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Wystąpił błąd podczas aktualizacji użytkownika', 500);
+    }
+  }
+
+  async deleteAdmin(id: string): Promise<void> {
+    try {
+      await this.userModel.deleteOne({ _id: id });
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Wystąpił błąd podczas usuwania użytkownika', 500);
     }
   }
 

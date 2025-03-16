@@ -9,10 +9,12 @@ import type {
   SendAnswerTaskResponse,
   GetUserStatsResponse,
   GetRankingResponse,
-  GetUserResponse,
   GetAllAdminsResponse,
   GetSingleAdminResponse,
+  UpdateUserRequest,
+  GetSingleUserResponse,
 } from '@repo/types';
+import { Faculty, Degree } from '@repo/types';
 import { Semester } from '@repo/types';
 import { Transform } from 'class-transformer';
 import { IsArray, IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
@@ -218,7 +220,32 @@ export class GetTaskAnswersResponseDTO implements GetTaskAnswersResponse {
 
 export class CreateUserDTO { }
 
-export class UpdateUserDTO { }
+export class UpdateUserDTO implements UpdateUserRequest {
+  @ApiProperty({ type: String, example: 'John', description: 'User first name' })
+  @IsString()
+  firstName: string;
+
+  @ApiProperty({ type: String, example: 'Doe', description: 'User last name' })
+  @IsString()
+  lastName: string;
+
+  @ApiProperty({ type: String, example: '' })
+  @IsArray()
+  @IsEmail({}, { each: true })
+  emails: string[];
+
+  @ApiProperty({ type: Number, example: 2, description: 'User academic year' })
+  @IsNumber()
+  academicYear: number;
+
+  @ApiProperty({ type: String, example: 'informatyka', description: 'User faculty' })
+  @IsEnum(Faculty)
+  faculty: Faculty;
+
+  @ApiProperty({ type: String, example: 'inżynier', description: 'User degree' })
+  @IsEnum(Degree)
+  degree: Degree;
+}
 
 export class CreateTaskDTO {
   @IsNotEmpty()
@@ -408,25 +435,6 @@ export class GetRankingDTO implements GetRankingResponse {
   perTask: RankingDTO[][];
 }
 
-export class GetUserDTO implements GetUserResponse {
-  @IsString()
-  @IsNotEmpty()
-  firstName: string;
-
-  @IsString()
-  @IsNotEmpty()
-  lastName: string;
-
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
-}
-
-
 export class AdminPayloadDTO implements GetSingleAdminResponse {
   @IsString()
   @IsNotEmpty()
@@ -452,4 +460,38 @@ export class AdminPayloadDTO implements GetSingleAdminResponse {
 export class GetAllAdminsDTO implements GetAllAdminsResponse {
   @ApiProperty({ type: [AdminPayloadDTO], description: 'List of admins' })
   admins: AdminPayloadDTO[];
+}
+
+export class GetSingleUserDTO implements GetSingleUserResponse {
+  @ApiProperty({ type: String, example: '67c4d2f647bba3861dc871ed', description: 'User ID' })
+  @IsNotEmpty()
+  @IsString()
+  userId: string;
+
+  @ApiProperty({ type: String, example: 'John', description: 'User first name' })
+  @IsNotEmpty()
+  @IsString()
+  firstName: string;
+
+  @ApiProperty({ type: String, example: 'Doe', description: 'User last name' })
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
+
+  @ApiProperty({ type: Array<String>, example: '["example@email.com"]', description: 'User email' })
+  @IsNotEmpty()
+  @IsEmail()
+  emails: string[];
+
+  @ApiProperty({ type: Number, example: 2, description: 'User academic year' })
+  @IsNumber()
+  academicYear: number;
+
+  @ApiProperty({ type: String, example: 'informatyka', description: 'User faculty' })
+  @IsEnum(Faculty)
+  faculty: Faculty;
+
+  @ApiProperty({ type: String, example: 'inżynier', description: 'User degree' })
+  @IsEnum(Degree)
+  degree: Degree;
 }

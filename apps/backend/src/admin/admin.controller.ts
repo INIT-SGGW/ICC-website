@@ -17,7 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { StatusCodes } from 'http-status-codes';
 import { Request as Req } from 'express';
-import { CreateTaskDTO, ServerErrorDTO, TaskAdminDTO, UpdateTaskDTO, TasksDTO, GetUserDTO, GetAllAdminsDTO, AdminPayloadDTO } from '../types/dtos.js';
+import { CreateTaskDTO, ServerErrorDTO, TaskAdminDTO, UpdateTaskDTO, TasksDTO, GetAllAdminsDTO, AdminPayloadDTO } from '../types/dtos.js';
 import { GetAllTasksQuery } from '../types/queries.js';
 import { AdminAuthGuard } from '../guards/admin.guard.js';
 import { AdminService } from './admin.service.js';
@@ -28,14 +28,6 @@ import { UpdateAdminRequest } from '@repo/types';
 @UseGuards(AdminAuthGuard)
 export class AdminController {
   constructor(private readonly adminService: AdminService) { }
-
-  @Get('/me')
-  @ApiOperation({ summary: 'Get current admin', description: 'Get currently logged in admin' })
-  @ApiResponse({ status: 200, description: 'Returns admin', type: GetUserDTO })
-  @ApiQuery({ required: true, name: 'id', type: String, description: 'Admin id', example: 'as64c32647c1234c3421' })
-  async getUserAdmin(@Request() { user }: Req): Promise<GetUserDTO> {
-    return this.adminService.getUser(user);
-  }
 
   @Get()
   @ApiOperation({ summary: 'Get all admins', description: 'Get all registered admins' })

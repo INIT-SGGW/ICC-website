@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type HydratedDocument, Types } from 'mongoose';
-import { Faculty } from '@repo/types';
+import { Degree, Faculty } from '@repo/types';
 
 export type UserDocument = HydratedDocument<User>;
 @Schema({ _id: false })
@@ -77,6 +77,9 @@ export class User {
 
   @Prop({ type: Number })
   academic_year: number;
+
+  @Prop({ type: String, enum: Degree })
+  degree: Degree;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

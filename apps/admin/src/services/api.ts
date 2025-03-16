@@ -1,7 +1,7 @@
 import { fetcher, fetcherICC, fetcherICCFile } from "./fetcher";
 import type { Key, SWRResponse } from "swr";
 import useSWRMutation, { type SWRMutationResponse } from "swr/mutation";
-import type { GetAllAdminsResponse, GetAllTasksResponse, GetAllUsersResponse, GetSingleAdminResponse, GetTaskAdminResponse, LoginRequest, LoginResponseBody, RegisterAdminRequest, RegisterRequest, RegisterResponse, UpdateAdminRequest, UserResponse, VerifyEmailRequest } from "@repo/types";
+import type { GetAllAdminsResponse, GetAllTasksResponse, GetAllUsersResponse, GetSingleAdminResponse, GetSingleUserResponse, GetTaskAdminResponse, LoginRequest, LoginResponseBody, RegisterAdminRequest, RegisterRequest, RegisterResponse, UpdateAdminRequest, UpdateUserRequest, UserResponse, VerifyEmailRequest } from "@repo/types";
 import type { FetcherArgs } from "../types/types";
 import { HttpMethods } from "../types/enums";
 import useSWR from "swr";
@@ -28,7 +28,7 @@ export function useLogout(): SWRMutationResponse<unknown, unknown, Key, FetcherA
 }
 
 export function useGetAllUsers(): SWRResponse<GetAllUsersResponse, CustomError> {
-    return useSWR("/users/admin", (url) => fetcherICC<null, GetAllUsersResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
+    return useSWR("/users", (url) => fetcherICC<null, GetAllUsersResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
 }
 
 export function useGetTask(url: string): SWRResponse<GetTaskAdminResponse, CustomError> {
@@ -77,4 +77,16 @@ export function useGetSingleAdmin(id: string): SWRResponse<GetSingleAdminRespons
 
 export function useUpdateAdmin(id: string): SWRMutationResponse<void, CustomError, Key, FetcherArgs<UpdateAdminRequest> | undefined> {
     return useSWRMutation(`/admin/${id}`, fetcherICC<UpdateAdminRequest, void>);
+}
+
+export function useGetSingleUser(id: string): SWRResponse<GetSingleUserResponse, CustomError> {
+    return useSWR(`/users/${id}`, (url) => fetcherICC<null, GetSingleUserResponse>(url, { arg: { method: HttpMethods.GET, credentials: true } }));
+}
+
+export function useDeleteUser(id: string): SWRMutationResponse<void, CustomError, Key, FetcherArgs<null> | undefined> {
+    return useSWRMutation(`/users/${id}`, (url) => fetcherICC<null, void>(url, { arg: { method: HttpMethods.DELETE, credentials: true } }));
+}
+
+export function useUpdateUser(id: string): SWRMutationResponse<void, CustomError, Key, FetcherArgs<UpdateUserRequest> | undefined> {
+    return useSWRMutation(`/users/${id}`, fetcherICC<UpdateUserRequest, void>);
 }

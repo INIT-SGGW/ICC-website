@@ -1,36 +1,43 @@
 "use client";
 
 import { Button, CustomLink } from "@repo/ui";
-
-const fakeData = {
-    id: 1,
-    email: "asf@sggw.edu.pl",
-    firstName: "",
-    lastName: "",
-}
+import { useDeleteUser, useGetSingleUser } from "../../services/api";
+import { useRouter } from "next/navigation";
 
 type Props = {
-    id: number
+    id: string
 }
 
 export function UserDetails({ id }: Props): React.JSX.Element {
-    const fullName = `${fakeData.firstName} ${fakeData.lastName}`;
+    const router = useRouter();
+    const { data, error } = useGetSingleUser(id);
+    const { trigger, error: deleteError, isMutating } = useDeleteUser(id);
 
-    const handleDelete = (): void => {
-        // eslint-disable-next-line no-console -- Temporary
-        console.log("Deleting user with id: ", id);
+    const handleDelete = async (): Promise<void> => {
+        try {
+            await trigger();
+            router.push("/users");
+        } catch (error: unknown) { }
+    }
+
+    if (error) {
+        return <div className="text-center">
+            <h1 className="text-cred text-4xl">Ups...</h1>
+            <p className="text-white text-lg">Wystąpił problem podczas pobierania danych</p>
+        </div>
     }
 
     return (
         <>
             <div >
-                <h1 className="text-cred text-4xl text-center">{fullName !== " " ? fullName : fakeData.email.split("@")[0]}</h1>
-                <p className="text-white text-2xl text-center">{fakeData.email}</p>
+                <h1 className="text-cred text-4xl text-center">{data ? `${data.firstName} ${data.lastName ? data.lastName : ""}` : "-"}</h1>
+                <p className="text-white text-2xl text-center">{data ? data.emails[0] : "-"}</p>
             </div>
             <div className="flex flex-wrap sm:flex-nowrap gap-4">
                 <CustomLink type="button" className="text-nowrap px-6" href={`/admin/users/update/${id}`}>Modyfikuj dane</CustomLink>
-                <Button type="button" className="text-nowrap px-6" onClick={handleDelete}>Usuń uczestnika</Button>
+                <Button type="button" className="text-nowrap px-6" disabled={isMutating} onClick={() => { void handleDelete() }}>{isMutating ? "..." : "Usuń uczestnika"}</Button>
             </div>
+            <p className="text-cred text-md text-center">{deleteError ? `Error: ${deleteError.message}` : null}</p>
         </>
     )
 }

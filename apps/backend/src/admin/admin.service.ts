@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import type { GetAllAdminsResponse, GetAllTasksResponse, GetAllUsersResponse, GetSingleAdminResponse, GetTaskAdminResponse, UpdateAdminRequest } from '@repo/types';
 import { Task } from '../schemas/task.schema.js';
-import type { CreateTaskDTO, GetUserDTO, TaskAdminDTO, UpdateTaskDTO, UserTokenDataDTO } from '../types/dtos.js';
+import type { CreateTaskDTO, TaskAdminDTO, UpdateTaskDTO, UserTokenDataDTO } from '../types/dtos.js';
 import { unzipFile } from '../utils/UnzipFile.js';
 import type { GetAllTasksQuery } from '../types/queries.js';
 import { Admin } from '../schemas/admin.schema.js';
@@ -16,38 +16,6 @@ export class AdminService {
     @InjectModel(Task.name, 'icc') private taskModel: Model<Task>,
     @InjectModel(Admin.name, 'register') private adminModel: Model<Admin>,
   ) { }
-
-  async getUser(user: UserTokenDataDTO | undefined): Promise<GetUserDTO> {
-    try {
-      if (!user) {
-        throw new HttpException('Brak użytkownika', StatusCodes.BAD_REQUEST);
-      }
-
-      const { id } = user;
-
-      if (!id) {
-        throw new HttpException('Brak id użytkownika', StatusCodes.BAD_REQUEST);
-      }
-
-      const userDoc = await this.adminModel.findById(new Types.ObjectId(id));
-
-      if (!userDoc) {
-        throw new HttpException('Wyszukiwany użytkownik nie istnieje', StatusCodes.NOT_FOUND);
-      }
-
-      return {
-        email: userDoc.email,
-        firstName: userDoc.first_name,
-        lastName: userDoc.last_name,
-        userId: userDoc._id.toString(),
-      };
-    } catch (error: unknown) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
-      throw new HttpException('Wystąpił błąd podczas pobierania użytkownika', StatusCodes.INTERNAL_SERVER_ERROR);
-    }
-  }
 
   async getAllAdmins(): Promise<GetAllAdminsResponse> {
     try {

@@ -1,4 +1,4 @@
-import { Semester } from "./enums.js"
+import { Degree, Faculty, Semester } from "./enums.js"
 
 export type RankingData = {
     nickname: string
@@ -86,6 +86,7 @@ export type GetAllAdminsResponse = {
         firstName: string;
         lastName: string;
         email: string;
+        discordUsername: string;
     }[]
 }
 
@@ -94,6 +95,7 @@ export type GetSingleAdminResponse = {
     firstName: string;
     lastName: string;
     email: string;
+    discordUsername: string;
 }
 
 export type GetNextTaskResponse = {
@@ -130,9 +132,12 @@ export type GetRankingResponse = {
     perTask: Ranking[],
 }
 
-export type GetUserResponse = {
+export type GetSingleUserResponse = {
     userId: string;
     firstName: string;
     lastName: string;
-    email: string;
+    emails: string[];
+    academicYear: number;
+    faculity: Faculty;
+    degree: Degree;
 }
