@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { parseCookies } from '../utils/ParseCookies.js';
 import type { UserTokenDataDTO } from '../types/dtos.js';
 
 @Injectable()
@@ -14,7 +15,11 @@ export class UserAuthGuard extends AuthGuard('jwt') {
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
-    const token: string | undefined = request.headers.cookie?.split('jwt=')[1];
+    if (!request.headers.cookie) {
+      throw new HttpException('Brak tokenu autoryzacyjnego', StatusCodes.UNAUTHORIZED);
+    }
+    const token: string | undefined = parseCookies(request.headers.cookie).jwt;
+
     if (!token) {
       throw new HttpException('Brak tokenu autoryzacyjnego', StatusCodes.UNAUTHORIZED);
     }

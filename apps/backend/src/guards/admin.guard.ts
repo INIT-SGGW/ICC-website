@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import type { UserTokenDataDTO } from '../types/dtos.js';
+import { parseCookies } from '../utils/ParseCookies.js';
 
 @Injectable()
 export class AdminAuthGuard extends AuthGuard('jwt') {
@@ -14,7 +15,10 @@ export class AdminAuthGuard extends AuthGuard('jwt') {
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
-    const token: string | undefined = request.headers.cookie?.split('jwt-init-admin=')[1];
+    if (!request.headers.cookie) {
+      throw new HttpException('Brak tokenu autoryzacyjnego', StatusCodes.UNAUTHORIZED);
+    }
+    const token: string | undefined = parseCookies(request.headers.cookie)['jwt-init-admin'];
 
     if (!token) {
       throw new HttpException('Brak tokenu autoryzacyjnego', StatusCodes.UNAUTHORIZED);
