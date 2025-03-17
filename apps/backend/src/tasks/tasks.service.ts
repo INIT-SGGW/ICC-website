@@ -28,7 +28,7 @@ export class TasksService {
   constructor(
     @InjectModel('Task', 'icc') private taskModel: Model<Task>,
     @InjectModel('User', 'register') private userModel: Model<User>,
-  ) {}
+  ) { }
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
@@ -111,7 +111,11 @@ export class TasksService {
       throw new HttpException(`Nie posiadasz dostępu do tego zadania`, StatusCodes.FORBIDDEN);
     }
 
-    if (part === TaskParts.B && req.user) {
+    if (part === TaskParts.B) {
+      if (!req.user) {
+        throw new HttpException('Nie masz dostępu do zasobu', StatusCodes.FORBIDDEN);
+      }
+
       const { id } = req.user;
 
       const user = await this.userModel.findById(new Types.ObjectId(id));
