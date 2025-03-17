@@ -11,7 +11,7 @@ import './MarkdownRenderer.css'
 // Reusable function to process text for Easter Egg syntax
 const processEasterEggs = (text: string): ReactNode[] => {
   // Match pattern like [!egg]{text="Easter Egg" tooltip="Jajko niespodzianka"}
-  const regex = /\[!egg\]\{text="(?:[^"]+)" tooltip="(?:[^"]+)"\}/g;
+  const regex = /\[!egg\]\{text="([^"]+)" tooltip="([^"]+)"\}/g;
 
   const parts: ReactNode[] = [];
   let lastIndex = 0;
