@@ -46,7 +46,8 @@ export class SoftUserAuthGuard extends AuthGuard('jwt') {
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
-    const token: string | undefined = request.headers.cookie?.split('jwt=')[1];
+    const token: string | undefined = parseCookies(request.headers.cookie)["jwt"];
+
     if (token) {
       try {
         const payload = this.jwtService.verify<UserTokenDataDTO>(token, {
@@ -54,7 +55,7 @@ export class SoftUserAuthGuard extends AuthGuard('jwt') {
           algorithms: ['HS256'],
         });
         request.user = payload;
-      } catch (error) {} // eslint-disable-line no-empty -- see class description
+      } catch (error) { } // eslint-disable-line no-empty -- see class description
     }
     return true;
   }
