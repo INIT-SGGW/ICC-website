@@ -12,6 +12,13 @@ import { UsersService } from './users.service.js';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('/stats')
+  @ApiTags('users')
+  @UseGuards(UserAuthGuard)
+  async getStats(@Request() { user }: Req): Promise<GetUserStatsDTO> {
+    return this.usersService.getUserStats(user);
+  }
+
   @Get()
   @ApiTags('admin')
   @UseGuards(AdminAuthGuard)
@@ -50,13 +57,6 @@ export class UsersController {
   @ApiParam({ required: true, name: 'id', type: String, description: 'Admin id', example: 'as64c32647c1234c3421' })
   async deleteAdmin(@Param('id') id: string): Promise<void> {
     return this.usersService.deleteAdmin(id);
-  }
-
-  @Get('/stats')
-  @ApiTags('users')
-  @UseGuards(UserAuthGuard)
-  async getStats(@Request() { user }: Req): Promise<GetUserStatsDTO> {
-    return this.usersService.getUserStats(user);
   }
 
   // @Post()
