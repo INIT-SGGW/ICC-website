@@ -50,15 +50,24 @@ function Timer({ cooldown, setCooldown }: { cooldown: Date, setCooldown: Dispatc
 }
 
 function AnswerItem({ data, prev }: { data: GetTaskAnswersResponse, prev: { date: Date, answer: string } }) {
-    // Item created so that it can dinamically check if the text is overflowing
     const pRef = useRef<HTMLParagraphElement | null>(null);
     const [isOverflowing, setIsOverflowing] = useState(false);
 
     useEffect(() => {
-        if (pRef.current) {
-            setIsOverflowing(pRef.current.scrollWidth > pRef.current.clientWidth);
-        }
-    }, [prev.answer, pRef.current]); // Run effect when answer changes
+        const checkOverflow = () => {
+            if (pRef.current) {
+                setIsOverflowing(pRef.current.scrollWidth > pRef.current.clientWidth);
+            }
+        };
+
+        checkOverflow();
+
+        window.addEventListener("resize", checkOverflow);
+
+        return () => {
+            window.removeEventListener("resize", checkOverflow);
+        };
+    }, [prev.answer, pRef.current]);
 
     return (
         <div key={`${new Date(prev.date).getTime()}-${prev.answer}`} className="flex flex-row items-center justify-start gap-4 w-full pr-3">
@@ -66,9 +75,9 @@ function AnswerItem({ data, prev }: { data: GetTaskAnswersResponse, prev: { date
                 {formatUTCDate(new Date(prev.date))}
             </p>
             <p
-                ref={pRef} // Attach the ref
+                ref={pRef}
                 title={prev.answer}
-                className={`text-sm ${data.isCorrect && data.correctAnswer === prev.answer ? "text-cred" : "text-white"} text-ellipsis overflow-hidden`}
+                className={`text-sm ${data.isCorrect && data.correctAnswer === prev.answer ? "text-cred" : "text-white"} text-nowrap text-ellipsis overflow-hidden`}
             >
                 {prev.answer}
             </p>
