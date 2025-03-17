@@ -172,6 +172,9 @@ importers:
       '@nestjs/testing':
         specifier: ^11.0.1
         version: 11.0.11(@nestjs/common@11.0.11)(@nestjs/core@11.0.11)(@nestjs/platform-express@11.0.11)
+      '@repo/eslint-config':
+        specifier: workspace:^
+        version: link:../../packages/config-eslint
       '@swc/cli':
         specifier: ^0.6.0
         version: 0.6.0(@swc/core@1.11.7)
