@@ -2,7 +2,7 @@ import { use } from "react"; //eslint-disable-line import/named -- Temporary
 import { AdminDetails } from "../../../../Views/Admin/AdminsDetails";
 
 type Props = {
-    params: Promise<{ id: number }>
+    params: Promise<{ id: string }>
 }
 
 export default function Page({ params }: Props): React.JSX.Element {
