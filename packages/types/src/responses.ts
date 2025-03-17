@@ -138,6 +138,6 @@ export type GetSingleUserResponse = {
     lastName: string;
     emails: string[];
     academicYear: number;
-    faculity: Faculty;
+    faculty: Faculty;
     degree: Degree;
 }
