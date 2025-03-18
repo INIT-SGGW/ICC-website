@@ -1,23 +1,22 @@
 services:
   web:
+    image: ghcr.io/init-sggw/icc-web:${BUILD_ENV:-production}
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-    ports:
-      - "80:3000"
-    environment:
-      - NODE_ENV=production
+      args:
+        - BUILD_ENV=${BUILD_ENV:-production}
 
   admin:
+    image: ghcr.io/init-sggw/icc-admin:${BUILD_ENV:-production}
     build:
       context: .
       dockerfile: apps/admin/Dockerfile
-    ports:
-      - "1337:3000"
-    environment:
-      - NODE_ENV=production
+      args:
+        - BUILD_ENV=${BUILD_ENV:-production}
 
   backend:
+    image: ghcr.io/init-sggw/icc-backend:${BUILD_ENV:-production}
     build:
       context: .
       dockerfile: apps/backend/Dockerfile

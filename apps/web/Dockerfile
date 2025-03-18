@@ -12,7 +12,14 @@ WORKDIR /app
 # Re-enable corepack in builder stage
 RUN corepack enable && corepack prepare pnpm@8.15.6 --activate
 COPY --from=installer /app .
-ENV NEXT_PUBLIC_NODE_ENV=test
+
+# Set build environment (BUILD_ENV is overwritten by docker-compose)
+ARG BUILD_ENV=test
+ENV NEXT_PUBLIC_NODE_ENV=${BUILD_ENV}
+
+# Enforce allowed values
+RUN if [ "$BUILD_ENV" != "test" ] && [ "$BUILD_ENV" != "production" ]; then echo "❌ Error: Invalid BUILD_ENV value '$BUILD_ENV'"; exit 1; fi
+
 RUN pnpm build:web
 
 # Stage 3: Runner (Update copy commands)
