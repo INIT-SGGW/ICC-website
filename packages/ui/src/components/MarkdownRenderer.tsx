@@ -126,7 +126,7 @@ const components: Components = {
         clickCountRef.current = 0;
       } else {
         // Set timer to reset click count after 300ms (common double-click threshold)
-        clickTimerRef.current = setTimeout(() => {
+        clickTimerRef.current = window.setTimeout(() => {
           clickCountRef.current = 0;
         }, 300);
       }
