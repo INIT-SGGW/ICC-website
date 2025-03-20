@@ -63,7 +63,7 @@ export function AccountCard(): React.JSX.Element {
         try {
             await trigger({ method: HttpMethods.POST, credentials: true });
             localStorage.removeItem("userId");
-            localStorage.removeItem("lastLogin")
+            localStorage.removeItem("loginTime");
             router.push("/");
         } catch (e: unknown) {
             if (e instanceof CustomError || e instanceof Error) {
