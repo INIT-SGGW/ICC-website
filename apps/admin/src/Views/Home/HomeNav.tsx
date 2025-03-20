@@ -1,4 +1,11 @@
+"use client";
+
 import { Button } from "@repo/ui"
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import CustomError from "../../utils/CustomError";
+import { HttpMethods } from "../../types/enums";
+import { useLogout } from "../../services/api";
 
 const navItems = [{
     label: 'Admin',
@@ -16,6 +23,27 @@ const navItems = [{
 ]
 
 export function HomeNav() {
+    const router = useRouter();
+    const { trigger } = useLogout();
+
+    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+
+    const handleLogout = async (): Promise<void> => {
+        setErrorMessage(undefined);
+
+        try {
+            await trigger({ method: HttpMethods.POST, credentials: true });
+            localStorage.removeItem("adminId");
+            localStorage.removeItem("loginTime");
+            router.push("/admin/login");
+        } catch (e: unknown) {
+            if (e instanceof CustomError || e instanceof Error) {
+                setErrorMessage(e.message);
+            }
+            setErrorMessage("Wystąpił błąd podczas wylogowywania");
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center gap-4">
             <div className="flex flex-row justify-center items-center gap-2 max-w-[600px] flex-wrap mt-8">
@@ -25,7 +53,8 @@ export function HomeNav() {
                     ))
                 }
             </div>
-            <Button className="!bg-cred">Wyloguj się</Button>
+            <Button className="!bg-cred" onClick={() => { void handleLogout() }}>Wyloguj się</Button>
+            <p className="text-red-500 text-sm">{errorMessage}</p>
         </div>
     )
 }
