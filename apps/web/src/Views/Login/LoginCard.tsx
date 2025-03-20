@@ -49,7 +49,7 @@ export function LoginCard(): React.JSX.Element {
     return (
         <div className="bg-black p-4 flex flex-col items-start justify-start gap-2 w-full max-w-[350px]">
             <form onSubmit={(e) => { void handleLogin(e) }} onInvalid={(e) => { e.preventDefault(); }}>
-                <Input type="text" placeholder="Login" autoComplete="email" value={formData.email} onChange={(e) => { setFormData((prev: LoginFormDTO) => ({ ...prev, email: e.target.value })); }} className="mb-2" />
+                <Input type="text" placeholder="Email" autoComplete="email" value={formData.email} onChange={(e) => { setFormData((prev: LoginFormDTO) => ({ ...prev, email: e.target.value })); }} className="mb-2" />
                 <Input type="password" placeholder="Hasło" autoComplete="current-password" value={formData.password} onChange={(e) => { setFormData((prev: LoginFormDTO) => ({ ...prev, password: e.target.value })); }} />
                 {/* <Link className="text-white text-sm" href="/password/reset">
                     Nie pamiętam hasła
