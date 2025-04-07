@@ -26,9 +26,7 @@ export default function VerificationCard(): React.JSX.Element {
             try {
                 await trigger({ body: { email, verificationToken: token }, method: HttpMethods.POST });
             } catch (e: unknown) {
-                if (e instanceof CustomError) {
-                    setError(e.getMessage()); return;
-                } else if (e instanceof Error) {
+                if (e instanceof CustomError || e instanceof Error) {
                     setError(e.message); return;
                 }
                 setError("Wystąpił błąd podczas weryfikacji konta.");

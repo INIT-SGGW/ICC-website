@@ -6,6 +6,7 @@ import { useLogout, useUser } from "@/services/api";
 import CustomError from "@/utils/CustomError";
 import { HttpMethods } from "@/types/enums";
 import type { User } from "@repo/types";
+import { useRouter } from "next/navigation";
 
 function AccountDataDisplay({ title, text }: { title: string, text: string }): React.JSX.Element {
     return (
@@ -17,6 +18,7 @@ function AccountDataDisplay({ title, text }: { title: string, text: string }): R
 }
 
 export function AccountCard(): React.JSX.Element {
+    const router = useRouter();
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
     const [userData, setUserData] = useState<User | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
@@ -26,11 +28,8 @@ export function AccountCard(): React.JSX.Element {
 
     useEffect(() => {
         const savedUserId = localStorage.getItem("userId");
-        if (!savedUserId) {
-            window.location.href = "/";
-        }
         setUserId(savedUserId);
-    }, [])
+    }, [router])
 
     useEffect(() => {
         const fetchUser = async (): Promise<void> => {
@@ -39,7 +38,12 @@ export function AccountCard(): React.JSX.Element {
                 setUserData(user);
             } catch (e: unknown) {
                 if (e instanceof CustomError) {
-                    setErrorMessage(e.getMessage());
+                    if (e.status === 401) {
+                        localStorage.removeItem("userId");
+                        router.push("/login");
+                    } else {
+                        setErrorMessage(e.message);
+                    }
                 } else if (e instanceof Error) {
                     setErrorMessage(e.message);
                 }
@@ -50,20 +54,19 @@ export function AccountCard(): React.JSX.Element {
         if (userId) {
             void fetchUser();
         }
-    }, [userId, getUser]);
+    }, [userId, getUser, router]);
 
 
     const handleLogout = async (): Promise<void> => {
         setErrorMessage(undefined);
 
         try {
-            await trigger({ method: HttpMethods.POST });
+            await trigger({ method: HttpMethods.POST, credentials: true });
             localStorage.removeItem("userId");
-            window.location.href = "/";
+            localStorage.removeItem("loginTime");
+            router.push("/");
         } catch (e: unknown) {
-            if (e instanceof CustomError) {
-                setErrorMessage(e.getMessage());
-            } else if (e instanceof Error) {
+            if (e instanceof CustomError || e instanceof Error) {
                 setErrorMessage(e.message);
             }
             setErrorMessage("Wystąpił błąd podczas wylogowywania");

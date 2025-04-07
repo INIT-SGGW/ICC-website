@@ -8,11 +8,13 @@ module.exports = {
         project
     },
     extends: [
+        ...["@vercel/style-guide/eslint/node",
+            "@vercel/style-guide/eslint/typescript"].map(require.resolve),
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:prettier/recommended', // Prettier integration
     ],
-    plugins: ['@typescript-eslint', 'prettier'],
+    plugins: ['prettier'],
     globals: {
         ...require('globals').node,
         ...require('globals').jest,
@@ -22,9 +24,10 @@ module.exports = {
         jest: true,
     },
     rules: {
-        '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-floating-promises': 'warn',
         '@typescript-eslint/no-unsafe-argument': 'warn',
+        "@typescript-eslint/no-extraneous-class": 'off',
+        "unicorn/filename-case": 'off',
     },
     ignorePatterns: ['eslint.config.mjs'], // Ignores this file from linting
 };

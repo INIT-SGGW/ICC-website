@@ -6,12 +6,13 @@ import LinkedinLogo from "../assets/linkedin-icon.svg";
 import InitLogo from "../assets/init-logo.svg";
 import SGGWLogo from "../assets/sggw-logo.svg";
 import MevspaceLogo from "../assets/mevspace.svg";
+import { GoogleAnalyticsWrapper } from "./GoogleAnalyticsWrapper";
 
 function TopBar({ adminPanel, navItems }: { adminPanel: boolean, navItems: { href: string, label: string; img?: string }[] }): JSX.Element {
   return (
     <header className="flex flex-col w-full bg-transparent z-20 ">
       <div className="flex items-center justify-between w-full px-4 py-6 bg-black text-cred">
-        <a className="flex items-center gap-4" href="/" title="Init Coding Challenge">
+        <a className="flex items-center gap-4" href={adminPanel ? "/admin" : "/"} title="Init Coding Challenge">
           <img alt="Init Coding Challenge" className="w-24 h-24" src={ICCLogo.src} />
           {
             adminPanel ? (
@@ -23,7 +24,7 @@ function TopBar({ adminPanel, navItems }: { adminPanel: boolean, navItems: { hre
         </a>
         <nav className="flex gap-4">
           {navItems.map((item) => (
-            <a className="text-3xl" href={item.href} key={`${item.label}`} title={item.label} >
+            <a className="text-3xl" href={item.href} key={item.label} title={item.label} >
               {item.img ? (
                 <img alt={item.label} className="w-8 h-8" src={item.img} />
               ) : (
@@ -34,7 +35,7 @@ function TopBar({ adminPanel, navItems }: { adminPanel: boolean, navItems: { hre
           ))}
         </nav>
       </div>
-      <div className="w-full h-24 bg-[url('../src/assets/minecraft-bg.svg')] bg-repeat-x bg-[length:auto_100%]"></div>
+      <div className="w-full h-24 bg-[url('../src/assets/minecraft-bg.svg')] bg-repeat-x bg-[length:auto_100%]" />
     </header>
   );
 }
@@ -44,7 +45,7 @@ function Footer({ adminPanel }: { adminPanel: boolean }): JSX.Element {
 
   return (
     <footer className="flex flex-col">
-      <div className="w-full h-24 bg-[url('../src/assets/minecraft-bg-r.svg')] bg-repeat-x bg-[length:auto_100%]"></div>
+      <div className="w-full h-24 bg-[url('../src/assets/minecraft-bg-r.svg')] bg-repeat-x bg-[length:auto_100%]" />
       <div className="flex flex-col gap-16 items-center justify-center w-full bg-black text-white px-8 py-12 pb-4">
         <div className="flex flex-col gap-4 items-center">
           <p className="text-xl">Znajdź nas na</p>
@@ -77,9 +78,9 @@ function Footer({ adminPanel }: { adminPanel: boolean }): JSX.Element {
             {
               !adminPanel && (
                 <div>
-                  <a href="/Polityka prywatności.pdf" className="text-md">Polityka prywatności</a>
+                  <a className="text-md" href="/Polityka prywatności.pdf">Polityka prywatności</a>
                   <span className="mx-4">•</span>
-                  <a href="/Regulamin.pdf" className="text-md">Regulamin</a>
+                  <a className="text-md" href="/Regulamin.pdf">Regulamin</a>
                 </div>
               )
             }
@@ -93,17 +94,20 @@ function Footer({ adminPanel }: { adminPanel: boolean }): JSX.Element {
 export function RootLayout({
   font,
   navItems,
+  gaid,
   adminPanel = false,
   children,
 }: {
   font: { className: string };
   navItems: { href: string; label: string; img?: string }[];
+  gaid?: string;
   adminPanel?: boolean;
   children: React.ReactNode;
 }): JSX.Element {
   return (
     <html className={font.className} lang="pl" >
       <body className="flex flex-col min-h-screen">
+        {gaid && <GoogleAnalyticsWrapper gaid={gaid} />}
         <TopBar adminPanel={adminPanel} navItems={navItems} />
         <div className="flex-1 main-content p-8 py-16">
           {children}

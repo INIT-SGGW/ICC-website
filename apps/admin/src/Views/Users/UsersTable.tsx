@@ -1,51 +1,17 @@
 "use client";
 
 import { useState } from "react";
-
-type User = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-}
-
-const fakeData: User[] = [
-    {
-        id: "1",
-        firstName: "Jan",
-        lastName: "Kowalski",
-        email: "jan@cp.cod"
-    },
-    {
-        id: "2",
-        firstName: "Adam",
-        lastName: "Nowak",
-        email: "adam@asdf.coads"
-    },
-    {
-        id: "3",
-        firstName: "Jan",
-        lastName: "Kowalski",
-        email: "jan@cp.cod"
-    },
-    {
-        id: "4",
-        firstName: "Adam",
-        lastName: "Nowak",
-        email: "adam@asdf.coads"
-    },
-]
+import { useGetAllUsers } from "../../services/api";
+import type { GetAllUsersResponse } from "@repo/types";
+import type CustomError from "../../utils/CustomError";
 
 type Props = {
-    data: {
-        id: string;
-        email: string;
-        firstName: string;
-        lastName: string;
-    }[];
+    data: GetAllUsersResponse["users"] | undefined;
+    error: CustomError | undefined;
+    isLoading: boolean;
 }
 
-function Table({ data }: Props): JSX.Element {
+function Table({ data, isLoading, error }: Props): JSX.Element {
     return (
         <div className="w-full overflow-x-auto">
             <table className="w-full">
@@ -58,21 +24,35 @@ function Table({ data }: Props): JSX.Element {
                         <th className="w-[0%] hidden md:table-cell">Opcje</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {
-                        data.map((task, index) => (
-                            <tr onClick={() => { window.location.href = `/users/details/${task.id}` }} className="border-b-2 border-gray-700 bg-black text-white sm:hover:bg-gray-800 transition-colors cursor-pointer" key={task.id}>
-                                <td className="text-center">{index + 1}</td>
-                                <td className="text-left">{task.firstName || "-"}</td>
-                                <td className="text-left">{task.lastName || "-"}</td>
-                                <td className="text-left">{task.email}</td>
-                                <td className="hidden md:table-cell">
-                                    <button className="">Edytuj</button>
+                {
+                    (!data || data.length === 0) ? (
+                        <tbody className="text-center text-white bg-black">
+                            <tr>
+                                <td colSpan={5}>
+                                    {error ? `Error: ${error.message}` : null}
+                                    {isLoading && !error && !data ? "Ładowanie..." : null}
+                                    {!data && !error ? "Brak danych" : null}
                                 </td>
                             </tr>
-                        ))
-                    }
-                </tbody>
+                        </tbody>
+                    ) : (
+                        <tbody>
+                            {
+                                data.map((user, index) => (
+                                    <tr onClick={() => { window.location.href = `users/details/${user.userId}` }} className="border-b-2 border-gray-700 bg-black text-white sm:hover:bg-gray-800 transition-colors cursor-pointer" key={user.userId}>
+                                        <td className="text-center">{index + 1}</td>
+                                        <td className="text-left">{user.firstName || "-"}</td>
+                                        <td className="text-left">{user.lastName || "-"}</td>
+                                        <td className="text-left">{user.email}</td>
+                                        <td className="hidden md:table-cell">
+                                            <button type="button" className="">Edytuj</button>
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </div>
     )
@@ -80,17 +60,22 @@ function Table({ data }: Props): JSX.Element {
 
 export function UsersTable(): JSX.Element {
     const [search, setSearch] = useState<string>("");
+    const { data, error, isLoading } = useGetAllUsers();
+
+    if (isLoading) {
+        return <div>Loading...</div>
+    }
 
     return (
         <div>
             <input
                 type="text"
                 placeholder="Szukaj..."
-                onChange={(e) => setSearch(e.currentTarget.value)}
+                onChange={(e) => { setSearch(e.currentTarget.value); }}
                 value={search}
                 className="w-full p-2 mb-4"
             />
-            <Table data={fakeData.filter((user) => user.firstName.includes(search) || user.lastName.includes(search) || user.email.includes(search))} />
+            <Table error={error} isLoading={isLoading} data={data?.users.filter((user) => user.firstName.includes(search) || user.lastName.includes(search) || user.email.includes(search))} />
         </div>
     )
 }

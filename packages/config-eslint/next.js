@@ -48,6 +48,7 @@ module.exports = {
     "import/order": "off",
     "unicorn/filename-case": "off",
     "camelcase": "off",
-    "@typescript-eslint/consistent-type-definitions": ["error", "type"]
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "no-unused-vars": 'off',
   },
 };

@@ -22,3 +22,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(100%);
   cursor: pointer;
 }
+
+div[data-virtual-scroller] {
+  @apply overflow-y-auto;
+}
+
+div[data-virtual-scroller]::-webkit-scrollbar {
+  @apply w-2;
+}
+
+div[data-virtual-scroller]::-webkit-scrollbar-track {
+  @apply rounded-full bg-white;
+}
+
+div[data-virtual-scroller]::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-cred;
+}
