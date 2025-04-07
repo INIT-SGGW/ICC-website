@@ -170,6 +170,7 @@ export function AnswerSection({ year, semester, task, part }: Props): React.JSX.
                                         <p className="text-white text-2xl">punktów</p>
                                     </div>
                                 </div>
+                                <button type="button" className="bg-[#FF0000] text-white p-2 w-full" onClick={() => { handleDownloadInput() }}>Pobierz input</button>
                             </>
                         ) : (
                             <>
