@@ -22,9 +22,9 @@ export default function Page({ params }: Props): React.JSX.Element {
             <div className="flex flex-col items-center justify-center gap-4 w-full">
                 <Header year={Number(year)} semester={semester} task={Number(task)} />
 
-                <div className="flex flex-col lg:!flex-row gap-10 w-full">
+                <div className="flex flex-col lg:!flex-row gap-10 w-full items-center lg:!items-start">
                     <Content year={Number(year)} semester={semester} task={Number(task)} part={part} />
-                    <div className="sticky top-8 lg:min-w-[350px] max-w-[400px] h-full">
+                    <div className="sticky top-8 lg:min-w-[350px] max-w-[400px] w-full h-full">
                         <AnswerSection year={Number(year)} semester={semester} task={Number(task)} part={part} />
                     </div>
                 </div>
