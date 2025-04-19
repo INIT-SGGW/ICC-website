@@ -1,6 +1,7 @@
 import { Degree, Faculty } from "./enums.js"
 
 export type LoginRequest = {
+    service: "icc"
     email: string
     password: string
 }
@@ -11,6 +12,7 @@ export type VerifyEmailRequest = {
 }
 
 export type RegisterRequest = {
+    service: "icc"
     firstName: string
     lastName: string
     email: string
