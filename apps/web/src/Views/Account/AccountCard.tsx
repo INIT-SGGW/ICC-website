@@ -24,7 +24,7 @@ export function AccountCard(): React.JSX.Element {
     const [userId, setUserId] = useState<string | null>(null);
 
     const { trigger, isMutating } = useLogout();
-    const { trigger: getUser } = useUser(`/register/user/${userId}`);
+    const { trigger: getUser } = useUser(`/register/user/id/${userId}`);
 
     useEffect(() => {
         const savedUserId = localStorage.getItem("userId");
