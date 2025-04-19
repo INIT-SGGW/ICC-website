@@ -16,7 +16,7 @@ export class RankingService {
 
   async getRanking(query: GetRankingQuery, request: Request): Promise<GetRankingResponse> {
     try {
-      let generalRanking = (await this.userModel.find().sort({ pointsGeneral: -1 }).limit(50).lean()).map((user) => ({
+      let generalRanking = (await this.userModel.find({events: {"$in": ["icc"]}}).sort({ pointsGeneral: -1 }).limit(50).lean()).map((user) => ({
         firstName: user.first_name,
         lastName: user.last_name,
         points: user.pointsGeneral,
