@@ -51,7 +51,12 @@ export function RegisterCard(): React.JSX.Element {
         const studentIndex = (/\d{6}/.exec(formData.email))?.[0]
         formData.studentIndex = String(studentIndex)
         try {
-            await trigger({ body: formData, method: HttpMethods.POST })
+            await trigger({
+                body: {
+                    service: "icc",
+                    ...formData
+                }, method: HttpMethods.POST
+            })
             router.push("/register/pending");
         } catch (e: unknown) {
             if (e instanceof CustomError || e instanceof Error) {

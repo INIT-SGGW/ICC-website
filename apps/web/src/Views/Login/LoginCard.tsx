@@ -33,7 +33,7 @@ export function LoginCard(): React.JSX.Element {
         const validationError = validateData(formData)
         if (validationError) { setError(validationError); return; }
         try {
-            const response = await trigger({ body: formData, method: HttpMethods.POST, credentials: true })
+            const response = await trigger({ body: { ...formData, service: "icc" }, method: HttpMethods.POST, credentials: true })
             const userId = response.userId.split("\"")[1]
             localStorage.setItem("userId", userId)
             localStorage.setItem("loginTime", new Date().toISOString())
