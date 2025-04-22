@@ -32,7 +32,7 @@ async function bootstrap(): Promise<void> {
   app.useGlobalFilters(new AllExceptionsFilter());
 
   if (process.env.NODE_ENV === 'development') {
-    const allowedOrigins: string[] = ['http://localhost:3000', 'http://localhost:3001'];
+    const allowedOrigins: string[] = ['http://localhost:4000', 'http://localhost:4001'];
 
     const corsOptions: CorsOptions = {
       origin(origin: string, callback) {
@@ -51,7 +51,7 @@ async function bootstrap(): Promise<void> {
     app.enableCors(corsOptions);
   }
 
-  const port = process.env.PORT || 4000;
+  const port = process.env.PORT || 4500;
   void (await app.listen(port));
 }
 void bootstrap();
