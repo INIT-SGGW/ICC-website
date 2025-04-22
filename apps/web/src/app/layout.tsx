@@ -1,6 +1,12 @@
 import "./globals.css";
 import { Layout } from "@repo/ui";
 import { jerseyFont } from "@/assets/fonts";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Init Coding Challenge",
+    description: "Zadania programistyczne dla studentów",
+}
 
 export default function RootLayout({
   children,
