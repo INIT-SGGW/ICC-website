@@ -81,7 +81,7 @@ export class User {
   @Prop({ type: String, enum: Degree })
   degree: Degree;
 
-  @Prop({ type: Array<String> })
+  @Prop({ type: Array<string> })
   events: string[];
 }
 

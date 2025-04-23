@@ -12,11 +12,17 @@ export class RankingService {
   constructor(
     @InjectModel('Task', 'icc') private taskModel: Model<Task>,
     @InjectModel('User', 'register') private userModel: Model<User>,
-  ) { }
+  ) {}
 
   async getRanking(query: GetRankingQuery, request: Request): Promise<GetRankingResponse> {
     try {
-      let generalRanking = (await this.userModel.find({ events: { "$eq": "icc" } }).sort({ pointsGeneral: -1 }).limit(50).lean()).map((user) => ({
+      let generalRanking = (
+        await this.userModel
+          .find({ events: { $eq: 'icc' } })
+          .sort({ pointsGeneral: -1 })
+          .limit(50)
+          .lean()
+      ).map((user) => ({
         firstName: user.first_name,
         lastName: user.last_name,
         points: user.pointsGeneral,

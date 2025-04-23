@@ -28,7 +28,7 @@ export class TasksService {
   constructor(
     @InjectModel('Task', 'icc') private taskModel: Model<Task>,
     @InjectModel('User', 'register') private userModel: Model<User>,
-  ) { }
+  ) {}
 
   async getAllTasks(query: GetAllTasksQuery): Promise<GetAllTasksResponse> {
     const tasks = await this.taskModel.find({ releaseYear: query.year, semester: query.semester });
