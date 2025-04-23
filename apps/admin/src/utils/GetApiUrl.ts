@@ -5,6 +5,6 @@ export function getApiUrl(isICC: boolean): string {
         case "test":
             return "https://initcodingchallenge.pl:5000".concat(isICC ? "/backend" : "/api/v1");
         default:
-            return "http://localhost:".concat(isICC ? "4000" : "8080");
+            return "http://localhost:".concat(isICC ? "4500" : "8080");
     }
 }
