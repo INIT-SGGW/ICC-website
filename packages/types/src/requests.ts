@@ -6,9 +6,23 @@ export type LoginRequest = {
     password: string
 }
 
+export type LoginAdminRequest = {
+    email: string
+    password: string
+}
+
 export type VerifyEmailRequest = {
     email: string
     verificationToken: string
+}
+
+export type CreateAdminRequest = {
+    firstName: string
+    lastName: string
+    email: string
+    password: string
+    dateOfBirth: Date
+    aggrement: boolean
 }
 
 export type RegisterRequest = {

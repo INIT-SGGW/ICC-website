@@ -1,7 +1,7 @@
 import { fetcher, fetcherICC, fetcherICCFile } from "./fetcher";
 import type { Key, SWRResponse } from "swr";
 import useSWRMutation, { type SWRMutationResponse } from "swr/mutation";
-import type { GetAllAdminsResponse, GetAllTasksResponse, GetAllUsersResponse, GetSingleAdminResponse, GetSingleUserResponse, GetTaskAdminResponse, LoginRequest, LoginResponseBody, RegisterAdminRequest, RegisterRequest, RegisterResponse, UpdateAdminRequest, UpdateUserRequest, UserResponse, VerifyEmailRequest } from "@repo/types";
+import type { GetAllAdminsResponse, GetAllTasksResponse, GetAllUsersResponse, GetSingleAdminResponse, GetSingleUserResponse, GetTaskAdminResponse, LoginAdminRequest, LoginResponseBody, RegisterAdminRequest, RegisterRequest, RegisterResponse, UpdateAdminRequest, UpdateUserRequest, UserResponse, VerifyEmailRequest } from "@repo/types";
 import type { FetcherArgs } from "../types/types";
 import { HttpMethods } from "../types/enums";
 import useSWR from "swr";
@@ -15,8 +15,8 @@ export function useRegister(): SWRMutationResponse<RegisterResponse, unknown, Ke
     return useSWRMutation(`/register/admin`, fetcher<RegisterRequest, RegisterResponse>);
 }
 
-export function useLogin(): SWRMutationResponse<LoginResponseBody, unknown, Key, FetcherArgs<LoginRequest> | undefined> {
-    return useSWRMutation(`/register/admin/login`, fetcher<LoginRequest, LoginResponseBody>);
+export function useLogin(): SWRMutationResponse<LoginResponseBody, unknown, Key, FetcherArgs<LoginAdminRequest> | undefined> {
+    return useSWRMutation(`/register/admin/login`, fetcher<LoginAdminRequest, LoginResponseBody>);
 }
 
 export function useVerifyEmail(): SWRMutationResponse<unknown, unknown, Key, FetcherArgs<VerifyEmailRequest> | undefined> {
