@@ -14,6 +14,7 @@ services:
       dockerfile: apps/admin/Dockerfile
       args:
         - BUILD_ENV=${BUILD_ENV:-production}
+        - ADMIN_API_KEY=${ADMIN_API_KEY:-}
 
   backend:
     image: ghcr.io/init-sggw/icc-backend:${BUILD_ENV:-production}
